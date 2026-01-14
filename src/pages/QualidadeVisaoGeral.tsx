@@ -1,15 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { PageHeader } from '@/components/layout/PageHeader';
 import { FilterBar } from '@/components/financiamento/FilterBar';
 import { ClassificationCard } from '@/components/financiamento/ClassificationCard';
-import { PeriodSelector } from '@/components/financiamento/PeriodSelector';
 import { OverviewTable } from '@/components/financiamento/OverviewTable';
 
-const periods = ['Consolidado', 'Janeiro', 'Fevereiro', 'Março', 'Abril'];
-
 const QualidadeVisaoGeral: React.FC = () => {
-  const [selectedPeriod, setSelectedPeriod] = useState('Consolidado');
-
   return (
     <div>
       <PageHeader
@@ -43,14 +38,6 @@ const QualidadeVisaoGeral: React.FC = () => {
             classification="regular"
             count={304}
             description="Regular: ≤ 10 ou > 70"
-          />
-        </div>
-
-        <div className="flex items-center justify-between">
-          <PeriodSelector
-            periods={periods}
-            selectedPeriod={selectedPeriod}
-            onChange={setSelectedPeriod}
           />
         </div>
 
