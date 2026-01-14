@@ -219,48 +219,44 @@ const ExpandedRow: React.FC<{ record: TeamData }> = ({ record }) => {
         </Link>
       </div>
 
-      {/* Indicators table-like Descriptions */}
-      <div className="overflow-x-auto">
-        <Descriptions
-          bordered
-          size="small"
-          column={6}
-          className="indicator-table-descriptions"
-          layout="vertical"
-        >
+      {/* Indicators table-like grid */}
+      <div className="overflow-x-auto border border-border rounded-md">
+        <div className="indicator-grid min-w-[800px]">
           {/* Header row */}
-          <Descriptions.Item label="Indicador" className="font-semibold">
-            <span></span>
-          </Descriptions.Item>
-          {months.slice(0, -1).map((month) => (
-            <Descriptions.Item key={`header-${month}`} label={monthLabels[month]} className="font-semibold">
-              <span></span>
-            </Descriptions.Item>
-          ))}
-          <Descriptions.Item label="Resultado do quadrimestre" className="font-semibold">
-            <span></span>
-          </Descriptions.Item>
-        </Descriptions>
+          <div className="indicator-grid-header">
+            <div className="indicator-grid-cell font-medium text-muted-foreground">Indicador</div>
+            <div className="indicator-grid-cell font-medium text-muted-foreground">Janeiro</div>
+            <div className="indicator-grid-cell font-medium text-muted-foreground">Fevereiro</div>
+            <div className="indicator-grid-cell font-medium text-muted-foreground">Março</div>
+            <div className="indicator-grid-cell font-medium text-muted-foreground">Abril</div>
+            <div className="indicator-grid-cell font-medium text-muted-foreground">Resultado do quadrimestre</div>
+          </div>
 
-        {/* Data rows - one Descriptions per indicator */}
-        {record.indicadores.map((indicador) => (
-          <Descriptions
-            key={indicador.id}
-            bordered
-            size="small"
-            column={6}
-            className="indicator-row-descriptions"
-          >
-            <Descriptions.Item>
-              <span className="font-medium">{indicador.name}</span>
-            </Descriptions.Item>
-            {months.map((month) => (
-              <Descriptions.Item key={month}>
-                <StatusCell data={indicador[month]} showLink={month === 'consolidado'} />
-              </Descriptions.Item>
-            ))}
-          </Descriptions>
-        ))}
+          {/* Data rows */}
+          {record.indicadores.map((indicador, index) => (
+            <div 
+              key={indicador.id} 
+              className={`indicator-grid-row ${index % 2 === 1 ? 'bg-muted/20' : ''}`}
+            >
+              <div className="indicator-grid-cell font-medium">{indicador.name}</div>
+              <div className="indicator-grid-cell">
+                <StatusCell data={indicador.janeiro} />
+              </div>
+              <div className="indicator-grid-cell">
+                <StatusCell data={indicador.fevereiro} />
+              </div>
+              <div className="indicator-grid-cell">
+                <StatusCell data={indicador.marco} />
+              </div>
+              <div className="indicator-grid-cell">
+                <StatusCell data={indicador.abril} />
+              </div>
+              <div className="indicator-grid-cell">
+                <StatusCell data={indicador.consolidado} showLink />
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
