@@ -125,4 +125,21 @@
   .status-badge-regular {
     @apply bg-[hsl(var(--status-regular-bg))] text-[hsl(var(--status-regular))] border-[hsl(var(--status-regular))];
   }
+
+  /* Ant Design Descriptions custom styles */
+  .indicator-descriptions .ant-descriptions-header {
+    margin-bottom: 8px !important;
+  }
+
+  .indicator-descriptions .ant-descriptions-view {
+    border-radius: 6px;
+  }
+
+  .indicator-descriptions .ant-descriptions-item-label {
+    background-color: hsl(var(--muted) / 0.3) !important;
+  }
+
+  .indicator-descriptions .ant-descriptions-item-content {
+    background-color: hsl(var(--card)) !important;
+  }
 }
