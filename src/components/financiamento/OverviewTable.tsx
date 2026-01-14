@@ -1,11 +1,16 @@
 import React from 'react';
-import { Table, Button, Tag } from 'antd';
+import { Table, Button } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
-import { Download, Eye } from 'lucide-react';
+import { Download, Eye, ChevronDown, ChevronRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { StatusBadge } from './StatusBadge';
 
 type Classification = 'otimo' | 'bom' | 'suficiente' | 'regular';
+
+interface MonthData {
+  status: Classification;
+  value: string;
+}
 
 interface TeamData {
   key: string;
@@ -13,11 +18,11 @@ interface TeamData {
   unidade: string;
   tipoEquipe: string;
   indicador: string;
-  janeiro: { status: Classification; value: string };
-  fevereiro: { status: Classification; value: string };
-  marco: { status: Classification; value: string };
-  abril: { status: Classification; value: string };
-  consolidado: { status: Classification; value: string };
+  janeiro: MonthData;
+  fevereiro: MonthData;
+  marco: MonthData;
+  abril: MonthData;
+  consolidado: MonthData;
 }
 
 interface OverviewTableProps {
@@ -117,83 +122,69 @@ const columns: ColumnsType<TeamData> = [
     title: 'Equipe de saúde',
     dataIndex: 'equipe',
     key: 'equipe',
-    fixed: 'left',
-    width: 180,
     render: (text: string) => <span className="font-medium">{text}</span>,
   },
   {
     title: 'Unidade',
     dataIndex: 'unidade',
     key: 'unidade',
-    width: 140,
   },
   {
-    title: 'Indicador',
-    dataIndex: 'indicador',
-    key: 'indicador',
-    width: 200,
-  },
-  {
-    title: 'Janeiro',
-    dataIndex: 'janeiro',
-    key: 'janeiro',
-    width: 140,
-    render: (value: { status: Classification; value: string }) => (
-      <StatusBadge status={value.status} value={value.value.split('|')[1]?.trim()} />
-    ),
-  },
-  {
-    title: 'Fevereiro',
-    dataIndex: 'fevereiro',
-    key: 'fevereiro',
-    width: 140,
-    render: (value: { status: Classification; value: string }) => (
-      <StatusBadge status={value.status} value={value.value.split('|')[1]?.trim()} />
-    ),
-  },
-  {
-    title: 'Março',
-    dataIndex: 'marco',
-    key: 'marco',
-    width: 140,
-    render: (value: { status: Classification; value: string }) => (
-      <StatusBadge status={value.status} value={value.value.split('|')[1]?.trim()} />
-    ),
-  },
-  {
-    title: 'Abril',
-    dataIndex: 'abril',
-    key: 'abril',
-    width: 140,
-    render: (value: { status: Classification; value: string }) => (
-      <StatusBadge status={value.status} value={value.value.split('|')[1]?.trim()} />
-    ),
-  },
-  {
-    title: 'Resultado do quadrimestre',
-    dataIndex: 'consolidado',
-    key: 'consolidado',
-    width: 180,
-    render: (value: { status: Classification; value: string }) => (
-      <StatusBadge status={value.status} value={value.value.split('|')[1]?.trim()} />
-    ),
+    title: 'Tipo',
+    dataIndex: 'tipoEquipe',
+    key: 'tipoEquipe',
+    width: 80,
   },
   {
     title: '',
     key: 'actions',
-    fixed: 'right',
-    width: 140,
+    width: 120,
     render: (_, record) => (
-      <div className="flex gap-2">
-        <Link to={`/financiamento-aps/qualidade-esf-eap/relatorio?equipe=${record.key}`}>
-          <Button size="small" icon={<Eye className="h-3 w-3" />}>
-            Ver relatório
-          </Button>
-        </Link>
-      </div>
+      <Link to={`/financiamento-aps/qualidade-esf-eap/relatorio?equipe=${record.key}`}>
+        <Button size="small" icon={<Eye className="h-3 w-3" />}>
+          Ver relatório
+        </Button>
+      </Link>
     ),
   },
 ];
+
+const ExpandedRow: React.FC<{ record: TeamData }> = ({ record }) => {
+  const months = [
+    { label: 'Janeiro', data: record.janeiro },
+    { label: 'Fevereiro', data: record.fevereiro },
+    { label: 'Março', data: record.marco },
+    { label: 'Abril', data: record.abril },
+  ];
+
+  return (
+    <div className="py-3 px-4 bg-muted/30">
+      <div className="mb-3">
+        <span className="text-sm text-muted-foreground">Indicador: </span>
+        <span className="font-medium">{record.indicador}</span>
+      </div>
+      
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
+        {months.map((month) => (
+          <div key={month.label} className="flex flex-col gap-1">
+            <span className="text-xs text-muted-foreground">{month.label}</span>
+            <StatusBadge 
+              status={month.data.status} 
+              value={month.data.value.split('|')[1]?.trim()} 
+            />
+          </div>
+        ))}
+        <div className="flex flex-col gap-1">
+          <span className="text-xs text-muted-foreground font-medium">Resultado do Quadrimestre</span>
+          <StatusBadge 
+            status={record.consolidado.status} 
+            value={record.consolidado.value.split('|')[1]?.trim()} 
+          />
+        </div>
+      </div>
+    </div>
+  );
+};
 
 export const OverviewTable: React.FC<OverviewTableProps> = ({
   data = sampleData,
@@ -210,7 +201,17 @@ export const OverviewTable: React.FC<OverviewTableProps> = ({
       <Table
         columns={columns}
         dataSource={data}
-        scroll={{ x: 1400 }}
+        expandable={{
+          expandedRowRender: (record) => <ExpandedRow record={record} />,
+        expandIcon: ({ expanded, onExpand, record }) => (
+          <span 
+            className="inline-flex cursor-pointer text-muted-foreground hover:text-foreground transition-colors"
+            onClick={(e) => onExpand(record, e as React.MouseEvent<HTMLElement>)}
+          >
+            {expanded ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
+          </span>
+        ),
+        }}
         pagination={{
           pageSize: 10,
           showSizeChanger: true,
