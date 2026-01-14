@@ -1,9 +1,8 @@
 import React from 'react';
-import { Table, Button } from 'antd';
+import { Table, Button, Descriptions } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { Download, ChevronDown, ChevronRight, ChevronRightIcon } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { StatusBadge } from './StatusBadge';
 
 type Classification = 'otimo' | 'bom' | 'suficiente' | 'regular';
 
@@ -199,6 +198,15 @@ const columns: ColumnsType<TeamData> = [
 ];
 
 const ExpandedRow: React.FC<{ record: TeamData }> = ({ record }) => {
+  const months = ['janeiro', 'fevereiro', 'marco', 'abril', 'consolidado'] as const;
+  const monthLabels: Record<string, string> = {
+    janeiro: 'Janeiro',
+    fevereiro: 'Fevereiro',
+    marco: 'Março',
+    abril: 'Abril',
+    consolidado: 'Resultado do quadrimestre',
+  };
+
   return (
     <div className="bg-muted/20 border-t border-border">
       {/* Action buttons */}
@@ -211,42 +219,28 @@ const ExpandedRow: React.FC<{ record: TeamData }> = ({ record }) => {
         </Link>
       </div>
 
-      {/* Indicators table */}
-      <div className="overflow-x-auto">
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="border-b border-border">
-              <th className="text-left py-3 px-4 font-medium text-muted-foreground w-[180px]">Indicador</th>
-              <th className="text-left py-3 px-4 font-medium text-muted-foreground">Janeiro</th>
-              <th className="text-left py-3 px-4 font-medium text-muted-foreground">Fevereiro</th>
-              <th className="text-left py-3 px-4 font-medium text-muted-foreground">Março</th>
-              <th className="text-left py-3 px-4 font-medium text-muted-foreground">Abril</th>
-              <th className="text-left py-3 px-4 font-medium text-muted-foreground">Resultado do quadrimestre</th>
-            </tr>
-          </thead>
-          <tbody>
-            {record.indicadores.map((indicador) => (
-              <tr key={indicador.id} className="border-b border-border last:border-b-0 hover:bg-muted/30">
-                <td className="py-3 px-4 font-medium">{indicador.name}</td>
-                <td className="py-3 px-4">
-                  <StatusCell data={indicador.janeiro} />
-                </td>
-                <td className="py-3 px-4">
-                  <StatusCell data={indicador.fevereiro} />
-                </td>
-                <td className="py-3 px-4">
-                  <StatusCell data={indicador.marco} />
-                </td>
-                <td className="py-3 px-4">
-                  <StatusCell data={indicador.abril} />
-                </td>
-                <td className="py-3 px-4">
-                  <StatusCell data={indicador.consolidado} />
-                </td>
-              </tr>
+      {/* Indicators using Descriptions */}
+      <div className="p-4 space-y-4">
+        {record.indicadores.map((indicador) => (
+          <Descriptions
+            key={indicador.id}
+            title={<span className="font-medium text-foreground">{indicador.name}</span>}
+            bordered
+            size="small"
+            column={{ xs: 1, sm: 2, md: 3, lg: 5 }}
+            className="indicator-descriptions"
+          >
+            {months.map((month) => (
+              <Descriptions.Item 
+                key={month} 
+                label={monthLabels[month]}
+                labelStyle={{ fontWeight: 500, color: 'hsl(var(--muted-foreground))' }}
+              >
+                <StatusCell data={indicador[month]} showLink={month === 'consolidado'} />
+              </Descriptions.Item>
             ))}
-          </tbody>
-        </table>
+          </Descriptions>
+        ))}
       </div>
     </div>
   );
