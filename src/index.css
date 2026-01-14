@@ -126,20 +126,42 @@
     @apply bg-[hsl(var(--status-regular-bg))] text-[hsl(var(--status-regular))] border-[hsl(var(--status-regular))];
   }
 
-  /* Ant Design Descriptions custom styles */
-  .indicator-descriptions .ant-descriptions-header {
-    margin-bottom: 8px !important;
+  /* Ant Design Descriptions table-like styles */
+  .indicator-table-descriptions .ant-descriptions-view {
+    border-radius: 0 !important;
+    border-bottom: none !important;
   }
 
-  .indicator-descriptions .ant-descriptions-view {
-    border-radius: 6px;
+  .indicator-table-descriptions .ant-descriptions-item-label {
+    background-color: hsl(var(--muted) / 0.5) !important;
+    font-weight: 500 !important;
+    color: hsl(var(--muted-foreground)) !important;
+    padding: 12px 16px !important;
   }
 
-  .indicator-descriptions .ant-descriptions-item-label {
-    background-color: hsl(var(--muted) / 0.3) !important;
+  .indicator-table-descriptions .ant-descriptions-item-content {
+    display: none !important;
   }
 
-  .indicator-descriptions .ant-descriptions-item-content {
+  .indicator-row-descriptions {
+    border-top: none !important;
+  }
+
+  .indicator-row-descriptions .ant-descriptions-view {
+    border-radius: 0 !important;
+    border-top: none !important;
+  }
+
+  .indicator-row-descriptions:last-child .ant-descriptions-view {
+    border-radius: 0 0 6px 6px !important;
+  }
+
+  .indicator-row-descriptions .ant-descriptions-item-content {
     background-color: hsl(var(--card)) !important;
+    padding: 12px 16px !important;
+  }
+
+  .indicator-row-descriptions:hover .ant-descriptions-item-content {
+    background-color: hsl(var(--muted) / 0.3) !important;
   }
 }
