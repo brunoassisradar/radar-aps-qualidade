@@ -233,10 +233,10 @@ const ExpandedRow: React.FC<{ record: TeamData }> = ({ record }) => {
           </div>
 
           {/* Data rows */}
-          {record.indicadores.map((indicador, index) => (
+          {record.indicadores.map((indicador) => (
             <div 
               key={indicador.id} 
-              className={`indicator-grid-row ${index % 2 === 1 ? 'bg-muted/20' : ''}`}
+              className="indicator-grid-row bg-card"
             >
               <div className="indicator-grid-cell font-medium">{indicador.name}</div>
               <div className="indicator-grid-cell">
