@@ -219,23 +219,43 @@ const ExpandedRow: React.FC<{ record: TeamData }> = ({ record }) => {
         </Link>
       </div>
 
-      {/* Indicators using Descriptions */}
-      <div className="p-4 space-y-4">
+      {/* Indicators table-like Descriptions */}
+      <div className="overflow-x-auto">
+        <Descriptions
+          bordered
+          size="small"
+          column={6}
+          className="indicator-table-descriptions"
+          layout="vertical"
+        >
+          {/* Header row */}
+          <Descriptions.Item label="Indicador" className="font-semibold">
+            <span></span>
+          </Descriptions.Item>
+          {months.slice(0, -1).map((month) => (
+            <Descriptions.Item key={`header-${month}`} label={monthLabels[month]} className="font-semibold">
+              <span></span>
+            </Descriptions.Item>
+          ))}
+          <Descriptions.Item label="Resultado do quadrimestre" className="font-semibold">
+            <span></span>
+          </Descriptions.Item>
+        </Descriptions>
+
+        {/* Data rows - one Descriptions per indicator */}
         {record.indicadores.map((indicador) => (
           <Descriptions
             key={indicador.id}
-            title={<span className="font-medium text-foreground">{indicador.name}</span>}
             bordered
             size="small"
-            column={{ xs: 1, sm: 2, md: 3, lg: 5 }}
-            className="indicator-descriptions"
+            column={6}
+            className="indicator-row-descriptions"
           >
+            <Descriptions.Item>
+              <span className="font-medium">{indicador.name}</span>
+            </Descriptions.Item>
             {months.map((month) => (
-              <Descriptions.Item 
-                key={month} 
-                label={monthLabels[month]}
-                labelStyle={{ fontWeight: 500, color: 'hsl(var(--muted-foreground))' }}
-              >
+              <Descriptions.Item key={month}>
                 <StatusCell data={indicador[month]} showLink={month === 'consolidado'} />
               </Descriptions.Item>
             ))}
