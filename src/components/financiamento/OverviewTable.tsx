@@ -158,17 +158,50 @@ const statusLabels: Record<Classification, string> = {
   regular: 'Regular',
 };
 
-const StatusCell: React.FC<{ data: MonthData; showLink?: boolean }> = ({ data, showLink = true }) => (
-  <div className="flex items-center gap-2">
-    <span className={`w-2 h-2 rounded-full ${statusColors[data.status]}`} />
-    <span className="text-sm">
-      {statusLabels[data.status]} | {data.value}
-    </span>
-    {showLink && (
-      <ChevronRightIcon className="h-3 w-3 text-muted-foreground" />
-    )}
-  </div>
-);
+interface StatusCellProps {
+  data: MonthData;
+  showLink?: boolean;
+  indicador?: string;
+  month?: string;
+  equipeKey?: string;
+}
+
+const monthToParam: Record<string, string> = {
+  janeiro: 'Janeiro',
+  fevereiro: 'Fevereiro',
+  marco: 'Março',
+  abril: 'Abril',
+  consolidado: 'Consolidado',
+};
+
+const StatusCell: React.FC<StatusCellProps> = ({ data, showLink = true, indicador, month, equipeKey }) => {
+  const content = (
+    <div className={`flex items-center gap-2 ${showLink ? 'cursor-pointer hover:opacity-80 transition-opacity' : ''}`}>
+      <span className={`w-2 h-2 rounded-full ${statusColors[data.status]}`} />
+      <span className="text-sm">
+        {statusLabels[data.status]} | {data.value}
+      </span>
+      {showLink && (
+        <ChevronRightIcon className="h-3 w-3 text-muted-foreground" />
+      )}
+    </div>
+  );
+
+  if (showLink && indicador && month) {
+    const params = new URLSearchParams({
+      equipe: equipeKey || '',
+      indicador: indicador,
+      periodo: monthToParam[month] || month,
+    });
+    return (
+      <Link to={`/financiamento-aps/qualidade-esf-eap/relatorio?${params.toString()}`}>
+        {content}
+      </Link>
+    );
+  }
+
+  return content;
+};
 
 const columns: ColumnsType<TeamData> = [
   {
@@ -240,19 +273,19 @@ const ExpandedRow: React.FC<{ record: TeamData }> = ({ record }) => {
             >
               <div className="indicator-grid-cell font-medium">{indicador.name}</div>
               <div className="indicator-grid-cell">
-                <StatusCell data={indicador.janeiro} />
+                <StatusCell data={indicador.janeiro} indicador={indicador.id} month="janeiro" equipeKey={record.key} />
               </div>
               <div className="indicator-grid-cell">
-                <StatusCell data={indicador.fevereiro} />
+                <StatusCell data={indicador.fevereiro} indicador={indicador.id} month="fevereiro" equipeKey={record.key} />
               </div>
               <div className="indicator-grid-cell">
-                <StatusCell data={indicador.marco} />
+                <StatusCell data={indicador.marco} indicador={indicador.id} month="marco" equipeKey={record.key} />
               </div>
               <div className="indicator-grid-cell">
-                <StatusCell data={indicador.abril} />
+                <StatusCell data={indicador.abril} indicador={indicador.id} month="abril" equipeKey={record.key} />
               </div>
               <div className="indicator-grid-cell">
-                <StatusCell data={indicador.consolidado} showLink />
+                <StatusCell data={indicador.consolidado} indicador={indicador.id} month="consolidado" equipeKey={record.key} />
               </div>
             </div>
           ))}
