@@ -20,6 +20,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
 }) => {
   return (
     <div className="rounded-lg bg-card p-4 shadow-sm space-y-4">
+      {/* Linha 1: Ano, Quadrimestre, Período */}
       <div className="flex flex-wrap items-end gap-4">
         <div className="flex flex-col gap-1.5">
           <label className="text-sm font-medium text-foreground">Ano</label>
@@ -68,7 +69,10 @@ export const FilterBar: React.FC<FilterBarProps> = ({
             </div>
           </div>
         )}
+      </div>
 
+      {/* Linha 2: Tipo de equipe, Unidade, Alerta, Botões */}
+      <div className="flex flex-wrap items-end gap-4">
         <div className="flex flex-col gap-1.5">
           <label className="text-sm font-medium text-foreground">Tipo de equipe</label>
           <Select
@@ -96,21 +100,19 @@ export const FilterBar: React.FC<FilterBarProps> = ({
           />
         </div>
 
-        <div className="flex items-center gap-3 ml-auto">
-          <div className="flex items-center gap-2 rounded-md bg-status-suficiente-bg px-3 py-2 text-sm">
-            <AlertCircle className="h-4 w-4 text-status-suficiente" />
-            <span className="text-status-suficiente font-medium">Faltam 30 dias para o fim do quadrimestre</span>
-          </div>
+        <div className="flex items-center gap-2 rounded-md bg-status-suficiente-bg px-3 py-2 text-sm">
+          <AlertCircle className="h-4 w-4 text-status-suficiente" />
+          <span className="text-status-suficiente font-medium">Faltam 30 dias para o fim do quadrimestre</span>
         </div>
-      </div>
 
-      <div className="flex justify-end gap-2">
-        <Button onClick={onClear} icon={<X className="h-4 w-4" />}>
-          Limpar filtros
-        </Button>
-        <Button type="primary" onClick={onSearch} icon={<Search className="h-4 w-4" />}>
-          Buscar
-        </Button>
+        <div className="flex items-center gap-2 ml-auto">
+          <Button onClick={onClear} icon={<X className="h-4 w-4" />}>
+            Limpar filtros
+          </Button>
+          <Button type="primary" onClick={onSearch} icon={<Search className="h-4 w-4" />}>
+            Buscar
+          </Button>
+        </div>
       </div>
     </div>
   );
