@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import { Select, Tabs } from 'antd';
+import { Tabs } from 'antd';
 import { PageHeader } from '@/components/layout/PageHeader';
 import { FilterBar } from '@/components/financiamento/FilterBar';
-import { PeriodSelector } from '@/components/financiamento/PeriodSelector';
 import { IndicatorChart } from '@/components/financiamento/IndicatorChart';
 import { ReportTable } from '@/components/financiamento/ReportTable';
 
@@ -35,15 +34,11 @@ const QualidadeRelatorio: React.FC = () => {
       />
 
       <div className="space-y-6">
-        <FilterBar />
-
-        <div className="flex flex-wrap items-center gap-4">
-          <PeriodSelector
-            periods={periods}
-            selectedPeriod={selectedPeriod}
-            onChange={setSelectedPeriod}
-          />
-        </div>
+        <FilterBar 
+          periods={periods}
+          selectedPeriod={selectedPeriod}
+          onPeriodChange={setSelectedPeriod}
+        />
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           {/* Sidebar de indicadores */}

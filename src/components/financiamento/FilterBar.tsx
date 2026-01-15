@@ -1,15 +1,25 @@
 import React from 'react';
-import { Select, Button, Alert } from 'antd';
+import { Select, Button } from 'antd';
 import { Search, X, AlertCircle } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 interface FilterBarProps {
   onSearch?: () => void;
   onClear?: () => void;
+  periods?: string[];
+  selectedPeriod?: string;
+  onPeriodChange?: (period: string) => void;
 }
 
-export const FilterBar: React.FC<FilterBarProps> = ({ onSearch, onClear }) => {
+export const FilterBar: React.FC<FilterBarProps> = ({ 
+  onSearch, 
+  onClear,
+  periods = [],
+  selectedPeriod = '',
+  onPeriodChange,
+}) => {
   return (
-    <div className="rounded-lg bg-card p-4 shadow-sm">
+    <div className="rounded-lg bg-card p-4 shadow-sm space-y-4">
       <div className="flex flex-wrap items-end gap-4">
         <div className="flex flex-col gap-1.5">
           <label className="text-sm font-medium text-foreground">Ano</label>
@@ -36,6 +46,28 @@ export const FilterBar: React.FC<FilterBarProps> = ({ onSearch, onClear }) => {
             ]}
           />
         </div>
+
+        {periods.length > 0 && onPeriodChange && (
+          <div className="flex flex-col gap-1.5">
+            <label className="text-sm font-medium text-foreground">Período</label>
+            <div className="flex rounded-md bg-muted p-1">
+              {periods.map((period) => (
+                <button
+                  key={period}
+                  onClick={() => onPeriodChange(period)}
+                  className={cn(
+                    'px-4 py-1.5 text-sm font-medium rounded-md transition-colors whitespace-nowrap',
+                    selectedPeriod === period
+                      ? 'bg-card text-foreground shadow-sm'
+                      : 'text-muted-foreground hover:text-foreground'
+                  )}
+                >
+                  {period}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
 
         <div className="flex flex-col gap-1.5">
           <label className="text-sm font-medium text-foreground">Tipo de equipe</label>
@@ -72,7 +104,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({ onSearch, onClear }) => {
         </div>
       </div>
 
-      <div className="mt-4 flex justify-end gap-2">
+      <div className="flex justify-end gap-2">
         <Button onClick={onClear} icon={<X className="h-4 w-4" />}>
           Limpar filtros
         </Button>
