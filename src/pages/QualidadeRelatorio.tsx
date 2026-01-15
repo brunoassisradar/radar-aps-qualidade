@@ -94,7 +94,7 @@ const QualidadeRelatorio: React.FC = () => {
                           ? "bg-primary-foreground/20 text-primary-foreground" 
                           : "bg-muted text-muted-foreground"
                       )}>
-                        <Icon className="w-4 h-4" />
+                        {ind.shortLabel}
                       </span>
                       <div className="min-w-0 flex-1">
                         <p className={cn(
