@@ -82,17 +82,17 @@ const QualidadeRelatorio: React.FC = () => {
                       onClick={() => setSelectedIndicador(ind.value)}
                       className={cn(
                         "w-full flex items-center gap-3 px-3 py-2.5 rounded-md text-left transition-all duration-150",
-                        "hover:bg-accent/50",
+                        "hover:bg-muted",
                         isSelected 
-                          ? "bg-primary text-primary-foreground shadow-sm" 
-                          : "text-foreground"
+                          ? "bg-muted border-l-2 border-primary" 
+                          : "text-muted-foreground hover:text-foreground"
                       )}
                     >
                       <span className={cn(
-                        "flex items-center justify-center w-8 h-8 rounded-md text-sm font-semibold shrink-0",
+                        "flex items-center justify-center w-8 h-8 rounded-md text-sm font-semibold shrink-0 transition-colors",
                         isSelected 
-                          ? "bg-primary-foreground/20 text-primary-foreground" 
-                          : "bg-muted text-muted-foreground"
+                          ? "bg-primary text-primary-foreground" 
+                          : "bg-muted-foreground/10 text-muted-foreground"
                       )}>
                         {ind.shortLabel}
                       </span>
