@@ -55,9 +55,9 @@ const QualidadeRelatorio: React.FC = () => {
           onPeriodChange={setSelectedPeriod}
         />
 
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+        <div className="flex flex-col lg:flex-row gap-6">
           {/* Sidebar de indicadores */}
-          <div className="lg:col-span-1">
+          <div className="shrink-0">
             <Anchor
               affix={false}
               onClick={handleAnchorClick}
@@ -67,7 +67,7 @@ const QualidadeRelatorio: React.FC = () => {
           </div>
 
           {/* Conteúdo principal */}
-          <div className="lg:col-span-3 space-y-6">
+          <div className="flex-1 space-y-6">
             <div className="rounded-lg bg-card shadow-sm overflow-hidden">
               <Tabs
                 activeKey={activeTab}
