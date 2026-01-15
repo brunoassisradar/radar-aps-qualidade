@@ -177,11 +177,13 @@
 }
 
 .ant-segmented-item-selected {
-  background: hsl(var(--primary)) !important;
-  color: hsl(var(--primary-foreground)) !important;
+  background: hsl(var(--background)) !important;
+  color: hsl(var(--foreground)) !important;
   font-weight: 500 !important;
+  box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1) !important;
 }
 
 .ant-segmented-thumb {
-  background: hsl(var(--primary)) !important;
+  background: hsl(var(--background)) !important;
+  box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1) !important;
 }
