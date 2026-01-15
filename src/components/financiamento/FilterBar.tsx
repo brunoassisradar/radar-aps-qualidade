@@ -20,7 +20,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
 }) => {
   return (
     <div className="rounded-lg bg-card p-4 shadow-sm space-y-4">
-      {/* Linha 1: Ano, Quadrimestre, Período */}
+      {/* Linha 1: Todos os filtros (Ano, Quadrimestre, Período, Tipo de equipe, Unidade) */}
       <div className="flex flex-wrap items-end gap-4">
         <div className="flex flex-col gap-1.5">
           <label className="text-sm font-medium text-foreground">Ano</label>
@@ -69,10 +69,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
             </div>
           </div>
         )}
-      </div>
 
-      {/* Linha 2: Tipo de equipe, Unidade */}
-      <div className="flex flex-wrap items-end gap-4">
         <div className="flex flex-col gap-1.5">
           <label className="text-sm font-medium text-foreground">Tipo de equipe</label>
           <Select
