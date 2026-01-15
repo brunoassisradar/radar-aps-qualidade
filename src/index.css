@@ -160,3 +160,28 @@
     border-bottom: none;
   }
 }
+
+/* Ant Design Segmented custom styles */
+.ant-segmented {
+  background: hsl(var(--muted)) !important;
+  padding: 4px !important;
+}
+
+.ant-segmented-item {
+  color: hsl(var(--muted-foreground)) !important;
+  transition: all 0.2s ease !important;
+}
+
+.ant-segmented-item:hover:not(.ant-segmented-item-selected) {
+  color: hsl(var(--foreground)) !important;
+}
+
+.ant-segmented-item-selected {
+  background: hsl(var(--primary)) !important;
+  color: hsl(var(--primary-foreground)) !important;
+  font-weight: 500 !important;
+}
+
+.ant-segmented-thumb {
+  background: hsl(var(--primary)) !important;
+}
