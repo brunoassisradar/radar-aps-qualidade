@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Tabs } from 'antd';
+import { Tabs, Anchor } from 'antd';
 import { PageHeader } from '@/components/layout/PageHeader';
 import { FilterBar } from '@/components/financiamento/FilterBar';
 import { IndicatorChart } from '@/components/financiamento/IndicatorChart';
@@ -21,6 +21,21 @@ const QualidadeRelatorio: React.FC = () => {
   const [selectedPeriod, setSelectedPeriod] = useState('Consolidado');
   const [selectedIndicador, setSelectedIndicador] = useState('c3');
   const [activeTab, setActiveTab] = useState('boas-praticas');
+
+  const anchorItems = indicadores.map((ind) => ({
+    key: ind.value,
+    href: `#${ind.value}`,
+    title: ind.label,
+  }));
+
+  const handleAnchorClick = (
+    e: React.MouseEvent<HTMLElement>,
+    link: { title: React.ReactNode; href: string }
+  ) => {
+    e.preventDefault();
+    const indicadorValue = link.href.replace('#', '');
+    setSelectedIndicador(indicadorValue);
+  };
 
   return (
     <div>
@@ -44,21 +59,12 @@ const QualidadeRelatorio: React.FC = () => {
           {/* Sidebar de indicadores */}
           <div className="lg:col-span-1">
             <div className="rounded-lg bg-card p-4 shadow-sm">
-              <div className="space-y-1">
-                {indicadores.map((ind) => (
-                  <button
-                    key={ind.value}
-                    onClick={() => setSelectedIndicador(ind.value)}
-                    className={`w-full text-left px-3 py-2.5 rounded-md text-sm transition-colors ${
-                      selectedIndicador === ind.value
-                        ? 'bg-primary text-primary-foreground font-medium'
-                        : 'text-muted-foreground hover:bg-muted hover:text-foreground'
-                    }`}
-                  >
-                    {ind.label}
-                  </button>
-                ))}
-              </div>
+              <Anchor
+                affix={false}
+                onClick={handleAnchorClick}
+                getCurrentAnchor={() => `#${selectedIndicador}`}
+                items={anchorItems}
+              />
             </div>
           </div>
 
