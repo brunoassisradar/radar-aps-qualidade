@@ -76,15 +76,6 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({ collapsed }) => {
         collapsed ? 'w-16' : 'w-64'
       )}
     >
-      <div className="flex h-14 items-center border-b border-sidebar-border px-4">
-        {!collapsed && (
-          <div className="flex items-center gap-2">
-            <span className="text-lg font-semibold text-primary">Radar</span>
-            <span className="text-lg">🎯</span>
-            <span className="text-lg font-semibold text-primary">Saúde</span>
-          </div>
-        )}
-      </div>
 
       <nav className="flex-1 overflow-y-auto p-3">
         <ul className="space-y-1">

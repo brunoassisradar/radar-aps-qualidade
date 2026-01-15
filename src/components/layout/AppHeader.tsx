@@ -18,6 +18,15 @@ export const AppHeader: React.FC<AppHeaderProps> = ({ onToggleSidebar }) => {
         >
           <Menu className="h-5 w-5" />
         </Button>
+        
+        {/* Logo placeholder - substitua pelo seu logotipo */}
+        <div className="flex h-10 items-center">
+          <img 
+            src="/placeholder.svg" 
+            alt="Logo" 
+            className="h-8 w-auto object-contain"
+          />
+        </div>
       </div>
       
       <div className="flex items-center gap-1">
