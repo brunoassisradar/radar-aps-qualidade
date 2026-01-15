@@ -208,25 +208,37 @@ const columns: ColumnsType<TeamData> = [
     title: 'Equipe de saúde',
     dataIndex: 'equipe',
     key: 'equipe',
+    width: '25%',
     render: (text: string) => <span className="font-medium">{text}</span>,
   },
   {
     title: 'Unidade',
     dataIndex: 'unidade',
     key: 'unidade',
+    width: '20%',
   },
   {
     title: 'Tipo de equipe',
     dataIndex: 'tipoEquipe',
     key: 'tipoEquipe',
-    width: 120,
+    width: '15%',
   },
   {
     title: 'Resultado quadrimestre',
     dataIndex: 'consolidado',
     key: 'consolidado',
-    width: 180,
+    width: '25%',
     render: (data: MonthData) => <StatusCell data={data} showLink={false} />,
+  },
+  {
+    title: 'Ação',
+    key: 'acao',
+    width: '15%',
+    render: (_: unknown, record: TeamData) => (
+      <Link to={`/financiamento-aps/qualidade-esf-eap/relatorio?equipe=${record.key}`}>
+        <Button type="default" size="small">Ver relatório</Button>
+      </Link>
+    ),
   },
 ];
 
