@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Tabs, Anchor } from 'antd';
+import { Tabs, Anchor, Segmented } from 'antd';
 import { PageHeader } from '@/components/layout/PageHeader';
 import { FilterBar } from '@/components/financiamento/FilterBar';
 import { IndicatorChart } from '@/components/financiamento/IndicatorChart';
@@ -53,6 +53,12 @@ const QualidadeRelatorio: React.FC = () => {
           periods={periods}
           selectedPeriod={selectedPeriod}
           onPeriodChange={setSelectedPeriod}
+        />
+
+        <Segmented
+          value={selectedPeriod}
+          onChange={(value) => setSelectedPeriod(value as string)}
+          options={periods}
         />
 
         <div className="flex flex-col lg:flex-row gap-6">
