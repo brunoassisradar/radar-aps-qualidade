@@ -32,47 +32,64 @@ export const IndicatorChart: React.FC<IndicatorChartProps> = ({
   totalPuerperas = 40,
 }) => {
   return (
-    <div className="rounded-lg bg-card p-4 shadow-sm">
-      <div className="flex items-center gap-8 mb-4">
-        <div>
-          <p className="text-sm text-muted-foreground">Total de gestantes</p>
-          <p className="text-2xl font-semibold text-foreground">{totalGestantes}</p>
+    <div className="space-y-6">
+      {/* KPIs em cards destacados */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="rounded-xl bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/20 p-4">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-lg bg-primary/20 flex items-center justify-center">
+              <span className="text-primary text-lg">👶</span>
+            </div>
+            <div>
+              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Total de gestantes</p>
+              <p className="text-2xl font-bold text-foreground">{totalGestantes}</p>
+            </div>
+          </div>
         </div>
-        <div>
-          <p className="text-sm text-muted-foreground">Total de puérperas</p>
-          <p className="text-2xl font-semibold text-foreground">{totalPuerperas}</p>
+        <div className="rounded-xl bg-gradient-to-br from-accent to-accent/50 border border-primary/20 p-4">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-lg bg-primary/20 flex items-center justify-center">
+              <span className="text-primary text-lg">🤱</span>
+            </div>
+            <div>
+              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Total de puérperas</p>
+              <p className="text-2xl font-bold text-foreground">{totalPuerperas}</p>
+            </div>
+          </div>
         </div>
       </div>
 
-      <div className="flex items-center gap-4 mb-4">
+      {/* Legenda do gráfico */}
+      <div className="flex flex-wrap items-center gap-6 px-1">
         <div className="flex items-center gap-2">
-          <div className="w-4 h-4 rounded bg-[#3182CE]" />
+          <div className="w-3 h-3 rounded-full bg-[hsl(var(--chart-primary))]" />
           <span className="text-sm text-muted-foreground">Cumpriu e contabiliza para o financiamento</span>
         </div>
         <div className="flex items-center gap-2">
-          <div className="w-4 h-4 rounded bg-[#90CDF4]" />
+          <div className="w-3 h-3 rounded-full bg-[hsl(var(--chart-secondary))]" />
           <span className="text-sm text-muted-foreground">Cumpriu boa prática de saúde</span>
         </div>
       </div>
 
-      <div className="h-[300px]">
+      {/* Gráfico */}
+      <div className="h-[320px] rounded-lg bg-muted/30 p-4">
         <ResponsiveBar
           data={data}
           keys={['financiamento', 'boasPraticas']}
           indexBy="equipe"
           margin={{ top: 20, right: 20, bottom: 50, left: 50 }}
-          padding={0.3}
+          padding={0.35}
           groupMode="stacked"
-          colors={['#3182CE', '#90CDF4']}
-          borderRadius={4}
+          colors={['hsl(214, 100%, 50%)', 'hsl(214, 60%, 70%)']}
+          borderRadius={6}
           axisBottom={{
             tickSize: 0,
-            tickPadding: 8,
+            tickPadding: 12,
             tickRotation: 0,
           }}
           axisLeft={{
             tickSize: 0,
-            tickPadding: 8,
+            tickPadding: 12,
             tickValues: [0, 20, 40, 60, 80, 100],
             format: (v) => `${v}%`,
           }}
@@ -83,22 +100,25 @@ export const IndicatorChart: React.FC<IndicatorChartProps> = ({
               ticks: {
                 text: {
                   fontSize: 12,
-                  fill: '#64748b',
+                  fill: 'hsl(220, 9%, 46%)',
+                  fontFamily: 'Inter, sans-serif',
                 },
               },
             },
             grid: {
               line: {
-                stroke: '#e2e8f0',
+                stroke: 'hsl(220, 13%, 91%)',
                 strokeWidth: 1,
+                strokeDasharray: '4 4',
               },
             },
           }}
-          tooltip={({ id, value, color }) => (
-            <div className="bg-card border border-border rounded px-3 py-2 shadow-lg">
+          tooltip={({ id, value, color, indexValue }) => (
+            <div className="bg-card border border-border rounded-lg px-4 py-3 shadow-xl">
+              <p className="text-xs font-medium text-muted-foreground mb-1">Equipe {indexValue}</p>
               <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded" style={{ backgroundColor: color }} />
-                <span className="text-sm">
+                <div className="w-3 h-3 rounded-full" style={{ backgroundColor: color }} />
+                <span className="text-sm font-medium text-foreground">
                   {id === 'financiamento' ? 'Financiamento' : 'Boas práticas'}: {value}%
                 </span>
               </div>
