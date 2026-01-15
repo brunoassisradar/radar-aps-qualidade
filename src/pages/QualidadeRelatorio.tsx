@@ -58,14 +58,12 @@ const QualidadeRelatorio: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           {/* Sidebar de indicadores */}
           <div className="lg:col-span-1">
-            <div className="rounded-lg bg-card p-4 shadow-sm">
-              <Anchor
-                affix={false}
-                onClick={handleAnchorClick}
-                getCurrentAnchor={() => `#${selectedIndicador}`}
-                items={anchorItems}
-              />
-            </div>
+            <Anchor
+              affix={false}
+              onClick={handleAnchorClick}
+              getCurrentAnchor={() => `#${selectedIndicador}`}
+              items={anchorItems}
+            />
           </div>
 
           {/* Conteúdo principal */}
