@@ -101,7 +101,7 @@ const QualidadeRelatorio: React.FC = () => {
                           "text-sm font-medium truncate",
                           isSelected ? "text-primary-foreground" : "text-foreground"
                         )}>
-                          {ind.shortLabel} - {ind.label}
+                          {ind.label}
                         </p>
                       </div>
                     </button>
