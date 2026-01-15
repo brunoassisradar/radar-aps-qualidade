@@ -99,7 +99,7 @@ const QualidadeRelatorio: React.FC = () => {
                       <div className="min-w-0 flex-1">
                         <p className={cn(
                           "text-sm font-medium truncate",
-                          isSelected ? "text-primary-foreground" : "text-foreground"
+                          isSelected ? "text-foreground" : ""
                         )}>
                           {ind.label}
                         </p>
