@@ -71,7 +71,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
         )}
       </div>
 
-      {/* Linha 2: Tipo de equipe, Unidade, Alerta, Botões */}
+      {/* Linha 2: Tipo de equipe, Unidade */}
       <div className="flex flex-wrap items-end gap-4">
         <div className="flex flex-col gap-1.5">
           <label className="text-sm font-medium text-foreground">Tipo de equipe</label>
@@ -99,13 +99,16 @@ export const FilterBar: React.FC<FilterBarProps> = ({
             ]}
           />
         </div>
+      </div>
 
+      {/* Linha 3: Alerta e Botões */}
+      <div className="flex items-center justify-between">
         <div className="flex items-center gap-2 rounded-md bg-status-suficiente-bg px-3 py-2 text-sm">
           <AlertCircle className="h-4 w-4 text-status-suficiente" />
           <span className="text-status-suficiente font-medium">Faltam 30 dias para o fim do quadrimestre</span>
         </div>
 
-        <div className="flex items-center gap-2 ml-auto">
+        <div className="flex items-center gap-2">
           <Button onClick={onClear} icon={<X className="h-4 w-4" />}>
             Limpar filtros
           </Button>
