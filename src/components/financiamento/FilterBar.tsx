@@ -21,12 +21,12 @@ export const FilterBar: React.FC<FilterBarProps> = ({
   return (
     <div className="rounded-lg bg-card p-4 shadow-sm space-y-4">
       {/* Linha 1: Todos os filtros (Ano, Quadrimestre, Período, Tipo de equipe, Unidade) */}
-      <div className="flex flex-wrap items-end gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="flex flex-col gap-1.5">
           <label className="text-sm font-medium text-foreground">Ano</label>
           <Select
             defaultValue="2026"
-            style={{ width: 120 }}
+            style={{ width: '100%' }}
             options={[
               { value: '2026', label: '2026' },
               { value: '2025', label: '2025' },
@@ -39,7 +39,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
           <label className="text-sm font-medium text-foreground">Quadrimestre</label>
           <Select
             defaultValue="1"
-            style={{ width: 160 }}
+            style={{ width: '100%' }}
             options={[
               { value: '1', label: '1° Quadrimestre' },
               { value: '2', label: '2° Quadrimestre' },
@@ -48,33 +48,11 @@ export const FilterBar: React.FC<FilterBarProps> = ({
           />
         </div>
 
-        {periods.length > 0 && onPeriodChange && (
-          <div className="flex flex-col gap-1.5">
-            <label className="text-sm font-medium text-foreground">Período</label>
-            <div className="flex rounded-md bg-muted p-1">
-              {periods.map((period) => (
-                <button
-                  key={period}
-                  onClick={() => onPeriodChange(period)}
-                  className={cn(
-                    'px-4 py-1.5 text-sm font-medium rounded-md transition-colors whitespace-nowrap',
-                    selectedPeriod === period
-                      ? 'bg-card text-foreground shadow-sm'
-                      : 'text-muted-foreground hover:text-foreground'
-                  )}
-                >
-                  {period}
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
-
         <div className="flex flex-col gap-1.5">
           <label className="text-sm font-medium text-foreground">Tipo de equipe</label>
           <Select
             placeholder="Tipo de equipe"
-            style={{ width: 180 }}
+            style={{ width: '100%' }}
             options={[
               { value: 'esf', label: 'eSF' },
               { value: 'eap', label: 'eAP' },
@@ -82,7 +60,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
           />
         </div>
 
-        <div className="flex flex-col gap-1.5 flex-1 min-w-[200px]">
+        <div className="flex flex-col gap-1.5">
           <label className="text-sm font-medium text-foreground">Unidade</label>
           <Select
             mode="multiple"
