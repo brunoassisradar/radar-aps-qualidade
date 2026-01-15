@@ -56,6 +56,7 @@ const QualidadeRelatorio: React.FC = () => {
         />
 
         <Segmented
+          block
           value={selectedPeriod}
           onChange={(value) => setSelectedPeriod(value as string)}
           options={periods}
