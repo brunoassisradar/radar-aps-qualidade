@@ -32,9 +32,9 @@ const defaultData: IndicatorChartData[] = [
 ];
 
 const chartColors = {
-  cumprioFinanciamento: 'hsl(152, 57%, 48%)',
-  cumprioBoaPratica: 'hsl(199, 89%, 58%)',
-  naoCumpriu: 'hsl(0, 0%, 85%)',
+  cumprioFinanciamento: '#3C8DBC',
+  cumprioBoaPratica: '#F0AD4E',
+  naoCumpriu: '#DD4B39',
 };
 
 const legendLabels: Record<string, string> = {
@@ -121,7 +121,7 @@ export const IndicatorChart: React.FC<IndicatorChartProps> = ({
           valueScale={{ type: 'linear' }}
           indexScale={{ type: 'band', round: true }}
           colors={[chartColors.cumprioFinanciamento, chartColors.cumprioBoaPratica, chartColors.naoCumpriu]}
-          borderRadius={6}
+          borderRadius={0}
           axisBottom={{
             tickSize: 0,
             tickPadding: 12,
