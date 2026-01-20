@@ -1,7 +1,7 @@
 import React from 'react';
 import { Table, Button, Badge } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
-import { Download, Eye } from 'lucide-react';
+import { Download, ChevronRightIcon } from 'lucide-react';
 
 type Classification = 'otimo' | 'bom' | 'suficiente' | 'regular';
 
@@ -13,7 +13,7 @@ interface ReportData {
   numerador: number;
   denominador: number;
   pontuacao: number;
-  tipoRegistro: string;
+  fichasDesatualizadas: number;
 }
 
 interface ReportTableProps {
@@ -37,16 +37,16 @@ const classificationLabels: Record<Classification, string> = {
 };
 
 const sampleData: ReportData[] = [
-  { key: '1', equipe: 'ESF Vila Nova', unidade: 'UBS Centro', classificacao: 'regular', numerador: 2.29, denominador: 4, pontuacao: 57.25, tipoRegistro: 'Individualizado' },
-  { key: '2', equipe: 'ESF Jardim América', unidade: 'UBS Norte', classificacao: 'regular', numerador: 2.29, denominador: 4, pontuacao: 57.25, tipoRegistro: 'Individualizado' },
-  { key: '3', equipe: 'ESF Centro', unidade: 'UBS Sul', classificacao: 'regular', numerador: 2.64, denominador: 4, pontuacao: 52.8, tipoRegistro: 'Individualizado' },
-  { key: '4', equipe: 'ESF Parque Industrial', unidade: 'UBS Centro', classificacao: 'suficiente', numerador: 2.29, denominador: 4, pontuacao: 57.25, tipoRegistro: 'Individualizado' },
-  { key: '5', equipe: 'ESF Bela Vista', unidade: 'UBS Norte', classificacao: 'bom', numerador: 2.29, denominador: 4, pontuacao: 57.25, tipoRegistro: 'Individualizado' },
-  { key: '6', equipe: 'ESF Santa Maria', unidade: 'UBS Sul', classificacao: 'regular', numerador: 2.29, denominador: 4, pontuacao: 57.25, tipoRegistro: 'Individualizado' },
-  { key: '7', equipe: 'ESF Nova Esperança', unidade: 'UBS Centro', classificacao: 'otimo', numerador: 2.64, denominador: 4, pontuacao: 52.8, tipoRegistro: 'Individualizado' },
-  { key: '8', equipe: 'ESF São João', unidade: 'UBS Norte', classificacao: 'regular', numerador: 2.29, denominador: 4, pontuacao: 57.25, tipoRegistro: 'Individualizado' },
-  { key: '9', equipe: 'ESF Boa Vista', unidade: 'UBS Sul', classificacao: 'regular', numerador: 2.64, denominador: 4, pontuacao: 52.8, tipoRegistro: 'Individualizado' },
-  { key: '10', equipe: 'ESF Primavera', unidade: 'UBS Centro', classificacao: 'regular', numerador: 2.64, denominador: 4, pontuacao: 52.8, tipoRegistro: 'Individualizado' },
+  { key: '1', equipe: 'ESF Vila Nova', unidade: 'UBS Centro', classificacao: 'regular', numerador: 2.29, denominador: 4, pontuacao: 57.25, fichasDesatualizadas: 12 },
+  { key: '2', equipe: 'ESF Jardim América', unidade: 'UBS Norte', classificacao: 'regular', numerador: 2.29, denominador: 4, pontuacao: 57.25, fichasDesatualizadas: 5 },
+  { key: '3', equipe: 'ESF Centro', unidade: 'UBS Sul', classificacao: 'regular', numerador: 2.64, denominador: 4, pontuacao: 52.8, fichasDesatualizadas: 0 },
+  { key: '4', equipe: 'ESF Parque Industrial', unidade: 'UBS Centro', classificacao: 'suficiente', numerador: 2.29, denominador: 4, pontuacao: 57.25, fichasDesatualizadas: 3 },
+  { key: '5', equipe: 'ESF Bela Vista', unidade: 'UBS Norte', classificacao: 'bom', numerador: 2.29, denominador: 4, pontuacao: 57.25, fichasDesatualizadas: 8 },
+  { key: '6', equipe: 'ESF Santa Maria', unidade: 'UBS Sul', classificacao: 'regular', numerador: 2.29, denominador: 4, pontuacao: 57.25, fichasDesatualizadas: 0 },
+  { key: '7', equipe: 'ESF Nova Esperança', unidade: 'UBS Centro', classificacao: 'otimo', numerador: 2.64, denominador: 4, pontuacao: 52.8, fichasDesatualizadas: 2 },
+  { key: '8', equipe: 'ESF São João', unidade: 'UBS Norte', classificacao: 'regular', numerador: 2.29, denominador: 4, pontuacao: 57.25, fichasDesatualizadas: 15 },
+  { key: '9', equipe: 'ESF Boa Vista', unidade: 'UBS Sul', classificacao: 'regular', numerador: 2.64, denominador: 4, pontuacao: 52.8, fichasDesatualizadas: 0 },
+  { key: '10', equipe: 'ESF Primavera', unidade: 'UBS Centro', classificacao: 'regular', numerador: 2.64, denominador: 4, pontuacao: 52.8, fichasDesatualizadas: 7 },
 ];
 
 export const ReportTable: React.FC<ReportTableProps> = ({
@@ -100,17 +100,22 @@ export const ReportTable: React.FC<ReportTableProps> = ({
       align: 'right',
     },
     {
-      title: 'Ação',
-      key: 'actions',
+      title: 'Fichas desatualizadas',
+      dataIndex: 'fichasDesatualizadas',
+      key: 'fichasDesatualizadas',
       fixed: 'right',
-      width: 140,
-      render: (_, record) => (
-        <Button
-          size="small"
+      width: 180,
+      render: (count: number, record) => (
+        <div 
+          className="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity"
           onClick={() => onViewIndividual?.(record.key)}
         >
-          {record.tipoRegistro}
-        </Button>
+          <span className={`w-2 h-2 rounded-full ${count === 0 ? 'bg-status-otimo' : 'bg-status-regular'}`} />
+          <span className="text-sm">
+            {count} fichas desatualizadas
+          </span>
+          <ChevronRightIcon className="h-3 w-3 text-muted-foreground" />
+        </div>
       ),
     },
   ];
