@@ -137,7 +137,10 @@ const QualidadeRelatorio: React.FC = () => {
                 </div>
               </div>
               <div className="p-4">
-                <IndicatorChart />
+                <IndicatorChart 
+                  selectedIndicador={selectedIndicador}
+                  kpiValues={{ primary: 50, secondary: 40 }}
+                />
               </div>
             </div>
 

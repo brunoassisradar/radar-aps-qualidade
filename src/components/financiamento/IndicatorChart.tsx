@@ -12,11 +12,49 @@ interface IndicatorChartData extends BarDatum {
   naoCumpriu: number;
 }
 
+interface KpiConfig {
+  label: string;
+  value: number;
+}
+
 interface IndicatorChartProps {
   data?: IndicatorChartData[];
-  totalGestantes?: number;
-  totalPuerperas?: number;
+  selectedIndicador?: string;
+  kpiValues?: {
+    primary?: number;
+    secondary?: number;
+  };
 }
+
+const getKpiConfig = (indicador: string, values: { primary?: number; secondary?: number }): KpiConfig[] => {
+  const primary = values.primary ?? 0;
+  const secondary = values.secondary ?? 0;
+
+  switch (indicador) {
+    case 'c1':
+      return [
+        { label: 'Demandas programadas', value: primary },
+        { label: 'Demandas espontâneas', value: secondary },
+      ];
+    case 'c2':
+      return [{ label: 'Total de crianças', value: primary }];
+    case 'c3':
+      return [
+        { label: 'Total de gestantes', value: primary },
+        { label: 'Total de puérperas', value: secondary },
+      ];
+    case 'c4':
+      return [{ label: 'Total de pessoas com Diabetes', value: primary }];
+    case 'c5':
+      return [{ label: 'Total de pessoas com Hipertensão', value: primary }];
+    case 'c6':
+      return [{ label: 'Total de pessoas idosas', value: primary }];
+    case 'c7':
+      return [{ label: 'Total de mulheres', value: primary }];
+    default:
+      return [{ label: 'Total', value: primary }];
+  }
+};
 
 const defaultData: IndicatorChartData[] = [
   { equipe: 'A', equipeName: 'Equipe A', tooltipText: 'Equipe A - UBS Centro', cumprioFinanciamento: 45, cumprioBoaPratica: 30, naoCumpriu: 25 },
@@ -45,9 +83,11 @@ const legendLabels: Record<string, string> = {
 
 export const IndicatorChart: React.FC<IndicatorChartProps> = ({
   data = defaultData,
-  totalGestantes = 50,
-  totalPuerperas = 40,
+  selectedIndicador = 'c3',
+  kpiValues = { primary: 50, secondary: 40 },
 }) => {
+  const kpis = getKpiConfig(selectedIndicador, kpiValues);
+
   const CustomAxisTick = ({ x, y, value }: { x: number; y: number; value: string }) => {
     const item = data.find(d => d.equipe === value);
     return (
@@ -78,20 +118,23 @@ export const IndicatorChart: React.FC<IndicatorChartProps> = ({
 
   return (
     <div className="space-y-6">
-      {/* KPIs em cards destacados */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div className="rounded-xl bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/20 p-4">
-          <div>
-            <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Total de gestantes</p>
-            <p className="text-2xl font-bold text-foreground">{totalGestantes}</p>
+      {/* KPIs dinâmicos baseados no indicador */}
+      <div className={`grid gap-4 ${kpis.length === 2 ? 'grid-cols-1 sm:grid-cols-2' : 'grid-cols-1 sm:grid-cols-1 max-w-xs'}`}>
+        {kpis.map((kpi, index) => (
+          <div 
+            key={kpi.label}
+            className={`rounded-xl border border-primary/20 p-4 ${
+              index === 0 
+                ? 'bg-gradient-to-br from-primary/10 to-primary/5' 
+                : 'bg-gradient-to-br from-accent to-accent/50'
+            }`}
+          >
+            <div>
+              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{kpi.label}</p>
+              <p className="text-2xl font-bold text-foreground">{kpi.value}</p>
+            </div>
           </div>
-        </div>
-        <div className="rounded-xl bg-gradient-to-br from-accent to-accent/50 border border-primary/20 p-4">
-          <div>
-            <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Total de puérperas</p>
-            <p className="text-2xl font-bold text-foreground">{totalPuerperas}</p>
-          </div>
-        </div>
+        ))}
       </div>
 
       {/* Legenda do gráfico */}
