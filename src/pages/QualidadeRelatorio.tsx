@@ -1,12 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Segmented } from 'antd';
+import { useSearchParams } from 'react-router-dom';
 import { PageHeader } from '@/components/layout/PageHeader';
 import { FilterBar } from '@/components/financiamento/FilterBar';
 import { IndicatorChart } from '@/components/financiamento/IndicatorChart';
 import { ReportTable } from '@/components/financiamento/ReportTable';
 import { cn } from '@/lib/utils';
 import { Users, Baby, Heart, Activity, Stethoscope, UserCheck, Flower2 } from 'lucide-react';
+
 const periods = ['Consolidado', 'Janeiro', 'Fevereiro', 'Março', 'Abril'];
+
 const indicadores = [{
   value: 'c1',
   label: 'Mais acesso',
@@ -43,9 +46,29 @@ const indicadores = [{
   shortLabel: 'C7',
   icon: Flower2
 }];
+
 const QualidadeRelatorio: React.FC = () => {
-  const [selectedPeriod, setSelectedPeriod] = useState('Consolidado');
-  const [selectedIndicador, setSelectedIndicador] = useState('c3');
+  const [searchParams] = useSearchParams();
+  
+  // Get initial values from URL params
+  const initialIndicador = searchParams.get('indicador') || 'c1';
+  const initialPeriodo = searchParams.get('periodo') || 'Consolidado';
+  
+  const [selectedPeriod, setSelectedPeriod] = useState(initialPeriodo);
+  const [selectedIndicador, setSelectedIndicador] = useState(initialIndicador);
+  
+  // Update state when URL params change
+  useEffect(() => {
+    const indicadorParam = searchParams.get('indicador');
+    const periodoParam = searchParams.get('periodo');
+    
+    if (indicadorParam && indicadores.some(i => i.value === indicadorParam)) {
+      setSelectedIndicador(indicadorParam);
+    }
+    if (periodoParam && periods.includes(periodoParam)) {
+      setSelectedPeriod(periodoParam);
+    }
+  }, [searchParams]);
   const selectedIndicadorData = indicadores.find(i => i.value === selectedIndicador);
   return <div>
       <PageHeader title="Relatório de Qualidade eSF/eAP" breadcrumbs={[{
