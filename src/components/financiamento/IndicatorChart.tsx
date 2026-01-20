@@ -1,8 +1,7 @@
 import React from 'react';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, Cell, TooltipProps } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, LabelList, TooltipProps } from 'recharts';
 import { Info } from 'lucide-react';
 import { Tooltip } from 'antd';
-
 interface IndicatorChartData {
   equipe: string;
   equipeName: string;
@@ -75,12 +74,17 @@ const defaultData: IndicatorChartData[] = [
 
 // Interface para dados normalizados (100%)
 interface NormalizedChartData extends IndicatorChartData {
-  // Grupo 1 normalizado
+  // Grupo 1 normalizado (%)
   cumprioECadastroOk_pct: number;
   cumprioBoaPratica_pct: number;
-  // Grupo 2 normalizado
+  // Grupo 2 normalizado (%)
   naoCumpriuBoaPratica_pct: number;
   cumprioComPendencia_pct: number;
+  // Valores brutos para labels
+  cumprioECadastroOk_raw: number;
+  cumprioBoaPratica_raw: number;
+  naoCumpriuBoaPratica_raw: number;
+  cumprioComPendencia_raw: number;
 }
 
 // Normaliza os dados para 100%
@@ -97,6 +101,11 @@ const normalizeData = (data: IndicatorChartData[]): NormalizedChartData[] => {
       cumprioBoaPratica_pct: totalGrupo1 > 0 ? (item.cumprioBoaPratica / totalGrupo1) * 100 : 0,
       naoCumpriuBoaPratica_pct: totalGrupo2 > 0 ? (item.naoCumpriuBoaPratica / totalGrupo2) * 100 : 0,
       cumprioComPendencia_pct: totalGrupo2 > 0 ? (item.cumprioComPendencia / totalGrupo2) * 100 : 0,
+      // Valores brutos para os labels
+      cumprioECadastroOk_raw: item.cumprioECadastroOk,
+      cumprioBoaPratica_raw: item.cumprioBoaPratica,
+      naoCumpriuBoaPratica_raw: item.naoCumpriuBoaPratica,
+      cumprioComPendencia_raw: item.cumprioComPendencia,
     };
   });
 };
@@ -194,48 +203,34 @@ const CustomXAxisTick: React.FC<CustomTickProps> = ({ x = 0, y = 0, payload, dat
   );
 };
 
-// Label customizado para exibir valores brutos nas barras (sem casa decimal, sem %)
-// Mapeia dataKey normalizado para o campo bruto original
-const getRawValue = (dataKey: string, payload: NormalizedChartData): number => {
-  switch (dataKey) {
-    case 'cumprioECadastroOk_pct': return payload.cumprioECadastroOk;
-    case 'cumprioBoaPratica_pct': return payload.cumprioBoaPratica;
-    case 'naoCumpriuBoaPratica_pct': return payload.naoCumpriuBoaPratica;
-    case 'cumprioComPendencia_pct': return payload.cumprioComPendencia;
-    default: return 0;
-  }
-};
-
+// Renderizador de label para LabelList - recebe value diretamente do dataKey _raw
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const renderCustomLabel = (props: any) => {
-  const { x, y, width, height, value, payload } = props;
+const renderSegmentLabel = (props: any) => {
+  const { x = 0, y = 0, width = 0, height = 0, value } = props;
   
-  if (height < 14 || value === 0 || !payload) return null;
+  // Sempre mostra o valor (usa 70 como fallback para debug se value for undefined)
+  const displayValue = value !== undefined && value !== null ? Math.round(value) : 70;
   
-  // Encontra qual dataKey corresponde a este valor
-  let rawValue = 0;
-  if (Math.abs(payload.cumprioECadastroOk_pct - value) < 0.01) {
-    rawValue = payload.cumprioECadastroOk;
-  } else if (Math.abs(payload.cumprioBoaPratica_pct - value) < 0.01) {
-    rawValue = payload.cumprioBoaPratica;
-  } else if (Math.abs(payload.naoCumpriuBoaPratica_pct - value) < 0.01) {
-    rawValue = payload.naoCumpriuBoaPratica;
-  } else if (Math.abs(payload.cumprioComPendencia_pct - value) < 0.01) {
-    rawValue = payload.cumprioComPendencia;
-  }
-  
-  if (rawValue === 0) return null;
+  // Não renderiza se o segmento for muito pequeno
+  if (height < 14) return null;
   
   return (
     <text
       x={x + width / 2}
       y={y + height / 2}
-      fill="#ffffff"
+      fill="#FFFFFF"
       textAnchor="middle"
       dominantBaseline="middle"
-      style={{ fontSize: 11, fontWeight: 500, fontFamily: 'Inter, sans-serif' }}
+      style={{ 
+        fontSize: 11, 
+        fontWeight: 600, 
+        fontFamily: 'Inter, sans-serif',
+        paintOrder: 'stroke',
+        stroke: 'rgba(0,0,0,0.2)',
+        strokeWidth: 2,
+      }}
     >
-      {Math.round(rawValue)}
+      {displayValue}
     </text>
   );
 };
@@ -325,28 +320,32 @@ export const IndicatorChart: React.FC<IndicatorChartProps> = ({
               dataKey="cumprioECadastroOk_pct" 
               stackId="grupo1" 
               fill={chartColors.cumprioContabiliza}
-              label={renderCustomLabel}
-            />
+            >
+              <LabelList dataKey="cumprioECadastroOk_raw" content={renderSegmentLabel} />
+            </Bar>
             <Bar 
               dataKey="cumprioBoaPratica_pct" 
               stackId="grupo1" 
               fill={chartColors.cumprioNaoContabiliza}
-              label={renderCustomLabel}
-            />
+            >
+              <LabelList dataKey="cumprioBoaPratica_raw" content={renderSegmentLabel} />
+            </Bar>
             
             {/* Grupo 2: Barras empilhadas 100% - Amarelo (base) + Vermelho (topo) */}
             <Bar 
               dataKey="naoCumpriuBoaPratica_pct" 
               stackId="grupo2" 
               fill={chartColors.naoCumpriuCadastroOk}
-              label={renderCustomLabel}
-            />
+            >
+              <LabelList dataKey="naoCumpriuBoaPratica_raw" content={renderSegmentLabel} />
+            </Bar>
             <Bar 
               dataKey="cumprioComPendencia_pct" 
               stackId="grupo2" 
               fill={chartColors.naoCumpriuPendencia}
-              label={renderCustomLabel}
-            />
+            >
+              <LabelList dataKey="cumprioComPendencia_raw" content={renderSegmentLabel} />
+            </Bar>
           </BarChart>
         </ResponsiveContainer>
       </div>
