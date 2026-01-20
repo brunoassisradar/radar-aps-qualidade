@@ -90,52 +90,66 @@ const legendLabels: Record<string, string> = {
   naoCumpriuPendencia: 'Não cumpriu e com pendência de cadastro',
 };
 
-// Para barras agrupadas, usamos 4 keys na ordem correta
-const chartKeys = [
-  'cumprioContabiliza',
-  'cumprioNaoContabiliza', 
-  'naoCumpriuCadastroOk',
-  'naoCumpriuPendencia'
-] as const;
-
-// Transforma dados para o formato com 4 keys por equipe
-interface TransformedBarData extends BarDatum {
+// Estrutura para barras agrupadas + empilhadas
+// Cada equipe terá 2 barras: uma para "Boa Prática" e outra para "Não Cumpriu"
+interface GroupedStackedData extends BarDatum {
+  id: string;
   equipe: string;
   equipeName: string;
   tooltipText: string;
-  cumprioContabiliza: number;
-  cumprioNaoContabiliza: number;
-  naoCumpriuCadastroOk: number;
-  naoCumpriuPendencia: number;
+  groupType: 'boaPratica' | 'naoCumpriu';
+  stack1: number; // Azul ou Amarelo (base)
+  stack2: number; // Verde ou Vermelho (topo)
   [key: string]: string | number;
 }
 
-const transformData = (data: IndicatorChartData[]): TransformedBarData[] => {
-  return data.map((item) => ({
-    equipe: item.equipe,
-    equipeName: item.equipeName,
-    tooltipText: item.tooltipText,
-    cumprioContabiliza: item.cumprioECadastroOk,
-    cumprioNaoContabiliza: item.cumprioBoaPratica,
-    naoCumpriuCadastroOk: item.naoCumpriuBoaPratica,
-    naoCumpriuPendencia: item.cumprioComPendencia,
-  }));
+// Transforma dados para o formato de 2 barras empilhadas por equipe
+const transformDataForGroupedStacked = (data: IndicatorChartData[]): GroupedStackedData[] => {
+  const result: GroupedStackedData[] = [];
+  
+  data.forEach((item) => {
+    // Barra 1: Azul (base) + Verde (topo) - "Cumpriu boa prática"
+    result.push({
+      id: `${item.equipe}-bp`,
+      equipe: item.equipe,
+      equipeName: item.equipeName,
+      tooltipText: item.tooltipText,
+      groupType: 'boaPratica',
+      stack1: item.cumprioECadastroOk, // Azul - contabiliza
+      stack2: item.cumprioBoaPratica,   // Verde - não contabiliza
+    });
+    
+    // Barra 2: Amarelo (base) + Vermelho (topo) - "Não cumpriu"
+    result.push({
+      id: `${item.equipe}-nc`,
+      equipe: item.equipe,
+      equipeName: item.equipeName,
+      tooltipText: item.tooltipText,
+      groupType: 'naoCumpriu',
+      stack1: item.naoCumpriuBoaPratica, // Amarelo - cadastro ok
+      stack2: item.cumprioComPendencia,   // Vermelho - pendência
+    });
+  });
+  
+  return result;
 };
 
-// Mapeamento de keys para cores
-const keyColorMap: Record<string, string> = {
-  cumprioContabiliza: chartColors.cumprioContabiliza,
-  cumprioNaoContabiliza: chartColors.cumprioNaoContabiliza,
-  naoCumpriuCadastroOk: chartColors.naoCumpriuCadastroOk,
-  naoCumpriuPendencia: chartColors.naoCumpriuPendencia,
+// Mapeamento de cores para cada stack por tipo de grupo
+const getStackColor = (groupType: string, stackKey: string): string => {
+  if (groupType === 'boaPratica') {
+    return stackKey === 'stack1' ? chartColors.cumprioContabiliza : chartColors.cumprioNaoContabiliza;
+  } else {
+    return stackKey === 'stack1' ? chartColors.naoCumpriuCadastroOk : chartColors.naoCumpriuPendencia;
+  }
 };
 
-// Mapeamento de keys para labels
-const keyLabelMap: Record<string, string> = {
-  cumprioContabiliza: legendLabels.cumprioContabiliza,
-  cumprioNaoContabiliza: legendLabels.cumprioNaoContabiliza,
-  naoCumpriuCadastroOk: legendLabels.naoCumpriuCadastroOk,
-  naoCumpriuPendencia: legendLabels.naoCumpriuPendencia,
+// Mapeamento de labels para cada stack por tipo de grupo
+const getStackLabel = (groupType: string, stackKey: string): string => {
+  if (groupType === 'boaPratica') {
+    return stackKey === 'stack1' ? legendLabels.cumprioContabiliza : legendLabels.cumprioNaoContabiliza;
+  } else {
+    return stackKey === 'stack1' ? legendLabels.naoCumpriuCadastroOk : legendLabels.naoCumpriuPendencia;
+  }
 };
 
 export const IndicatorChart: React.FC<IndicatorChartProps> = ({
@@ -144,14 +158,22 @@ export const IndicatorChart: React.FC<IndicatorChartProps> = ({
   kpiValues = { primary: 50, secondary: 40 },
 }) => {
   const kpis = getKpiConfig(selectedIndicador, kpiValues);
-  const transformedData = transformData(data);
+  const transformedData = transformDataForGroupedStacked(data);
 
   // Custom tick que mostra a letra da equipe + ícone info
+  // Centralizado entre as duas barras do grupo
   const CustomAxisTick = ({ x, y, value }: { x: number; y: number; value: string }) => {
-    const item = data.find(d => d.equipe === value);
+    // Extrai a letra da equipe do id (ex: "A-bp" -> "A")
+    const equipe = value.split('-')[0];
+    const isFirstBar = value.endsWith('-bp');
+    
+    // Só renderiza o tick na segunda barra para centralizar entre as duas
+    if (!isFirstBar) return null;
+    
+    const item = data.find(d => d.equipe === equipe);
     
     return (
-      <g transform={`translate(${x},${y})`}>
+      <g transform={`translate(${x + 20},${y})`}>
         <text
           x={0}
           y={16}
@@ -163,10 +185,10 @@ export const IndicatorChart: React.FC<IndicatorChartProps> = ({
             fontFamily: 'Inter, sans-serif',
           }}
         >
-          {value}
+          {equipe}
         </text>
         <foreignObject x={-8} y={24} width={16} height={16}>
-          <Tooltip title={item?.tooltipText || `Equipe ${value}`} placement="bottom">
+          <Tooltip title={item?.tooltipText || `Equipe ${equipe}`} placement="bottom">
             <div className="flex items-center justify-center cursor-pointer">
               <Info className="h-3.5 w-3.5 text-muted-foreground hover:text-primary transition-colors" />
             </div>
@@ -217,19 +239,22 @@ export const IndicatorChart: React.FC<IndicatorChartProps> = ({
         </div>
       </div>
 
-      {/* Gráfico de barras agrupadas */}
+      {/* Gráfico de barras agrupadas + empilhadas */}
       <div className="h-[360px] rounded-lg bg-muted/30 p-4">
         <ResponsiveBar
           data={transformedData}
-          keys={chartKeys as unknown as string[]}
-          indexBy="equipe"
+          keys={['stack1', 'stack2']}
+          indexBy="id"
           margin={{ top: 20, right: 20, bottom: 60, left: 50 }}
           padding={0.3}
           innerPadding={3}
-          groupMode="grouped"
-          valueScale={{ type: 'linear' }}
+          groupMode="stacked"
+          valueScale={{ type: 'linear', max: 100 }}
           indexScale={{ type: 'band', round: true }}
-          colors={(bar) => keyColorMap[bar.id as string] || '#888'}
+          colors={(bar) => {
+            const barData = bar.data as GroupedStackedData;
+            return getStackColor(barData.groupType, bar.id as string);
+          }}
           borderRadius={0}
           axisBottom={{
             tickSize: 0,
@@ -268,9 +293,8 @@ export const IndicatorChart: React.FC<IndicatorChartProps> = ({
             },
           }}
           tooltip={({ id, value, color, data: barData }) => {
-            const typedData = barData as TransformedBarData;
-            const keyId = id as string;
-            const label = keyLabelMap[keyId] || keyId;
+            const typedData = barData as GroupedStackedData;
+            const label = getStackLabel(typedData.groupType, id as string);
             
             return (
               <div className="bg-card border border-border rounded-lg px-4 py-3 shadow-xl">
