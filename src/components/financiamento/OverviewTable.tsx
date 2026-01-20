@@ -56,7 +56,7 @@ const sampleIndicators: IndicatorData[] = [
   },
   {
     id: 'c3',
-    name: 'C3 - Gestante e Puérpera',
+    name: 'C3 - Gestante e Puérpera (peso 2)',
     janeiro: { status: 'regular', value: 'X%' },
     fevereiro: { status: 'suficiente', value: 'X%' },
     marco: { status: 'bom', value: 'X%' },
