@@ -195,16 +195,6 @@ const CustomXAxisTick: React.FC<CustomTickProps> = ({ x = 0, y = 0, payload, dat
 };
 
 // Label customizado para exibir valores brutos nas barras (sem casa decimal, sem %)
-interface CustomLabelProps {
-  x?: number;
-  y?: number;
-  width?: number;
-  height?: number;
-  value?: number;
-  dataKey?: string;
-  payload?: NormalizedChartData;
-}
-
 // Mapeia dataKey normalizado para o campo bruto original
 const getRawValue = (dataKey: string, payload: NormalizedChartData): number => {
   switch (dataKey) {
@@ -216,11 +206,25 @@ const getRawValue = (dataKey: string, payload: NormalizedChartData): number => {
   }
 };
 
-const CustomLabel: React.FC<CustomLabelProps> = ({ x = 0, y = 0, width = 0, height = 0, value = 0, dataKey = '', payload }) => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const renderCustomLabel = (props: any) => {
+  const { x, y, width, height, value, payload } = props;
+  
   if (height < 14 || value === 0 || !payload) return null;
   
-  // Exibe o valor bruto (sem casa decimal, sem %)
-  const rawValue = getRawValue(dataKey, payload);
+  // Encontra qual dataKey corresponde a este valor
+  let rawValue = 0;
+  if (Math.abs(payload.cumprioECadastroOk_pct - value) < 0.01) {
+    rawValue = payload.cumprioECadastroOk;
+  } else if (Math.abs(payload.cumprioBoaPratica_pct - value) < 0.01) {
+    rawValue = payload.cumprioBoaPratica;
+  } else if (Math.abs(payload.naoCumpriuBoaPratica_pct - value) < 0.01) {
+    rawValue = payload.naoCumpriuBoaPratica;
+  } else if (Math.abs(payload.cumprioComPendencia_pct - value) < 0.01) {
+    rawValue = payload.cumprioComPendencia;
+  }
+  
+  if (rawValue === 0) return null;
   
   return (
     <text
@@ -321,13 +325,13 @@ export const IndicatorChart: React.FC<IndicatorChartProps> = ({
               dataKey="cumprioECadastroOk_pct" 
               stackId="grupo1" 
               fill={chartColors.cumprioContabiliza}
-              label={<CustomLabel />}
+              label={renderCustomLabel}
             />
             <Bar 
               dataKey="cumprioBoaPratica_pct" 
               stackId="grupo1" 
               fill={chartColors.cumprioNaoContabiliza}
-              label={<CustomLabel />}
+              label={renderCustomLabel}
             />
             
             {/* Grupo 2: Barras empilhadas 100% - Amarelo (base) + Vermelho (topo) */}
@@ -335,13 +339,13 @@ export const IndicatorChart: React.FC<IndicatorChartProps> = ({
               dataKey="naoCumpriuBoaPratica_pct" 
               stackId="grupo2" 
               fill={chartColors.naoCumpriuCadastroOk}
-              label={<CustomLabel />}
+              label={renderCustomLabel}
             />
             <Bar 
               dataKey="cumprioComPendencia_pct" 
               stackId="grupo2" 
               fill={chartColors.naoCumpriuPendencia}
-              label={<CustomLabel />}
+              label={renderCustomLabel}
             />
           </BarChart>
         </ResponsiveContainer>
