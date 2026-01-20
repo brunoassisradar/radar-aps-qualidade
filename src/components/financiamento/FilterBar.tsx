@@ -1,7 +1,6 @@
 import React from 'react';
-import { Select, Button } from 'antd';
-import { Search, X, AlertCircle } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { Select, Button, Steps } from 'antd';
+import { Search, X } from 'lucide-react';
 
 interface FilterBarProps {
   onSearch?: () => void;
@@ -78,9 +77,14 @@ export const FilterBar: React.FC<FilterBarProps> = ({
 
       {/* Linha 3: Alerta e Botões */}
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2 rounded-md bg-status-suficiente-bg px-3 py-2 text-sm">
-          <AlertCircle className="h-4 w-4 text-status-suficiente" />
-          <span className="text-status-suficiente font-medium">Faltam 30 dias para o fim do quadrimestre</span>
+        <div className="flex items-center gap-3">
+          <Steps
+            size="small"
+            current={2}
+            items={[{}, {}, {}, {}]}
+            className="w-24 [&_.ant-steps-item-icon]:!hidden [&_.ant-steps-item-tail]:!hidden [&_.ant-steps-item]:!flex-1 [&_.ant-steps-item-container]:!h-2 [&_.ant-steps-item-content]:!hidden [&_.ant-steps-item]:!p-0 [&_.ant-steps-item]:before:!content-[''] [&_.ant-steps-item]:before:!block [&_.ant-steps-item]:before:!h-2 [&_.ant-steps-item]:before:!rounded-sm [&_.ant-steps-item-finish]:before:!bg-primary [&_.ant-steps-item-process]:before:!bg-primary [&_.ant-steps-item-wait]:before:!bg-muted"
+          />
+          <span className="text-sm text-muted-foreground">Faltam 30 dias para o fim do quadrimestre</span>
         </div>
 
         <div className="flex items-center gap-2">
