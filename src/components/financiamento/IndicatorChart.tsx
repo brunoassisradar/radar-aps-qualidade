@@ -135,7 +135,11 @@ export const IndicatorChart: React.FC<IndicatorChartProps> = ({
             format: (v) => `${v}%`,
           }}
           gridYValues={[0, 20, 40, 60, 80, 100]}
-          enableLabel={false}
+          enableLabel={true}
+          label={({ value }) => `${value}`}
+          labelSkipWidth={20}
+          labelSkipHeight={12}
+          labelTextColor="#ffffff"
           theme={{
             axis: {
               ticks: {
