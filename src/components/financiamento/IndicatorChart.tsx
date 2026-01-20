@@ -151,7 +151,7 @@ const CustomTooltip: React.FC<TooltipProps<number, string>> = ({ active, payload
           <div key={index} className="flex items-center gap-2 mb-1">
             <div className="w-3 h-3 rounded-full" style={{ backgroundColor: typedEntry.color }} />
             <span className="text-sm text-foreground">
-              {getLabel(typedEntry.dataKey)}: {typedEntry.value}%
+              {getLabel(typedEntry.dataKey)}: {typedEntry.value.toFixed(1)}%
             </span>
           </div>
         );
@@ -194,17 +194,33 @@ const CustomXAxisTick: React.FC<CustomTickProps> = ({ x = 0, y = 0, payload, dat
   );
 };
 
-// Label customizado para exibir valores nas barras
+// Label customizado para exibir valores brutos nas barras (sem casa decimal, sem %)
 interface CustomLabelProps {
   x?: number;
   y?: number;
   width?: number;
   height?: number;
   value?: number;
+  dataKey?: string;
+  payload?: NormalizedChartData;
 }
 
-const CustomLabel: React.FC<CustomLabelProps> = ({ x = 0, y = 0, width = 0, height = 0, value = 0 }) => {
-  if (height < 14 || value === 0) return null;
+// Mapeia dataKey normalizado para o campo bruto original
+const getRawValue = (dataKey: string, payload: NormalizedChartData): number => {
+  switch (dataKey) {
+    case 'cumprioECadastroOk_pct': return payload.cumprioECadastroOk;
+    case 'cumprioBoaPratica_pct': return payload.cumprioBoaPratica;
+    case 'naoCumpriuBoaPratica_pct': return payload.naoCumpriuBoaPratica;
+    case 'cumprioComPendencia_pct': return payload.cumprioComPendencia;
+    default: return 0;
+  }
+};
+
+const CustomLabel: React.FC<CustomLabelProps> = ({ x = 0, y = 0, width = 0, height = 0, value = 0, dataKey = '', payload }) => {
+  if (height < 14 || value === 0 || !payload) return null;
+  
+  // Exibe o valor bruto (sem casa decimal, sem %)
+  const rawValue = getRawValue(dataKey, payload);
   
   return (
     <text
@@ -215,7 +231,7 @@ const CustomLabel: React.FC<CustomLabelProps> = ({ x = 0, y = 0, width = 0, heig
       dominantBaseline="middle"
       style={{ fontSize: 11, fontWeight: 500, fontFamily: 'Inter, sans-serif' }}
     >
-      {value}
+      {Math.round(rawValue)}
     </text>
   );
 };
@@ -270,13 +286,13 @@ export const IndicatorChart: React.FC<IndicatorChartProps> = ({
       </div>
 
       {/* Gráfico de barras agrupadas + empilhadas 100% com Recharts */}
-      <div className="h-[360px] rounded-lg bg-muted/30 p-4">
+      <div className="h-[360px] rounded-lg bg-muted/30 px-1">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart
             data={normalizedData}
-            margin={{ top: 20, right: 20, bottom: 50, left: 40 }}
+            margin={{ top: 20, right: 10, bottom: 50, left: 30 }}
             barGap={2}
-            barCategoryGap="25%"
+            barCategoryGap="18%"
           >
             <CartesianGrid 
               strokeDasharray="4 4" 
