@@ -75,29 +75,27 @@ const defaultData: IndicatorChartData[] = [
 ];
 
 // Cores para os 4 segmentos (seguindo as cores semânticas do projeto)
+// Ordem: 1º Azul, 2º Verde, 3º Amarelo, 4º Vermelho
 const chartColors = {
-  // Grupo Boa Prática
-  cumprioBoaPratica: '#00A65A',      // Verde - Bom
-  naoCumpriuBoaPratica: '#DD4B39',   // Vermelho - Regular
-  // Grupo Cadastro
-  cumprioECadastroOk: '#3C8DBC',     // Azul - Ótimo
-  cumprioComPendencia: '#F0AD4E',    // Amarelo - Suficiente
+  cumprioContabiliza: '#3C8DBC',     // Azul - Ótimo (1º)
+  cumprioNaoContabiliza: '#00A65A',  // Verde - Bom (2º)
+  naoCumpriuCadastroOk: '#F0AD4E',   // Amarelo - Suficiente (3º)
+  naoCumpriuPendencia: '#DD4B39',    // Vermelho - Regular (4º)
 };
 
 const legendLabels: Record<string, string> = {
-  cumprioBoaPratica: 'Cumpriu boa prática',
-  naoCumpriuBoaPratica: 'Não cumpriu',
-  cumprioECadastroOk: 'Cumpriu e cadastro ok',
-  cumprioComPendencia: 'Cumpriu mas com pendência de cadastro',
+  cumprioContabiliza: 'Cumpriu boa prática e contabiliza para o financiamento',
+  cumprioNaoContabiliza: 'Cumpriu boa prática mas NÃO contabiliza por pendência de cadastro',
+  naoCumpriuCadastroOk: 'Não cumpriu e cadastro ok',
+  naoCumpriuPendencia: 'Não cumpriu e com pendência de cadastro',
 };
 
-// Para barras agrupadas + empilhadas, usamos 4 keys separadas
-// e aplicamos cores customizadas para simular 2 grupos visuais
+// Para barras agrupadas, usamos 4 keys na ordem correta
 const chartKeys = [
-  'boaPratica_cumpriu',
-  'boaPratica_naoCumpriu', 
-  'cadastro_cumpriu',
-  'cadastro_pendencia'
+  'cumprioContabiliza',
+  'cumprioNaoContabiliza', 
+  'naoCumpriuCadastroOk',
+  'naoCumpriuPendencia'
 ] as const;
 
 // Transforma dados para o formato com 4 keys por equipe
@@ -105,10 +103,10 @@ interface TransformedBarData extends BarDatum {
   equipe: string;
   equipeName: string;
   tooltipText: string;
-  boaPratica_cumpriu: number;
-  boaPratica_naoCumpriu: number;
-  cadastro_cumpriu: number;
-  cadastro_pendencia: number;
+  cumprioContabiliza: number;
+  cumprioNaoContabiliza: number;
+  naoCumpriuCadastroOk: number;
+  naoCumpriuPendencia: number;
   [key: string]: string | number;
 }
 
@@ -117,27 +115,27 @@ const transformData = (data: IndicatorChartData[]): TransformedBarData[] => {
     equipe: item.equipe,
     equipeName: item.equipeName,
     tooltipText: item.tooltipText,
-    boaPratica_cumpriu: item.cumprioBoaPratica,
-    boaPratica_naoCumpriu: item.naoCumpriuBoaPratica,
-    cadastro_cumpriu: item.cumprioECadastroOk,
-    cadastro_pendencia: item.cumprioComPendencia,
+    cumprioContabiliza: item.cumprioECadastroOk,
+    cumprioNaoContabiliza: item.cumprioBoaPratica,
+    naoCumpriuCadastroOk: item.naoCumpriuBoaPratica,
+    naoCumpriuPendencia: item.cumprioComPendencia,
   }));
 };
 
 // Mapeamento de keys para cores
 const keyColorMap: Record<string, string> = {
-  boaPratica_cumpriu: chartColors.cumprioBoaPratica,
-  boaPratica_naoCumpriu: chartColors.naoCumpriuBoaPratica,
-  cadastro_cumpriu: chartColors.cumprioECadastroOk,
-  cadastro_pendencia: chartColors.cumprioComPendencia,
+  cumprioContabiliza: chartColors.cumprioContabiliza,
+  cumprioNaoContabiliza: chartColors.cumprioNaoContabiliza,
+  naoCumpriuCadastroOk: chartColors.naoCumpriuCadastroOk,
+  naoCumpriuPendencia: chartColors.naoCumpriuPendencia,
 };
 
 // Mapeamento de keys para labels
 const keyLabelMap: Record<string, string> = {
-  boaPratica_cumpriu: legendLabels.cumprioBoaPratica,
-  boaPratica_naoCumpriu: legendLabels.naoCumpriuBoaPratica,
-  cadastro_cumpriu: legendLabels.cumprioECadastroOk,
-  cadastro_pendencia: legendLabels.cumprioComPendencia,
+  cumprioContabiliza: legendLabels.cumprioContabiliza,
+  cumprioNaoContabiliza: legendLabels.cumprioNaoContabiliza,
+  naoCumpriuCadastroOk: legendLabels.naoCumpriuCadastroOk,
+  naoCumpriuPendencia: legendLabels.naoCumpriuPendencia,
 };
 
 export const IndicatorChart: React.FC<IndicatorChartProps> = ({
@@ -199,29 +197,23 @@ export const IndicatorChart: React.FC<IndicatorChartProps> = ({
         ))}
       </div>
 
-      {/* Legenda do gráfico - dividida em dois grupos */}
-      <div className="space-y-3 px-1">
-        <div className="flex flex-wrap items-center gap-6">
-          <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Boa Prática:</span>
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full" style={{ backgroundColor: chartColors.cumprioBoaPratica }} />
-            <span className="text-sm text-muted-foreground">{legendLabels.cumprioBoaPratica}</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full" style={{ backgroundColor: chartColors.naoCumpriuBoaPratica }} />
-            <span className="text-sm text-muted-foreground">{legendLabels.naoCumpriuBoaPratica}</span>
-          </div>
+      {/* Legenda do gráfico - lista simples na ordem correta */}
+      <div className="flex flex-wrap items-center gap-x-6 gap-y-2 px-1">
+        <div className="flex items-center gap-2">
+          <div className="w-3 h-3 rounded-full" style={{ backgroundColor: chartColors.cumprioContabiliza }} />
+          <span className="text-sm text-muted-foreground">{legendLabels.cumprioContabiliza}</span>
         </div>
-        <div className="flex flex-wrap items-center gap-6">
-          <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Cadastro:</span>
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full" style={{ backgroundColor: chartColors.cumprioECadastroOk }} />
-            <span className="text-sm text-muted-foreground">{legendLabels.cumprioECadastroOk}</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full" style={{ backgroundColor: chartColors.cumprioComPendencia }} />
-            <span className="text-sm text-muted-foreground">{legendLabels.cumprioComPendencia}</span>
-          </div>
+        <div className="flex items-center gap-2">
+          <div className="w-3 h-3 rounded-full" style={{ backgroundColor: chartColors.cumprioNaoContabiliza }} />
+          <span className="text-sm text-muted-foreground">{legendLabels.cumprioNaoContabiliza}</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="w-3 h-3 rounded-full" style={{ backgroundColor: chartColors.naoCumpriuCadastroOk }} />
+          <span className="text-sm text-muted-foreground">{legendLabels.naoCumpriuCadastroOk}</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="w-3 h-3 rounded-full" style={{ backgroundColor: chartColors.naoCumpriuPendencia }} />
+          <span className="text-sm text-muted-foreground">{legendLabels.naoCumpriuPendencia}</span>
         </div>
       </div>
 
@@ -229,7 +221,7 @@ export const IndicatorChart: React.FC<IndicatorChartProps> = ({
       <div className="h-[360px] rounded-lg bg-muted/30 p-4">
         <ResponsiveBar
           data={transformedData}
-          keys={['boaPratica_cumpriu', 'boaPratica_naoCumpriu', 'cadastro_cumpriu', 'cadastro_pendencia']}
+          keys={chartKeys as unknown as string[]}
           indexBy="equipe"
           margin={{ top: 20, right: 20, bottom: 60, left: 50 }}
           padding={0.3}
@@ -279,12 +271,11 @@ export const IndicatorChart: React.FC<IndicatorChartProps> = ({
             const typedData = barData as TransformedBarData;
             const keyId = id as string;
             const label = keyLabelMap[keyId] || keyId;
-            const groupLabel = keyId.startsWith('boaPratica') ? 'Boa Prática' : 'Cadastro';
             
             return (
               <div className="bg-card border border-border rounded-lg px-4 py-3 shadow-xl">
                 <p className="text-xs font-medium text-muted-foreground mb-1">
-                  {typedData.equipeName} • {groupLabel}
+                  {typedData.equipeName}
                 </p>
                 <div className="flex items-center gap-2">
                   <div className="w-3 h-3 rounded-full" style={{ backgroundColor: color }} />
