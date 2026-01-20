@@ -65,7 +65,7 @@ const sampleIndicators: IndicatorData[] = [
   },
   {
     id: 'c4',
-    name: 'C4 - Pessoa com Diabetes',
+    name: 'C4 - Pessoa com Diabetes (peso 1)',
     janeiro: { status: 'regular', value: 'X%' },
     fevereiro: { status: 'suficiente', value: 'X%' },
     marco: { status: 'bom', value: 'X%' },
