@@ -1,5 +1,5 @@
 import React from 'react';
-import { Table, Button, Tag } from 'antd';
+import { Table, Button, Badge } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { Download, Eye } from 'lucide-react';
 
@@ -22,11 +22,11 @@ interface ReportTableProps {
   onViewIndividual?: (key: string) => void;
 }
 
-const classificationColors: Record<Classification, string> = {
-  otimo: 'green',
-  bom: 'gold',
-  suficiente: 'orange',
-  regular: 'red',
+const classificationStatus: Record<Classification, 'success' | 'warning' | 'error' | 'processing'> = {
+  otimo: 'success',
+  bom: 'processing',
+  suficiente: 'warning',
+  regular: 'error',
 };
 
 const classificationLabels: Record<Classification, string> = {
@@ -75,9 +75,7 @@ export const ReportTable: React.FC<ReportTableProps> = ({
       key: 'classificacao',
       width: 120,
       render: (classification: Classification) => (
-        <Tag color={classificationColors[classification]}>
-          {classificationLabels[classification]}
-        </Tag>
+        <Badge status={classificationStatus[classification]} text={classificationLabels[classification]} />
       ),
     },
     {
