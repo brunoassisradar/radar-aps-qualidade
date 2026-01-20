@@ -74,7 +74,7 @@ const sampleIndicators: IndicatorData[] = [
   },
   {
     id: 'c5',
-    name: 'C5 - Pessoa com Hipertensão',
+    name: 'C5 - Pessoa com Hipertensão (peso 1)',
     janeiro: { status: 'regular', value: 'X%' },
     fevereiro: { status: 'suficiente', value: 'X%' },
     marco: { status: 'bom', value: 'X%' },
