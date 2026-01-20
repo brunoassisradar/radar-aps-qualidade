@@ -1,10 +1,15 @@
 import React from 'react';
 import { ResponsiveBar, BarDatum } from '@nivo/bar';
+import { Info } from 'lucide-react';
+import { Tooltip } from 'antd';
 
 interface IndicatorChartData extends BarDatum {
   equipe: string;
-  financiamento: number;
-  boasPraticas: number;
+  equipeName: string;
+  tooltipText: string;
+  cumprioFinanciamento: number;
+  cumprioBoaPratica: number;
+  naoCumpriu: number;
 }
 
 interface IndicatorChartProps {
@@ -14,23 +19,63 @@ interface IndicatorChartProps {
 }
 
 const defaultData: IndicatorChartData[] = [
-  { equipe: 'A ☺', financiamento: 30, boasPraticas: 80 },
-  { equipe: 'B ☺', financiamento: 25, boasPraticas: 80 },
-  { equipe: 'C ☺', financiamento: 22, boasPraticas: 80 },
-  { equipe: 'D ☺', financiamento: 28, boasPraticas: 80 },
-  { equipe: 'E ☺', financiamento: 20, boasPraticas: 80 },
-  { equipe: 'F ☺', financiamento: 26, boasPraticas: 80 },
-  { equipe: 'G ☺', financiamento: 24, boasPraticas: 80 },
-  { equipe: 'H ☺', financiamento: 27, boasPraticas: 80 },
-  { equipe: 'I ☺', financiamento: 23, boasPraticas: 80 },
-  { equipe: 'J ☺', financiamento: 21, boasPraticas: 8 },
+  { equipe: 'A', equipeName: 'Equipe A', tooltipText: 'Equipe A - UBS Centro', cumprioFinanciamento: 45, cumprioBoaPratica: 30, naoCumpriu: 25 },
+  { equipe: 'B', equipeName: 'Equipe B', tooltipText: 'Equipe B - UBS Norte', cumprioFinanciamento: 50, cumprioBoaPratica: 25, naoCumpriu: 25 },
+  { equipe: 'C', equipeName: 'Equipe C', tooltipText: 'Equipe C - UBS Sul', cumprioFinanciamento: 40, cumprioBoaPratica: 35, naoCumpriu: 25 },
+  { equipe: 'D', equipeName: 'Equipe D', tooltipText: 'Equipe D - UBS Leste', cumprioFinanciamento: 55, cumprioBoaPratica: 25, naoCumpriu: 20 },
+  { equipe: 'E', equipeName: 'Equipe E', tooltipText: 'Equipe E - UBS Oeste', cumprioFinanciamento: 35, cumprioBoaPratica: 30, naoCumpriu: 35 },
+  { equipe: 'F', equipeName: 'Equipe F', tooltipText: 'Equipe F - UBS Central', cumprioFinanciamento: 60, cumprioBoaPratica: 20, naoCumpriu: 20 },
+  { equipe: 'G', equipeName: 'Equipe G', tooltipText: 'Equipe G - UBS Vila Nova', cumprioFinanciamento: 48, cumprioBoaPratica: 32, naoCumpriu: 20 },
+  { equipe: 'H', equipeName: 'Equipe H', tooltipText: 'Equipe H - UBS Jardim', cumprioFinanciamento: 52, cumprioBoaPratica: 28, naoCumpriu: 20 },
+  { equipe: 'I', equipeName: 'Equipe I', tooltipText: 'Equipe I - UBS Parque', cumprioFinanciamento: 42, cumprioBoaPratica: 33, naoCumpriu: 25 },
+  { equipe: 'J', equipeName: 'Equipe J', tooltipText: 'Equipe J - UBS Industrial', cumprioFinanciamento: 30, cumprioBoaPratica: 25, naoCumpriu: 45 },
 ];
+
+const chartColors = {
+  cumprioFinanciamento: 'hsl(152, 57%, 48%)',
+  cumprioBoaPratica: 'hsl(199, 89%, 58%)',
+  naoCumpriu: 'hsl(0, 0%, 85%)',
+};
+
+const legendLabels: Record<string, string> = {
+  cumprioFinanciamento: 'Cumpriu e contabiliza para o financiamento',
+  cumprioBoaPratica: 'Cumpriu boa prática',
+  naoCumpriu: 'Não cumpriu boa prática',
+};
 
 export const IndicatorChart: React.FC<IndicatorChartProps> = ({
   data = defaultData,
   totalGestantes = 50,
   totalPuerperas = 40,
 }) => {
+  const CustomAxisTick = ({ x, y, value }: { x: number; y: number; value: string }) => {
+    const item = data.find(d => d.equipe === value);
+    return (
+      <g transform={`translate(${x},${y})`}>
+        <text
+          x={0}
+          y={16}
+          textAnchor="middle"
+          dominantBaseline="middle"
+          style={{
+            fontSize: 12,
+            fill: 'hsl(220, 9%, 46%)',
+            fontFamily: 'Inter, sans-serif',
+          }}
+        >
+          {value}
+        </text>
+        <foreignObject x={-8} y={24} width={16} height={16}>
+          <Tooltip title={item?.tooltipText || `Equipe ${value}`} placement="bottom">
+            <div className="flex items-center justify-center cursor-pointer">
+              <Info className="h-3.5 w-3.5 text-muted-foreground hover:text-primary transition-colors" />
+            </div>
+          </Tooltip>
+        </foreignObject>
+      </g>
+    );
+  };
+
   return (
     <div className="space-y-6">
       {/* KPIs em cards destacados */}
@@ -52,30 +97,36 @@ export const IndicatorChart: React.FC<IndicatorChartProps> = ({
       {/* Legenda do gráfico */}
       <div className="flex flex-wrap items-center gap-6 px-1">
         <div className="flex items-center gap-2">
-          <div className="w-3 h-3 rounded-full bg-[hsl(var(--chart-primary))]" />
-          <span className="text-sm text-muted-foreground">Cumpriu e contabiliza para o financiamento</span>
+          <div className="w-3 h-3 rounded-full" style={{ backgroundColor: chartColors.cumprioFinanciamento }} />
+          <span className="text-sm text-muted-foreground">{legendLabels.cumprioFinanciamento}</span>
         </div>
         <div className="flex items-center gap-2">
-          <div className="w-3 h-3 rounded-full bg-[hsl(var(--chart-secondary))]" />
-          <span className="text-sm text-muted-foreground">Cumpriu boa prática de saúde</span>
+          <div className="w-3 h-3 rounded-full" style={{ backgroundColor: chartColors.cumprioBoaPratica }} />
+          <span className="text-sm text-muted-foreground">{legendLabels.cumprioBoaPratica}</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="w-3 h-3 rounded-full" style={{ backgroundColor: chartColors.naoCumpriu }} />
+          <span className="text-sm text-muted-foreground">{legendLabels.naoCumpriu}</span>
         </div>
       </div>
 
-      {/* Gráfico */}
-      <div className="h-[320px] rounded-lg bg-muted/30 p-4">
+      {/* Gráfico 100% empilhado */}
+      <div className="h-[360px] rounded-lg bg-muted/30 p-4">
         <ResponsiveBar
           data={data}
-          keys={['financiamento', 'boasPraticas']}
+          keys={['cumprioFinanciamento', 'cumprioBoaPratica', 'naoCumpriu']}
           indexBy="equipe"
-          margin={{ top: 20, right: 20, bottom: 50, left: 50 }}
+          margin={{ top: 20, right: 20, bottom: 60, left: 50 }}
           padding={0.35}
-          groupMode="stacked"
-          colors={['hsl(214, 100%, 50%)', 'hsl(214, 60%, 70%)']}
+          valueScale={{ type: 'linear' }}
+          indexScale={{ type: 'band', round: true }}
+          colors={[chartColors.cumprioFinanciamento, chartColors.cumprioBoaPratica, chartColors.naoCumpriu]}
           borderRadius={6}
           axisBottom={{
             tickSize: 0,
             tickPadding: 12,
             tickRotation: 0,
+            renderTick: CustomAxisTick,
           }}
           axisLeft={{
             tickSize: 0,
@@ -103,17 +154,20 @@ export const IndicatorChart: React.FC<IndicatorChartProps> = ({
               },
             },
           }}
-          tooltip={({ id, value, color, indexValue }) => (
-            <div className="bg-card border border-border rounded-lg px-4 py-3 shadow-xl">
-              <p className="text-xs font-medium text-muted-foreground mb-1">Equipe {indexValue}</p>
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-full" style={{ backgroundColor: color }} />
-                <span className="text-sm font-medium text-foreground">
-                  {id === 'financiamento' ? 'Financiamento' : 'Boas práticas'}: {value}%
-                </span>
+          tooltip={({ id, value, color, indexValue }) => {
+            const item = data.find(d => d.equipe === indexValue);
+            return (
+              <div className="bg-card border border-border rounded-lg px-4 py-3 shadow-xl">
+                <p className="text-xs font-medium text-muted-foreground mb-1">{item?.equipeName || `Equipe ${indexValue}`}</p>
+                <div className="flex items-center gap-2">
+                  <div className="w-3 h-3 rounded-full" style={{ backgroundColor: color }} />
+                  <span className="text-sm font-medium text-foreground">
+                    {legendLabels[id as string]}: {value}%
+                  </span>
+                </div>
               </div>
-            </div>
-          )}
+            );
+          }}
         />
       </div>
     </div>
