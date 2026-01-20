@@ -174,6 +174,16 @@ const monthToParam: Record<string, string> = {
   consolidado: 'Consolidado',
 };
 
+const indicatorToParam: Record<string, string> = {
+  c1: 'c1',
+  c2: 'c2',
+  c3: 'c3',
+  c4: 'c4',
+  c5: 'c5',
+  c6: 'c6',
+  c7: 'c7',
+};
+
 const StatusCell: React.FC<StatusCellProps> = ({ data, showLink = true, indicador, month, equipeKey }) => {
   const content = (
     <div className={`flex items-center gap-2 ${showLink ? 'cursor-pointer hover:opacity-80 transition-opacity' : ''}`}>
@@ -189,10 +199,12 @@ const StatusCell: React.FC<StatusCellProps> = ({ data, showLink = true, indicado
 
   if (showLink && indicador && month) {
     const params = new URLSearchParams({
-      equipe: equipeKey || '',
-      indicador: indicador,
+      indicador: indicatorToParam[indicador] || indicador,
       periodo: monthToParam[month] || month,
     });
+    if (equipeKey) {
+      params.set('equipe', equipeKey);
+    }
     return (
       <Link to={`/financiamento-aps/qualidade-esf-eap/relatorio?${params.toString()}`}>
         {content}
