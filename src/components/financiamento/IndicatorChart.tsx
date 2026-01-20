@@ -73,6 +73,34 @@ const defaultData: IndicatorChartData[] = [
   { equipe: 'K', equipeName: 'Equipe K', tooltipText: 'Equipe K - UBS Rural', cumprioBoaPratica: 38, naoCumpriuBoaPratica: 62, cumprioECadastroOk: 52, cumprioComPendencia: 48 },
 ];
 
+// Interface para dados normalizados (100%)
+interface NormalizedChartData extends IndicatorChartData {
+  // Grupo 1 normalizado
+  cumprioECadastroOk_pct: number;
+  cumprioBoaPratica_pct: number;
+  // Grupo 2 normalizado
+  naoCumpriuBoaPratica_pct: number;
+  cumprioComPendencia_pct: number;
+}
+
+// Normaliza os dados para 100%
+const normalizeData = (data: IndicatorChartData[]): NormalizedChartData[] => {
+  return data.map(item => {
+    // Grupo 1: Azul + Verde
+    const totalGrupo1 = item.cumprioECadastroOk + item.cumprioBoaPratica;
+    // Grupo 2: Amarelo + Vermelho
+    const totalGrupo2 = item.naoCumpriuBoaPratica + item.cumprioComPendencia;
+    
+    return {
+      ...item,
+      cumprioECadastroOk_pct: totalGrupo1 > 0 ? (item.cumprioECadastroOk / totalGrupo1) * 100 : 0,
+      cumprioBoaPratica_pct: totalGrupo1 > 0 ? (item.cumprioBoaPratica / totalGrupo1) * 100 : 0,
+      naoCumpriuBoaPratica_pct: totalGrupo2 > 0 ? (item.naoCumpriuBoaPratica / totalGrupo2) * 100 : 0,
+      cumprioComPendencia_pct: totalGrupo2 > 0 ? (item.cumprioComPendencia / totalGrupo2) * 100 : 0,
+    };
+  });
+};
+
 // Cores para os 4 segmentos (seguindo as cores semânticas do projeto)
 const chartColors = {
   cumprioContabiliza: '#3C8DBC',     // Azul - Ótimo
@@ -100,14 +128,14 @@ interface CustomTooltipPayload {
 const CustomTooltip: React.FC<TooltipProps<number, string>> = ({ active, payload }) => {
   if (!active || !payload || payload.length === 0) return null;
   
-  const data = payload[0]?.payload as IndicatorChartData;
+  const data = payload[0]?.payload as NormalizedChartData;
   
   const getLabel = (dataKey: string): string => {
     switch (dataKey) {
-      case 'cumprioECadastroOk': return legendLabels.cumprioContabiliza;
-      case 'cumprioBoaPratica': return legendLabels.cumprioNaoContabiliza;
-      case 'naoCumpriuBoaPratica': return legendLabels.naoCumpriuCadastroOk;
-      case 'cumprioComPendencia': return legendLabels.naoCumpriuPendencia;
+      case 'cumprioECadastroOk_pct': return legendLabels.cumprioContabiliza;
+      case 'cumprioBoaPratica_pct': return legendLabels.cumprioNaoContabiliza;
+      case 'naoCumpriuBoaPratica_pct': return legendLabels.naoCumpriuCadastroOk;
+      case 'cumprioComPendencia_pct': return legendLabels.naoCumpriuPendencia;
       default: return dataKey;
     }
   };
@@ -198,6 +226,7 @@ export const IndicatorChart: React.FC<IndicatorChartProps> = ({
   kpiValues = { primary: 50, secondary: 40 },
 }) => {
   const kpis = getKpiConfig(selectedIndicador, kpiValues);
+  const normalizedData = normalizeData(data);
 
   return (
     <div className="space-y-6">
@@ -240,11 +269,11 @@ export const IndicatorChart: React.FC<IndicatorChartProps> = ({
         </div>
       </div>
 
-      {/* Gráfico de barras agrupadas + empilhadas com Recharts */}
+      {/* Gráfico de barras agrupadas + empilhadas 100% com Recharts */}
       <div className="h-[360px] rounded-lg bg-muted/30 p-4">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart
-            data={data}
+            data={normalizedData}
             margin={{ top: 20, right: 20, bottom: 50, left: 40 }}
             barGap={2}
             barCategoryGap="25%"
@@ -271,29 +300,29 @@ export const IndicatorChart: React.FC<IndicatorChartProps> = ({
             />
             <RechartsTooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(0, 0, 0, 0.05)' }} />
             
-            {/* Grupo 1: Barras empilhadas - Azul (base) + Verde (topo) */}
+            {/* Grupo 1: Barras empilhadas 100% - Azul (base) + Verde (topo) */}
             <Bar 
-              dataKey="cumprioECadastroOk" 
+              dataKey="cumprioECadastroOk_pct" 
               stackId="grupo1" 
               fill={chartColors.cumprioContabiliza}
               label={<CustomLabel />}
             />
             <Bar 
-              dataKey="cumprioBoaPratica" 
+              dataKey="cumprioBoaPratica_pct" 
               stackId="grupo1" 
               fill={chartColors.cumprioNaoContabiliza}
               label={<CustomLabel />}
             />
             
-            {/* Grupo 2: Barras empilhadas - Amarelo (base) + Vermelho (topo) */}
+            {/* Grupo 2: Barras empilhadas 100% - Amarelo (base) + Vermelho (topo) */}
             <Bar 
-              dataKey="naoCumpriuBoaPratica" 
+              dataKey="naoCumpriuBoaPratica_pct" 
               stackId="grupo2" 
               fill={chartColors.naoCumpriuCadastroOk}
               label={<CustomLabel />}
             />
             <Bar 
-              dataKey="cumprioComPendencia" 
+              dataKey="cumprioComPendencia_pct" 
               stackId="grupo2" 
               fill={chartColors.naoCumpriuPendencia}
               label={<CustomLabel />}
