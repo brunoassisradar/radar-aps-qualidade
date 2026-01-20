@@ -91,45 +91,53 @@ const legendLabels: Record<string, string> = {
   cumprioComPendencia: 'Cumpriu mas com pendência de cadastro',
 };
 
-// Transforma dados para formato de barras agrupadas (2 barras por equipe)
-interface GroupedBarData extends BarDatum {
-  id: string;
+// Para barras agrupadas + empilhadas, usamos 4 keys separadas
+// e aplicamos cores customizadas para simular 2 grupos visuais
+const chartKeys = [
+  'boaPratica_cumpriu',
+  'boaPratica_naoCumpriu', 
+  'cadastro_cumpriu',
+  'cadastro_pendencia'
+] as const;
+
+// Transforma dados para o formato com 4 keys por equipe
+interface TransformedBarData extends BarDatum {
   equipe: string;
   equipeName: string;
   tooltipText: string;
-  groupType: 'boaPratica' | 'cadastro';
-  stack1: number;
-  stack2: number;
+  boaPratica_cumpriu: number;
+  boaPratica_naoCumpriu: number;
+  cadastro_cumpriu: number;
+  cadastro_pendencia: number;
   [key: string]: string | number;
 }
 
-const transformDataForGroupedBars = (data: IndicatorChartData[]): GroupedBarData[] => {
-  const result: GroupedBarData[] = [];
-  
-  data.forEach((item) => {
-    // Barra 1: Boa Prática
-    result.push({
-      id: `${item.equipe}-bp`,
-      equipe: item.equipe,
-      equipeName: item.equipeName,
-      tooltipText: item.tooltipText,
-      groupType: 'boaPratica',
-      stack1: item.cumprioBoaPratica,
-      stack2: item.naoCumpriuBoaPratica,
-    });
-    // Barra 2: Cadastro
-    result.push({
-      id: `${item.equipe}-cad`,
-      equipe: item.equipe,
-      equipeName: item.equipeName,
-      tooltipText: item.tooltipText,
-      groupType: 'cadastro',
-      stack1: item.cumprioECadastroOk,
-      stack2: item.cumprioComPendencia,
-    });
-  });
-  
-  return result;
+const transformData = (data: IndicatorChartData[]): TransformedBarData[] => {
+  return data.map((item) => ({
+    equipe: item.equipe,
+    equipeName: item.equipeName,
+    tooltipText: item.tooltipText,
+    boaPratica_cumpriu: item.cumprioBoaPratica,
+    boaPratica_naoCumpriu: item.naoCumpriuBoaPratica,
+    cadastro_cumpriu: item.cumprioECadastroOk,
+    cadastro_pendencia: item.cumprioComPendencia,
+  }));
+};
+
+// Mapeamento de keys para cores
+const keyColorMap: Record<string, string> = {
+  boaPratica_cumpriu: chartColors.cumprioBoaPratica,
+  boaPratica_naoCumpriu: chartColors.naoCumpriuBoaPratica,
+  cadastro_cumpriu: chartColors.cumprioECadastroOk,
+  cadastro_pendencia: chartColors.cumprioComPendencia,
+};
+
+// Mapeamento de keys para labels
+const keyLabelMap: Record<string, string> = {
+  boaPratica_cumpriu: legendLabels.cumprioBoaPratica,
+  boaPratica_naoCumpriu: legendLabels.naoCumpriuBoaPratica,
+  cadastro_cumpriu: legendLabels.cumprioECadastroOk,
+  cadastro_pendencia: legendLabels.cumprioComPendencia,
 };
 
 export const IndicatorChart: React.FC<IndicatorChartProps> = ({
@@ -138,22 +146,14 @@ export const IndicatorChart: React.FC<IndicatorChartProps> = ({
   kpiValues = { primary: 50, secondary: 40 },
 }) => {
   const kpis = getKpiConfig(selectedIndicador, kpiValues);
-  const groupedData = transformDataForGroupedBars(data);
+  const transformedData = transformData(data);
 
-  // Custom tick que mostra a letra da equipe + ícone info apenas uma vez por grupo
+  // Custom tick que mostra a letra da equipe + ícone info
   const CustomAxisTick = ({ x, y, value }: { x: number; y: number; value: string }) => {
-    // value será algo como "A-bp" ou "A-cad"
-    const equipeId = value.split('-')[0];
-    const barType = value.split('-')[1];
-    const item = data.find(d => d.equipe === equipeId);
-    
-    // Só mostra o label na primeira barra do grupo (bp)
-    if (barType !== 'bp') {
-      return null;
-    }
+    const item = data.find(d => d.equipe === value);
     
     return (
-      <g transform={`translate(${x + 15},${y})`}>
+      <g transform={`translate(${x},${y})`}>
         <text
           x={0}
           y={16}
@@ -165,10 +165,10 @@ export const IndicatorChart: React.FC<IndicatorChartProps> = ({
             fontFamily: 'Inter, sans-serif',
           }}
         >
-          {equipeId}
+          {value}
         </text>
         <foreignObject x={-8} y={24} width={16} height={16}>
-          <Tooltip title={item?.tooltipText || `Equipe ${equipeId}`} placement="bottom">
+          <Tooltip title={item?.tooltipText || `Equipe ${value}`} placement="bottom">
             <div className="flex items-center justify-center cursor-pointer">
               <Info className="h-3.5 w-3.5 text-muted-foreground hover:text-primary transition-colors" />
             </div>
@@ -176,18 +176,6 @@ export const IndicatorChart: React.FC<IndicatorChartProps> = ({
         </foreignObject>
       </g>
     );
-  };
-
-  // Função para obter cor baseado no tipo de barra e stack
-  const getBarColor = (bar: { id: string; data: GroupedBarData }) => {
-    const { groupType } = bar.data;
-    const stackKey = bar.id as string;
-    
-    if (groupType === 'boaPratica') {
-      return stackKey === 'stack1' ? chartColors.cumprioBoaPratica : chartColors.naoCumpriuBoaPratica;
-    } else {
-      return stackKey === 'stack1' ? chartColors.cumprioECadastroOk : chartColors.cumprioComPendencia;
-    }
   };
 
   return (
@@ -237,19 +225,19 @@ export const IndicatorChart: React.FC<IndicatorChartProps> = ({
         </div>
       </div>
 
-      {/* Gráfico de barras agrupadas e empilhadas */}
+      {/* Gráfico de barras agrupadas */}
       <div className="h-[360px] rounded-lg bg-muted/30 p-4">
         <ResponsiveBar
-          data={groupedData}
-          keys={['stack1', 'stack2']}
-          indexBy="id"
+          data={transformedData}
+          keys={['boaPratica_cumpriu', 'boaPratica_naoCumpriu', 'cadastro_cumpriu', 'cadastro_pendencia']}
+          indexBy="equipe"
           margin={{ top: 20, right: 20, bottom: 60, left: 50 }}
-          padding={0.1}
-          innerPadding={2}
-          groupMode="stacked"
+          padding={0.3}
+          innerPadding={3}
+          groupMode="grouped"
           valueScale={{ type: 'linear' }}
           indexScale={{ type: 'band', round: true }}
-          colors={(bar) => getBarColor(bar as { id: string; data: GroupedBarData })}
+          colors={(bar) => keyColorMap[bar.id as string] || '#888'}
           borderRadius={0}
           axisBottom={{
             tickSize: 0,
@@ -266,7 +254,7 @@ export const IndicatorChart: React.FC<IndicatorChartProps> = ({
           gridYValues={[0, 20, 40, 60, 80, 100]}
           enableLabel={true}
           label={({ value }) => `${value}`}
-          labelSkipWidth={20}
+          labelSkipWidth={16}
           labelSkipHeight={12}
           labelTextColor="#ffffff"
           theme={{
@@ -288,12 +276,10 @@ export const IndicatorChart: React.FC<IndicatorChartProps> = ({
             },
           }}
           tooltip={({ id, value, color, data: barData }) => {
-            const typedData = barData as GroupedBarData;
-            const isBoaPratica = typedData.groupType === 'boaPratica';
-            const stackLabel = id === 'stack1' 
-              ? (isBoaPratica ? legendLabels.cumprioBoaPratica : legendLabels.cumprioECadastroOk)
-              : (isBoaPratica ? legendLabels.naoCumpriuBoaPratica : legendLabels.cumprioComPendencia);
-            const groupLabel = isBoaPratica ? 'Boa Prática' : 'Cadastro';
+            const typedData = barData as TransformedBarData;
+            const keyId = id as string;
+            const label = keyLabelMap[keyId] || keyId;
+            const groupLabel = keyId.startsWith('boaPratica') ? 'Boa Prática' : 'Cadastro';
             
             return (
               <div className="bg-card border border-border rounded-lg px-4 py-3 shadow-xl">
@@ -303,7 +289,7 @@ export const IndicatorChart: React.FC<IndicatorChartProps> = ({
                 <div className="flex items-center gap-2">
                   <div className="w-3 h-3 rounded-full" style={{ backgroundColor: color }} />
                   <span className="text-sm font-medium text-foreground">
-                    {stackLabel}: {value}%
+                    {label}: {value}%
                   </span>
                 </div>
               </div>
