@@ -233,11 +233,16 @@ const columns: ColumnsType<TeamData> = [
   {
     title: 'Ação',
     key: 'acao',
-    width: '15%',
+    width: '20%',
     render: (_: unknown, record: TeamData) => (
-      <Link to={`/financiamento-aps/qualidade-esf-eap/relatorio?equipe=${record.key}`}>
-        <Button type="default" size="small">Ver relatório</Button>
-      </Link>
+      <div className="flex gap-2">
+        <Link to={`/financiamento-aps/qualidade-esf-eap/relatorio?equipe=${record.key}`}>
+          <Button type="default" size="small">Ver relatório</Button>
+        </Link>
+        <Link to={`/financiamento-aps/qualidade-esf-eap/relatorio?equipe=${record.key}&view=individualizado`}>
+          <Button type="default" size="small">Individualizado</Button>
+        </Link>
+      </div>
     ),
   },
 ];
