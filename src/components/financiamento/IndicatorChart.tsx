@@ -110,9 +110,9 @@ const normalizeData = (data: IndicatorChartData[]): NormalizedChartData[] => {
 
 // Cores para os 4 segmentos (seguindo as cores semânticas do projeto)
 const chartColors = {
-  cumprioContabiliza: '#3C8DBC',     // Azul - Ótimo
-  cumprioNaoContabiliza: '#00A65A',  // Verde - Bom
-  naoCumpriuCadastroOk: '#F0AD4E',   // Amarelo - Suficiente
+  cumprioContabiliza: '#00A65A',     // Verde - Ótimo
+  cumprioNaoContabiliza: '#DDCD39',  // Amarelo claro - Bom
+  naoCumpriuCadastroOk: '#DD8E39',   // Laranja - Suficiente
   naoCumpriuPendencia: '#DD4B39',    // Vermelho - Regular
 };
 
