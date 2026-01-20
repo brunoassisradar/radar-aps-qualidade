@@ -133,7 +133,7 @@
   /* Indicator grid table-like styles */
   .indicator-grid {
     display: grid;
-    grid-template-columns: minmax(180px, 1.5fr) repeat(4, 1fr) minmax(180px, 1.2fr);
+    grid-template-columns: minmax(180px, 1.5fr) minmax(160px, 1.2fr) repeat(4, 1fr);
   }
 
   .indicator-grid-header {
