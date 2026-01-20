@@ -38,7 +38,7 @@ interface OverviewTableProps {
 const sampleIndicators: IndicatorData[] = [
   {
     id: 'c1',
-    name: 'C1 - Mais acesso',
+    name: 'C1 - Mais acesso (peso 1)',
     janeiro: { status: 'regular', value: 'X%' },
     fevereiro: { status: 'suficiente', value: 'X%' },
     marco: { status: 'bom', value: 'X%' },
