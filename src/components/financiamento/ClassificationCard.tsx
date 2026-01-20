@@ -14,26 +14,26 @@ const classificationConfig = {
   otimo: {
     label: 'Classificadas como Ótimo',
     icon: Smile,
-    bgClass: 'bg-card border-l-4 border-l-status-otimo',
-    iconClass: 'text-status-otimo',
+    bgClass: 'bg-card border-l-4 border-l-[#3C8DBC]',
+    iconClass: 'text-[#3C8DBC]',
   },
   bom: {
     label: 'Classificadas como Bom',
     icon: Meh,
-    bgClass: 'bg-card border-l-4 border-l-status-bom',
-    iconClass: 'text-status-bom',
+    bgClass: 'bg-card border-l-4 border-l-[#00A65A]',
+    iconClass: 'text-[#00A65A]',
   },
   suficiente: {
     label: 'Classificadas como Suficiente',
     icon: Meh,
-    bgClass: 'bg-card border-l-4 border-l-status-suficiente',
-    iconClass: 'text-status-suficiente',
+    bgClass: 'bg-card border-l-4 border-l-[#F0AD4E]',
+    iconClass: 'text-[#F0AD4E]',
   },
   regular: {
     label: 'Classificadas como Regular',
     icon: Frown,
-    bgClass: 'bg-card border-l-4 border-l-status-regular',
-    iconClass: 'text-status-regular',
+    bgClass: 'bg-card border-l-4 border-l-[#DD4B39]',
+    iconClass: 'text-[#DD4B39]',
   },
 };
 

@@ -145,10 +145,10 @@ const sampleData: TeamData[] = [
 ];
 
 const statusColors: Record<Classification, string> = {
-  otimo: 'bg-status-otimo',
-  bom: 'bg-status-bom',
-  suficiente: 'bg-status-suficiente',
-  regular: 'bg-status-regular',
+  otimo: 'bg-[#3C8DBC]',
+  bom: 'bg-[#00A65A]',
+  suficiente: 'bg-[#F0AD4E]',
+  regular: 'bg-[#DD4B39]',
 };
 
 const statusLabels: Record<Classification, string> = {
