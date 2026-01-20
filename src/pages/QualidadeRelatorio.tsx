@@ -125,7 +125,7 @@ const QualidadeRelatorio: React.FC = () => {
                   )}
                   <div>
                     <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                      Indicador {selectedIndicadorData?.shortLabel}
+                      Boas práticas
                     </p>
                     <h2 className="text-lg font-semibold text-foreground">
                       {selectedIndicadorData?.label}
