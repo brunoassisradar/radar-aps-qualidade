@@ -315,33 +315,31 @@ export const IndicatorChart: React.FC<IndicatorChartProps> = ({
             />
             <RechartsTooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(0, 0, 0, 0.05)' }} />
             
-            {/* Grupo 1: Barras empilhadas 100% - Azul (base) + Verde (topo) */}
+            {/* Barra única com 4 segmentos empilhados */}
             <Bar 
               dataKey="cumprioECadastroOk_pct" 
-              stackId="grupo1" 
+              stackId="unico" 
               fill={chartColors.cumprioContabiliza}
             >
               <LabelList dataKey="cumprioECadastroOk_raw" content={renderSegmentLabel} />
             </Bar>
             <Bar 
               dataKey="cumprioBoaPratica_pct" 
-              stackId="grupo1" 
+              stackId="unico" 
               fill={chartColors.cumprioNaoContabiliza}
             >
               <LabelList dataKey="cumprioBoaPratica_raw" content={renderSegmentLabel} />
             </Bar>
-            
-            {/* Grupo 2: Barras empilhadas 100% - Amarelo (base) + Vermelho (topo) */}
             <Bar 
               dataKey="naoCumpriuBoaPratica_pct" 
-              stackId="grupo2" 
+              stackId="unico" 
               fill={chartColors.naoCumpriuCadastroOk}
             >
               <LabelList dataKey="naoCumpriuBoaPratica_raw" content={renderSegmentLabel} />
             </Bar>
             <Bar 
               dataKey="cumprioComPendencia_pct" 
-              stackId="grupo2" 
+              stackId="unico" 
               fill={chartColors.naoCumpriuPendencia}
             >
               <LabelList dataKey="cumprioComPendencia_raw" content={renderSegmentLabel} />
