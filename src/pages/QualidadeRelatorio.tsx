@@ -127,9 +127,7 @@ const QualidadeRelatorio: React.FC = () => {
                   </span>
                   <div>
                     <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">GESTANTE E PUÉRPERA</p>
-                    <h2 className="text-lg font-semibold text-foreground">
-                      Equipes
-                    </h2>
+                    <h2 className="text-lg font-semibold text-foreground">Classificação de equipes</h2>
                   </div>
                 </div>
               </div>
