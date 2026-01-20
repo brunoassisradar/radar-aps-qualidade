@@ -47,14 +47,18 @@
     --sidebar-ring: 214 100% 50%;
 
     /* Custom semantic colors for health indicators */
-    --status-otimo: 142 71% 45%;
-    --status-otimo-bg: 142 76% 95%;
-    --status-bom: 45 93% 47%;
-    --status-bom-bg: 48 96% 95%;
-    --status-suficiente: 25 95% 53%;
-    --status-suficiente-bg: 33 100% 96%;
-    --status-regular: 0 84% 60%;
-    --status-regular-bg: 0 86% 97%;
+    /* Ótimo: #3C8DBC */
+    --status-otimo: 202 52% 49%;
+    --status-otimo-bg: 202 52% 95%;
+    /* Bom: #00A65A */
+    --status-bom: 153 100% 33%;
+    --status-bom-bg: 153 100% 95%;
+    /* Suficiente: #F0AD4E */
+    --status-suficiente: 35 85% 62%;
+    --status-suficiente-bg: 35 85% 95%;
+    /* Regular: #DD4B39 */
+    --status-regular: 7 70% 54%;
+    --status-regular-bg: 7 70% 95%;
 
     /* Chart colors */
     --chart-primary: 214 100% 50%;
