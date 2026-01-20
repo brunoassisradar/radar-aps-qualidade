@@ -92,7 +92,7 @@ const sampleIndicators: IndicatorData[] = [
   },
   {
     id: 'c7',
-    name: 'C7 - Cuidado da mulher',
+    name: 'C7 - Cuidado da mulher (peso 1)',
     janeiro: { status: 'regular', value: 'X%' },
     fevereiro: { status: 'suficiente', value: 'X%' },
     marco: { status: 'bom', value: 'X%' },
