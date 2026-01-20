@@ -87,20 +87,18 @@ interface NormalizedChartData extends IndicatorChartData {
   cumprioComPendencia_raw: number;
 }
 
-// Normaliza os dados para 100%
+// Normaliza os dados para 100% (todos os 4 segmentos somam 100%)
 const normalizeData = (data: IndicatorChartData[]): NormalizedChartData[] => {
   return data.map(item => {
-    // Grupo 1: Azul + Verde
-    const totalGrupo1 = item.cumprioECadastroOk + item.cumprioBoaPratica;
-    // Grupo 2: Amarelo + Vermelho
-    const totalGrupo2 = item.naoCumpriuBoaPratica + item.cumprioComPendencia;
+    // Total de todos os 4 segmentos
+    const total = item.cumprioECadastroOk + item.cumprioBoaPratica + item.naoCumpriuBoaPratica + item.cumprioComPendencia;
     
     return {
       ...item,
-      cumprioECadastroOk_pct: totalGrupo1 > 0 ? (item.cumprioECadastroOk / totalGrupo1) * 100 : 0,
-      cumprioBoaPratica_pct: totalGrupo1 > 0 ? (item.cumprioBoaPratica / totalGrupo1) * 100 : 0,
-      naoCumpriuBoaPratica_pct: totalGrupo2 > 0 ? (item.naoCumpriuBoaPratica / totalGrupo2) * 100 : 0,
-      cumprioComPendencia_pct: totalGrupo2 > 0 ? (item.cumprioComPendencia / totalGrupo2) * 100 : 0,
+      cumprioECadastroOk_pct: total > 0 ? (item.cumprioECadastroOk / total) * 100 : 0,
+      cumprioBoaPratica_pct: total > 0 ? (item.cumprioBoaPratica / total) * 100 : 0,
+      naoCumpriuBoaPratica_pct: total > 0 ? (item.naoCumpriuBoaPratica / total) * 100 : 0,
+      cumprioComPendencia_pct: total > 0 ? (item.cumprioComPendencia / total) * 100 : 0,
       // Valores brutos para os labels
       cumprioECadastroOk_raw: item.cumprioECadastroOk,
       cumprioBoaPratica_raw: item.cumprioBoaPratica,
