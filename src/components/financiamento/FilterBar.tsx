@@ -91,10 +91,10 @@ export const FilterBar: React.FC<FilterBarProps> = ({
         </div>
 
         <div className="flex items-center gap-2">
-          <Button onClick={onClear} icon={<X className="h-4 w-4" />}>
+          <Button onClick={onClear}>
             Limpar filtros
           </Button>
-          <Button type="primary" onClick={onSearch} icon={<Search className="h-4 w-4" />}>
+          <Button type="primary" onClick={onSearch}>
             Buscar
           </Button>
         </div>
