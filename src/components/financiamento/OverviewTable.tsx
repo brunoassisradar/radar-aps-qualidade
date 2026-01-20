@@ -260,13 +260,13 @@ const columns: ColumnsType<TeamData> = [
 ];
 
 const ExpandedRow: React.FC<{ record: TeamData }> = ({ record }) => {
-  const months = ['janeiro', 'fevereiro', 'marco', 'abril', 'consolidado'] as const;
+  const months = ['consolidado', 'janeiro', 'fevereiro', 'marco', 'abril'] as const;
   const monthLabels: Record<string, string> = {
+    consolidado: 'Conceito obtido no quadrimestre',
     janeiro: 'Janeiro',
     fevereiro: 'Fevereiro',
     marco: 'Março',
     abril: 'Abril',
-    consolidado: 'Resultado do quadrimestre',
   };
 
   return (
@@ -277,11 +277,11 @@ const ExpandedRow: React.FC<{ record: TeamData }> = ({ record }) => {
           {/* Header row */}
           <div className="indicator-grid-header">
             <div className="indicator-grid-cell font-medium text-muted-foreground">Indicador</div>
+            <div className="indicator-grid-cell font-medium text-muted-foreground">Conceito obtido no quadrimestre</div>
             <div className="indicator-grid-cell font-medium text-muted-foreground">Janeiro</div>
             <div className="indicator-grid-cell font-medium text-muted-foreground">Fevereiro</div>
             <div className="indicator-grid-cell font-medium text-muted-foreground">Março</div>
             <div className="indicator-grid-cell font-medium text-muted-foreground">Abril</div>
-            <div className="indicator-grid-cell font-medium text-muted-foreground">Resultado do quadrimestre</div>
           </div>
 
           {/* Data rows */}
@@ -291,6 +291,9 @@ const ExpandedRow: React.FC<{ record: TeamData }> = ({ record }) => {
               className="indicator-grid-row bg-card"
             >
               <div className="indicator-grid-cell font-medium">{indicador.name}</div>
+              <div className="indicator-grid-cell">
+                <StatusCell data={indicador.consolidado} indicador={indicador.id} month="consolidado" equipeKey={record.key} />
+              </div>
               <div className="indicator-grid-cell">
                 <StatusCell data={indicador.janeiro} indicador={indicador.id} month="janeiro" equipeKey={record.key} />
               </div>
@@ -302,9 +305,6 @@ const ExpandedRow: React.FC<{ record: TeamData }> = ({ record }) => {
               </div>
               <div className="indicator-grid-cell">
                 <StatusCell data={indicador.abril} indicador={indicador.id} month="abril" equipeKey={record.key} />
-              </div>
-              <div className="indicator-grid-cell">
-                <StatusCell data={indicador.consolidado} indicador={indicador.id} month="consolidado" equipeKey={record.key} />
               </div>
             </div>
           ))}
