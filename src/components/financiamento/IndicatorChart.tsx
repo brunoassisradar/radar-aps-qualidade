@@ -36,25 +36,15 @@ export const IndicatorChart: React.FC<IndicatorChartProps> = ({
       {/* KPIs em cards destacados */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div className="rounded-xl bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/20 p-4">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-primary/20 flex items-center justify-center">
-              <span className="text-primary text-lg">👶</span>
-            </div>
-            <div>
-              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Total de gestantes</p>
-              <p className="text-2xl font-bold text-foreground">{totalGestantes}</p>
-            </div>
+          <div>
+            <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Total de gestantes</p>
+            <p className="text-2xl font-bold text-foreground">{totalGestantes}</p>
           </div>
         </div>
         <div className="rounded-xl bg-gradient-to-br from-accent to-accent/50 border border-primary/20 p-4">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-primary/20 flex items-center justify-center">
-              <span className="text-primary text-lg">🤱</span>
-            </div>
-            <div>
-              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Total de puérperas</p>
-              <p className="text-2xl font-bold text-foreground">{totalPuerperas}</p>
-            </div>
+          <div>
+            <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Total de puérperas</p>
+            <p className="text-2xl font-bold text-foreground">{totalPuerperas}</p>
           </div>
         </div>
       </div>
