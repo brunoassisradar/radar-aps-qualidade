@@ -1,5 +1,5 @@
 import React from 'react';
-import { Select, Button, Steps } from 'antd';
+import { Select, Button, Progress } from 'antd';
 import { Search, X } from 'lucide-react';
 
 interface FilterBarProps {
@@ -77,12 +77,15 @@ export const FilterBar: React.FC<FilterBarProps> = ({
 
       {/* Linha 3: Alerta e Botões */}
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <Steps
+        <div className="flex items-center gap-2">
+          <Progress
+            percent={50}
+            steps={4}
             size="small"
-            current={2}
-            items={[{}, {}, {}, {}]}
-            className="w-24 [&_.ant-steps-item-icon]:!hidden [&_.ant-steps-item-tail]:!hidden [&_.ant-steps-item]:!flex-1 [&_.ant-steps-item-container]:!h-2 [&_.ant-steps-item-content]:!hidden [&_.ant-steps-item]:!p-0 [&_.ant-steps-item]:before:!content-[''] [&_.ant-steps-item]:before:!block [&_.ant-steps-item]:before:!h-2 [&_.ant-steps-item]:before:!rounded-sm [&_.ant-steps-item-finish]:before:!bg-primary [&_.ant-steps-item-process]:before:!bg-primary [&_.ant-steps-item-wait]:before:!bg-muted"
+            showInfo={false}
+            strokeColor="hsl(var(--primary))"
+            trailColor="hsl(var(--muted))"
+            className="[&_.ant-progress-steps-item]:!w-4 [&_.ant-progress-steps-item]:!h-1.5"
           />
           <span className="text-sm text-muted-foreground">Faltam 30 dias para o fim do quadrimestre</span>
         </div>
