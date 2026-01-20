@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Tabs, Segmented } from 'antd';
+import { Segmented } from 'antd';
 import { PageHeader } from '@/components/layout/PageHeader';
 import { FilterBar } from '@/components/financiamento/FilterBar';
 import { IndicatorChart } from '@/components/financiamento/IndicatorChart';
@@ -30,7 +30,7 @@ const indicadores = [
 const QualidadeRelatorio: React.FC = () => {
   const [selectedPeriod, setSelectedPeriod] = useState('Consolidado');
   const [selectedIndicador, setSelectedIndicador] = useState('c3');
-  const [activeTab, setActiveTab] = useState('boas-praticas');
+  
 
   const selectedIndicadorData = indicadores.find((i) => i.value === selectedIndicador);
 
@@ -112,10 +112,9 @@ const QualidadeRelatorio: React.FC = () => {
           </nav>
 
           {/* Conteúdo principal */}
-          <div className="flex-1 min-w-0">
-            {/* Header do indicador selecionado */}
+          <div className="flex-1 min-w-0 space-y-6">
+            {/* Card de Boas Práticas */}
             <div className="rounded-lg bg-card shadow-sm overflow-hidden">
-              {/* Título do indicador com destaque */}
               <div className="px-6 py-4 border-b border-border bg-gradient-to-r from-primary/5 to-transparent">
                 <div className="flex items-center gap-3">
                   {selectedIndicadorData && (
@@ -133,43 +132,31 @@ const QualidadeRelatorio: React.FC = () => {
                   </div>
                 </div>
               </div>
+              <div className="p-4">
+                <IndicatorChart />
+              </div>
+            </div>
 
-              {/* Tabs de visualização */}
-              <Tabs
-                activeKey={activeTab}
-                onChange={setActiveTab}
-                className="px-2"
-                items={[
-                  {
-                    key: 'boas-praticas',
-                    label: (
-                      <span className="flex items-center gap-2 px-2">
-                        <Activity className="w-4 h-4" />
-                        Boas práticas
-                      </span>
-                    ),
-                    children: (
-                      <div className="p-4">
-                        <IndicatorChart />
-                      </div>
-                    ),
-                  },
-                  {
-                    key: 'classificacao',
-                    label: (
-                      <span className="flex items-center gap-2 px-2">
-                        <Users className="w-4 h-4" />
-                        Classificação equipe
-                      </span>
-                    ),
-                    children: (
-                      <div className="p-4">
-                        <ReportTable />
-                      </div>
-                    ),
-                  },
-                ]}
-              />
+            {/* Card de Classificação Equipe */}
+            <div className="rounded-lg bg-card shadow-sm overflow-hidden">
+              <div className="px-6 py-4 border-b border-border bg-gradient-to-r from-primary/5 to-transparent">
+                <div className="flex items-center gap-3">
+                  <span className="flex items-center justify-center w-10 h-10 rounded-lg bg-primary text-primary-foreground">
+                    <Users className="w-5 h-5" />
+                  </span>
+                  <div>
+                    <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                      Classificação
+                    </p>
+                    <h2 className="text-lg font-semibold text-foreground">
+                      Equipes
+                    </h2>
+                  </div>
+                </div>
+              </div>
+              <div className="p-4">
+                <ReportTable />
+              </div>
             </div>
           </div>
         </div>
