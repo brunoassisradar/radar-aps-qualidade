@@ -110,10 +110,10 @@ const normalizeData = (data: IndicatorChartData[]): NormalizedChartData[] => {
 
 // Cores para os 4 segmentos (seguindo as cores semânticas do projeto)
 const chartColors = {
-  cumprioContabiliza: '#00A65A',     // Verde - Ótimo
-  cumprioNaoContabiliza: '#DDCD39',  // Amarelo claro - Bom
-  naoCumpriuCadastroOk: '#DD8E39',   // Laranja - Suficiente
-  naoCumpriuPendencia: '#DD4B39',    // Vermelho - Regular
+  cumprioContabiliza: '#0064FF',     // Azul - Ótimo
+  cumprioNaoContabiliza: '#C4C4CC',  // Cinza claro - Bom
+  naoCumpriuCadastroOk: '#7A7A85',   // Cinza médio - Suficiente
+  naoCumpriuPendencia: '#5C5C66',    // Cinza escuro - Regular
 };
 
 const legendLabels: Record<string, string> = {
