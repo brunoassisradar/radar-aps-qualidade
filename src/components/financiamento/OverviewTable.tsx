@@ -47,7 +47,7 @@ const sampleIndicators: IndicatorData[] = [
   },
   {
     id: 'c2',
-    name: 'C2 - Cuidado Infantil',
+    name: 'C2 - Cuidado Infantil (peso 2)',
     janeiro: { status: 'regular', value: 'X%' },
     fevereiro: { status: 'suficiente', value: 'X%' },
     marco: { status: 'bom', value: 'X%' },
