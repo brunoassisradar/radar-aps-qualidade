@@ -224,7 +224,7 @@ const columns: ColumnsType<TeamData> = [
     width: '15%',
   },
   {
-    title: 'Resultado quadrimestre',
+    title: 'Conceito geral obtido',
     dataIndex: 'consolidado',
     key: 'consolidado',
     width: '25%',
