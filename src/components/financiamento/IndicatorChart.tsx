@@ -1,5 +1,5 @@
 import React from 'react';
-import { ResponsiveBar, BarDatum } from '@nivo/bar';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, Cell, TooltipProps } from 'recharts';
 import { Info } from 'lucide-react';
 import { Tooltip } from 'antd';
 
@@ -13,7 +13,6 @@ interface IndicatorChartData {
   // Grupo 2: Cadastro
   cumprioECadastroOk: number;
   cumprioComPendencia: number;
-  [key: string]: string | number;
 }
 
 interface KpiConfig {
@@ -75,12 +74,11 @@ const defaultData: IndicatorChartData[] = [
 ];
 
 // Cores para os 4 segmentos (seguindo as cores semânticas do projeto)
-// Ordem: 1º Azul, 2º Verde, 3º Amarelo, 4º Vermelho
 const chartColors = {
-  cumprioContabiliza: '#3C8DBC',     // Azul - Ótimo (1º)
-  cumprioNaoContabiliza: '#00A65A',  // Verde - Bom (2º)
-  naoCumpriuCadastroOk: '#F0AD4E',   // Amarelo - Suficiente (3º)
-  naoCumpriuPendencia: '#DD4B39',    // Vermelho - Regular (4º)
+  cumprioContabiliza: '#3C8DBC',     // Azul - Ótimo
+  cumprioNaoContabiliza: '#00A65A',  // Verde - Bom
+  naoCumpriuCadastroOk: '#F0AD4E',   // Amarelo - Suficiente
+  naoCumpriuPendencia: '#DD4B39',    // Vermelho - Regular
 };
 
 const legendLabels: Record<string, string> = {
@@ -90,66 +88,108 @@ const legendLabels: Record<string, string> = {
   naoCumpriuPendencia: 'Não cumpriu e com pendência de cadastro',
 };
 
-// Estrutura para barras agrupadas + empilhadas
-// Cada equipe terá 2 barras: uma para "Boa Prática" e outra para "Não Cumpriu"
-interface GroupedStackedData extends BarDatum {
-  id: string;
-  equipe: string;
-  equipeName: string;
-  tooltipText: string;
-  groupType: 'boaPratica' | 'naoCumpriu';
-  stack1: number; // Azul ou Amarelo (base)
-  stack2: number; // Verde ou Vermelho (topo)
-  [key: string]: string | number;
+// Tipo do tooltip do Recharts
+interface CustomTooltipPayload {
+  dataKey: string;
+  value: number;
+  color: string;
+  payload: IndicatorChartData;
 }
 
-// Transforma dados para o formato de 2 barras empilhadas por equipe
-const transformDataForGroupedStacked = (data: IndicatorChartData[]): GroupedStackedData[] => {
-  const result: GroupedStackedData[] = [];
+// Tooltip customizado
+const CustomTooltip: React.FC<TooltipProps<number, string>> = ({ active, payload }) => {
+  if (!active || !payload || payload.length === 0) return null;
   
-  data.forEach((item) => {
-    // Barra 1: Azul (base) + Verde (topo) - "Cumpriu boa prática"
-    result.push({
-      id: `${item.equipe}-bp`,
-      equipe: item.equipe,
-      equipeName: item.equipeName,
-      tooltipText: item.tooltipText,
-      groupType: 'boaPratica',
-      stack1: item.cumprioECadastroOk, // Azul - contabiliza
-      stack2: item.cumprioBoaPratica,   // Verde - não contabiliza
-    });
-    
-    // Barra 2: Amarelo (base) + Vermelho (topo) - "Não cumpriu"
-    result.push({
-      id: `${item.equipe}-nc`,
-      equipe: item.equipe,
-      equipeName: item.equipeName,
-      tooltipText: item.tooltipText,
-      groupType: 'naoCumpriu',
-      stack1: item.naoCumpriuBoaPratica, // Amarelo - cadastro ok
-      stack2: item.cumprioComPendencia,   // Vermelho - pendência
-    });
-  });
+  const data = payload[0]?.payload as IndicatorChartData;
   
-  return result;
+  const getLabel = (dataKey: string): string => {
+    switch (dataKey) {
+      case 'cumprioECadastroOk': return legendLabels.cumprioContabiliza;
+      case 'cumprioBoaPratica': return legendLabels.cumprioNaoContabiliza;
+      case 'naoCumpriuBoaPratica': return legendLabels.naoCumpriuCadastroOk;
+      case 'cumprioComPendencia': return legendLabels.naoCumpriuPendencia;
+      default: return dataKey;
+    }
+  };
+  
+  return (
+    <div className="bg-card border border-border rounded-lg px-4 py-3 shadow-xl">
+      <p className="text-xs font-medium text-muted-foreground mb-2">
+        {data?.equipeName}
+      </p>
+      {payload.map((entry, index) => {
+        const typedEntry = entry as unknown as CustomTooltipPayload;
+        return (
+          <div key={index} className="flex items-center gap-2 mb-1">
+            <div className="w-3 h-3 rounded-full" style={{ backgroundColor: typedEntry.color }} />
+            <span className="text-sm text-foreground">
+              {getLabel(typedEntry.dataKey)}: {typedEntry.value}%
+            </span>
+          </div>
+        );
+      })}
+    </div>
+  );
 };
 
-// Mapeamento de cores para cada stack por tipo de grupo
-const getStackColor = (groupType: string, stackKey: string): string => {
-  if (groupType === 'boaPratica') {
-    return stackKey === 'stack1' ? chartColors.cumprioContabiliza : chartColors.cumprioNaoContabiliza;
-  } else {
-    return stackKey === 'stack1' ? chartColors.naoCumpriuCadastroOk : chartColors.naoCumpriuPendencia;
-  }
+// Custom tick para o eixo X com letra da equipe + ícone info
+interface CustomTickProps {
+  x?: number;
+  y?: number;
+  payload?: { value: string };
+  data: IndicatorChartData[];
+}
+
+const CustomXAxisTick: React.FC<CustomTickProps> = ({ x = 0, y = 0, payload, data }) => {
+  const equipe = payload?.value || '';
+  const item = data.find(d => d.equipe === equipe);
+  
+  return (
+    <g transform={`translate(${x},${y})`}>
+      <text
+        x={0}
+        y={16}
+        textAnchor="middle"
+        fill="hsl(220, 9%, 46%)"
+        style={{ fontSize: 12, fontFamily: 'Inter, sans-serif' }}
+      >
+        {equipe}
+      </text>
+      <foreignObject x={-8} y={22} width={16} height={16}>
+        <Tooltip title={item?.tooltipText || `Equipe ${equipe}`} placement="bottom">
+          <div className="flex items-center justify-center cursor-pointer">
+            <Info className="h-3.5 w-3.5 text-muted-foreground hover:text-primary transition-colors" />
+          </div>
+        </Tooltip>
+      </foreignObject>
+    </g>
+  );
 };
 
-// Mapeamento de labels para cada stack por tipo de grupo
-const getStackLabel = (groupType: string, stackKey: string): string => {
-  if (groupType === 'boaPratica') {
-    return stackKey === 'stack1' ? legendLabels.cumprioContabiliza : legendLabels.cumprioNaoContabiliza;
-  } else {
-    return stackKey === 'stack1' ? legendLabels.naoCumpriuCadastroOk : legendLabels.naoCumpriuPendencia;
-  }
+// Label customizado para exibir valores nas barras
+interface CustomLabelProps {
+  x?: number;
+  y?: number;
+  width?: number;
+  height?: number;
+  value?: number;
+}
+
+const CustomLabel: React.FC<CustomLabelProps> = ({ x = 0, y = 0, width = 0, height = 0, value = 0 }) => {
+  if (height < 14 || value === 0) return null;
+  
+  return (
+    <text
+      x={x + width / 2}
+      y={y + height / 2}
+      fill="#ffffff"
+      textAnchor="middle"
+      dominantBaseline="middle"
+      style={{ fontSize: 11, fontWeight: 500, fontFamily: 'Inter, sans-serif' }}
+    >
+      {value}
+    </text>
+  );
 };
 
 export const IndicatorChart: React.FC<IndicatorChartProps> = ({
@@ -158,45 +198,6 @@ export const IndicatorChart: React.FC<IndicatorChartProps> = ({
   kpiValues = { primary: 50, secondary: 40 },
 }) => {
   const kpis = getKpiConfig(selectedIndicador, kpiValues);
-  const transformedData = transformDataForGroupedStacked(data);
-
-  // Custom tick que mostra a letra da equipe + ícone info
-  // Centralizado entre as duas barras do grupo
-  const CustomAxisTick = ({ x, y, value }: { x: number; y: number; value: string }) => {
-    // Extrai a letra da equipe do id (ex: "A-bp" -> "A")
-    const equipe = value.split('-')[0];
-    const isFirstBar = value.endsWith('-bp');
-    
-    // Só renderiza o tick na segunda barra para centralizar entre as duas
-    if (!isFirstBar) return null;
-    
-    const item = data.find(d => d.equipe === equipe);
-    
-    return (
-      <g transform={`translate(${x + 20},${y})`}>
-        <text
-          x={0}
-          y={16}
-          textAnchor="middle"
-          dominantBaseline="middle"
-          style={{
-            fontSize: 12,
-            fill: 'hsl(220, 9%, 46%)',
-            fontFamily: 'Inter, sans-serif',
-          }}
-        >
-          {equipe}
-        </text>
-        <foreignObject x={-8} y={24} width={16} height={16}>
-          <Tooltip title={item?.tooltipText || `Equipe ${equipe}`} placement="bottom">
-            <div className="flex items-center justify-center cursor-pointer">
-              <Info className="h-3.5 w-3.5 text-muted-foreground hover:text-primary transition-colors" />
-            </div>
-          </Tooltip>
-        </foreignObject>
-      </g>
-    );
-  };
 
   return (
     <div className="space-y-6">
@@ -219,7 +220,7 @@ export const IndicatorChart: React.FC<IndicatorChartProps> = ({
         ))}
       </div>
 
-      {/* Legenda do gráfico - lista simples na ordem correta */}
+      {/* Legenda do gráfico */}
       <div className="flex flex-wrap items-center gap-x-6 gap-y-2 px-1">
         <div className="flex items-center gap-2">
           <div className="w-3 h-3 rounded-full" style={{ backgroundColor: chartColors.cumprioContabiliza }} />
@@ -239,78 +240,66 @@ export const IndicatorChart: React.FC<IndicatorChartProps> = ({
         </div>
       </div>
 
-      {/* Gráfico de barras agrupadas + empilhadas */}
+      {/* Gráfico de barras agrupadas + empilhadas com Recharts */}
       <div className="h-[360px] rounded-lg bg-muted/30 p-4">
-        <ResponsiveBar
-          data={transformedData}
-          keys={['stack1', 'stack2']}
-          indexBy="id"
-          margin={{ top: 20, right: 20, bottom: 60, left: 50 }}
-          padding={0.5}
-          innerPadding={1}
-          groupMode="stacked"
-          valueScale={{ type: 'linear', max: 100 }}
-          indexScale={{ type: 'band', round: true }}
-          colors={(bar) => {
-            const barData = bar.data as GroupedStackedData;
-            return getStackColor(barData.groupType, bar.id as string);
-          }}
-          borderRadius={0}
-          axisBottom={{
-            tickSize: 0,
-            tickPadding: 12,
-            tickRotation: 0,
-            renderTick: CustomAxisTick,
-          }}
-          axisLeft={{
-            tickSize: 0,
-            tickPadding: 12,
-            tickValues: [0, 20, 40, 60, 80, 100],
-            format: (v) => `${v}%`,
-          }}
-          gridYValues={[0, 20, 40, 60, 80, 100]}
-          enableLabel={true}
-          label={({ value }) => `${value}`}
-          labelSkipWidth={16}
-          labelSkipHeight={12}
-          labelTextColor="#ffffff"
-          theme={{
-            axis: {
-              ticks: {
-                text: {
-                  fontSize: 12,
-                  fill: 'hsl(220, 9%, 46%)',
-                  fontFamily: 'Inter, sans-serif',
-                },
-              },
-            },
-            grid: {
-              line: {
-                stroke: 'hsl(220, 13%, 91%)',
-                strokeWidth: 1,
-                strokeDasharray: '4 4',
-              },
-            },
-          }}
-          tooltip={({ id, value, color, data: barData }) => {
-            const typedData = barData as GroupedStackedData;
-            const label = getStackLabel(typedData.groupType, id as string);
+        <ResponsiveContainer width="100%" height="100%">
+          <BarChart
+            data={data}
+            margin={{ top: 20, right: 20, bottom: 50, left: 40 }}
+            barGap={2}
+            barCategoryGap="25%"
+          >
+            <CartesianGrid 
+              strokeDasharray="4 4" 
+              stroke="hsl(220, 13%, 91%)" 
+              vertical={false}
+            />
+            <XAxis 
+              dataKey="equipe" 
+              axisLine={false}
+              tickLine={false}
+              tick={(props) => <CustomXAxisTick {...props} data={data} />}
+              interval={0}
+            />
+            <YAxis 
+              domain={[0, 100]}
+              tickFormatter={(value) => `${value}%`}
+              axisLine={false}
+              tickLine={false}
+              tick={{ fontSize: 12, fill: 'hsl(220, 9%, 46%)' }}
+              ticks={[0, 20, 40, 60, 80, 100]}
+            />
+            <RechartsTooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(0, 0, 0, 0.05)' }} />
             
-            return (
-              <div className="bg-card border border-border rounded-lg px-4 py-3 shadow-xl">
-                <p className="text-xs font-medium text-muted-foreground mb-1">
-                  {typedData.equipeName}
-                </p>
-                <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 rounded-full" style={{ backgroundColor: color }} />
-                  <span className="text-sm font-medium text-foreground">
-                    {label}: {value}%
-                  </span>
-                </div>
-              </div>
-            );
-          }}
-        />
+            {/* Grupo 1: Barras empilhadas - Azul (base) + Verde (topo) */}
+            <Bar 
+              dataKey="cumprioECadastroOk" 
+              stackId="grupo1" 
+              fill={chartColors.cumprioContabiliza}
+              label={<CustomLabel />}
+            />
+            <Bar 
+              dataKey="cumprioBoaPratica" 
+              stackId="grupo1" 
+              fill={chartColors.cumprioNaoContabiliza}
+              label={<CustomLabel />}
+            />
+            
+            {/* Grupo 2: Barras empilhadas - Amarelo (base) + Vermelho (topo) */}
+            <Bar 
+              dataKey="naoCumpriuBoaPratica" 
+              stackId="grupo2" 
+              fill={chartColors.naoCumpriuCadastroOk}
+              label={<CustomLabel />}
+            />
+            <Bar 
+              dataKey="cumprioComPendencia" 
+              stackId="grupo2" 
+              fill={chartColors.naoCumpriuPendencia}
+              label={<CustomLabel />}
+            />
+          </BarChart>
+        </ResponsiveContainer>
       </div>
     </div>
   );
