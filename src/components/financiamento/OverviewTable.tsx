@@ -254,16 +254,6 @@ const ExpandedRow: React.FC<{ record: TeamData }> = ({ record }) => {
 
   return (
     <div className="bg-muted/20 border-t border-border">
-      {/* Action buttons */}
-      <div className="flex justify-end gap-2 p-4 border-b border-border">
-        <Link to={`/financiamento-aps/qualidade-esf-eap/relatorio?equipe=${record.key}`}>
-          <Button size="small">Ver relatório</Button>
-        </Link>
-        <Link to={`/financiamento-aps/qualidade-esf-eap/relatorio?equipe=${record.key}&view=individualizado`}>
-          <Button size="small">Ver individualizado</Button>
-        </Link>
-      </div>
-
       {/* Indicators table-like grid */}
       <div className="overflow-x-auto border border-border rounded-md">
         <div className="indicator-grid min-w-[800px]">
