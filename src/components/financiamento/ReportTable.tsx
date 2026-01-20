@@ -59,21 +59,20 @@ export const ReportTable: React.FC<ReportTableProps> = ({
       title: 'Equipe de saúde',
       dataIndex: 'equipe',
       key: 'equipe',
-      fixed: 'left',
-      width: 200,
+      width: '18%',
       render: (text: string) => <span className="font-medium">{text}</span>,
     },
     {
       title: 'Unidade',
       dataIndex: 'unidade',
       key: 'unidade',
-      width: 150,
+      width: '14%',
     },
     {
       title: 'Classificação',
       dataIndex: 'classificacao',
       key: 'classificacao',
-      width: 120,
+      width: '12%',
       render: (classification: Classification) => (
         <Badge status={classificationStatus[classification]} text={classificationLabels[classification]} />
       ),
@@ -82,29 +81,28 @@ export const ReportTable: React.FC<ReportTableProps> = ({
       title: 'Numerador',
       dataIndex: 'numerador',
       key: 'numerador',
-      width: 100,
+      width: '10%',
       align: 'right',
     },
     {
       title: 'Denominador',
       dataIndex: 'denominador',
       key: 'denominador',
-      width: 110,
+      width: '12%',
       align: 'right',
     },
     {
       title: 'Pontuação',
       dataIndex: 'pontuacao',
       key: 'pontuacao',
-      width: 100,
+      width: '10%',
       align: 'right',
     },
     {
       title: 'Fichas desatualizadas',
       dataIndex: 'fichasDesatualizadas',
       key: 'fichasDesatualizadas',
-      fixed: 'right',
-      width: 180,
+      width: '24%',
       render: (count: number, record) => (
         <div 
           className="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity"
@@ -131,7 +129,6 @@ export const ReportTable: React.FC<ReportTableProps> = ({
       <Table
         columns={columns}
         dataSource={data}
-        scroll={{ x: 1000 }}
         pagination={{
           pageSize: 10,
           showSizeChanger: true,
