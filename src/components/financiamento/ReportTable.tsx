@@ -59,20 +59,17 @@ export const ReportTable: React.FC<ReportTableProps> = ({
       title: 'Equipe de saúde',
       dataIndex: 'equipe',
       key: 'equipe',
-      width: '18%',
       render: (text: string) => <span className="font-medium">{text}</span>,
     },
     {
       title: 'Unidade',
       dataIndex: 'unidade',
       key: 'unidade',
-      width: '14%',
     },
     {
       title: 'Classificação',
       dataIndex: 'classificacao',
       key: 'classificacao',
-      width: '12%',
       render: (classification: Classification) => (
         <Badge status={classificationStatus[classification]} text={classificationLabels[classification]} />
       ),
@@ -81,28 +78,24 @@ export const ReportTable: React.FC<ReportTableProps> = ({
       title: 'Numerador',
       dataIndex: 'numerador',
       key: 'numerador',
-      width: '10%',
-      align: 'right',
+      align: 'center',
     },
     {
       title: 'Denominador',
       dataIndex: 'denominador',
       key: 'denominador',
-      width: '12%',
-      align: 'right',
+      align: 'center',
     },
     {
       title: 'Pontuação',
       dataIndex: 'pontuacao',
       key: 'pontuacao',
-      width: '10%',
-      align: 'right',
+      align: 'center',
     },
     {
       title: 'Fichas desatualizadas',
       dataIndex: 'fichasDesatualizadas',
       key: 'fichasDesatualizadas',
-      width: '24%',
       render: (count: number, record) => (
         <div 
           className="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity"
@@ -129,6 +122,7 @@ export const ReportTable: React.FC<ReportTableProps> = ({
       <Table
         columns={columns}
         dataSource={data}
+        tableLayout="fixed"
         pagination={{
           pageSize: 10,
           showSizeChanger: true,
