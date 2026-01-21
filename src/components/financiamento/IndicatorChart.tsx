@@ -241,7 +241,7 @@ export const IndicatorChart: React.FC<IndicatorChartProps> = ({
   return (
     <div className="space-y-6">
       {/* KPIs dinâmicos baseados no indicador */}
-      <div className={`grid gap-4 ${kpis.length === 2 ? 'grid-cols-1 sm:grid-cols-2' : 'grid-cols-1 sm:grid-cols-1 max-w-xs'}`}>
+      <div className={`grid gap-4 ${kpis.length === 2 ? 'grid-cols-1 sm:grid-cols-2' : 'grid-cols-1'}`}>
         {kpis.map((kpi, index) => (
           <div 
             key={kpi.label}
