@@ -41,8 +41,8 @@ export const FilterBar: React.FC<FilterBarProps> = ({
             style={{ width: '100%' }}
             options={[
               { value: '1', label: '1° Quadrimestre' },
-              { value: '2', label: '2° Quadrimestre' },
-              { value: '3', label: '3° Quadrimestre' },
+              { value: '2', label: '2° Quadrimestre', disabled: true },
+              { value: '3', label: '3° Quadrimestre', disabled: true },
             ]}
           />
         </div>
