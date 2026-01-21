@@ -41,10 +41,7 @@ const getKpiConfig = (indicador: string, values: { primary?: number; secondary?:
     case 'c2':
       return [{ label: 'Total de crianças', value: primary }];
     case 'c3':
-      return [
-        { label: 'Total de gestantes', value: primary },
-        { label: 'Total de puérperas', value: secondary },
-      ];
+      return [{ label: 'Total de gestantes que concluíram o puerpério', value: primary }];
     case 'c4':
       return [{ label: 'Total de pessoas com Diabetes', value: primary }];
     case 'c5':
