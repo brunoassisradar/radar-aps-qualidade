@@ -1,7 +1,7 @@
-import React from 'react';
-import { Table, Button, Descriptions } from 'antd';
-import type { ColumnsType } from 'antd/es/table';
-import { Download, ChevronDown, ChevronRight, ChevronRightIcon } from 'lucide-react';
+import React, { useState } from 'react';
+import { Table, Button, Modal } from 'antd';
+import type { ColumnsType, ColumnType } from 'antd/es/table';
+import { Download, ChevronDown, ChevronRight, ChevronRightIcon, HelpCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 type Classification = 'otimo' | 'bom' | 'suficiente' | 'regular';
@@ -215,7 +215,21 @@ const StatusCell: React.FC<StatusCellProps> = ({ data, showLink = true, indicado
   return content;
 };
 
-const columns: ColumnsType<TeamData> = [
+const statusOrder: Record<Classification, number> = {
+  otimo: 1,
+  bom: 2,
+  suficiente: 3,
+  regular: 4,
+};
+
+const statusFilters = [
+  { text: 'Ótimo', value: 'otimo' },
+  { text: 'Bom', value: 'bom' },
+  { text: 'Suficiente', value: 'suficiente' },
+  { text: 'Regular', value: 'regular' },
+];
+
+const getColumns = (onHelpClick: () => void): ColumnsType<TeamData> => [
   {
     title: 'Equipe de saúde',
     dataIndex: 'equipe',
@@ -236,10 +250,24 @@ const columns: ColumnsType<TeamData> = [
     width: '15%',
   },
   {
-    title: 'Conceito geral obtido',
+    title: (
+      <div className="flex items-center gap-1">
+        <span>Conceito geral obtido</span>
+        <HelpCircle 
+          className="h-4 w-4 text-muted-foreground cursor-pointer hover:text-foreground transition-colors" 
+          onClick={(e) => {
+            e.stopPropagation();
+            onHelpClick();
+          }}
+        />
+      </div>
+    ),
     dataIndex: 'consolidado',
     key: 'consolidado',
     width: '25%',
+    filters: statusFilters,
+    onFilter: (value, record) => record.consolidado.status === value,
+    sorter: (a, b) => statusOrder[a.consolidado.status] - statusOrder[b.consolidado.status],
     render: (data: MonthData) => <StatusCell data={data} showLink={false} />,
   },
   {
@@ -318,6 +346,9 @@ export const OverviewTable: React.FC<OverviewTableProps> = ({
   data = sampleData,
   totalEquipes = 398,
 }) => {
+  const [isHelpModalOpen, setIsHelpModalOpen] = useState(false);
+  const columns = getColumns(() => setIsHelpModalOpen(true));
+
   return (
     <div className="rounded-lg bg-card p-4 shadow-sm">
       <div className="flex items-center justify-between mb-4">
@@ -347,6 +378,42 @@ export const OverviewTable: React.FC<OverviewTableProps> = ({
         }}
         size="middle"
       />
+
+      <Modal
+        title="Conceito Geral Obtido"
+        open={isHelpModalOpen}
+        onCancel={() => setIsHelpModalOpen(false)}
+        footer={[
+          <Button key="ok" type="primary" onClick={() => setIsHelpModalOpen(false)}>
+            Entendi
+          </Button>
+        ]}
+      >
+        <div className="space-y-4">
+          <p className="text-sm text-muted-foreground">
+            O conceito geral obtido representa a classificação consolidada da equipe no quadrimestre, 
+            calculada com base no desempenho em todos os indicadores de qualidade.
+          </p>
+          <div className="space-y-2">
+            <div className="flex items-center gap-2">
+              <span className="w-3 h-3 rounded-full bg-[#3C8DBC]" />
+              <span className="text-sm"><strong>Ótimo:</strong> Pontuação &gt; 50 e ≤ 70</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="w-3 h-3 rounded-full bg-[#00A65A]" />
+              <span className="text-sm"><strong>Bom:</strong> Pontuação &gt; 30 e ≤ 50</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="w-3 h-3 rounded-full bg-[#F0AD4E]" />
+              <span className="text-sm"><strong>Suficiente:</strong> Pontuação &gt; 10 e ≤ 30</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="w-3 h-3 rounded-full bg-[#DD4B39]" />
+              <span className="text-sm"><strong>Regular:</strong> Pontuação ≤ 10 ou &gt; 70</span>
+            </div>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 };
