@@ -119,7 +119,7 @@ const chartColors = {
 const legendLabels: Record<string, string> = {
   cumprioContabiliza: 'Cumpriu boa prática e contabiliza para o financiamento',
   cumprioNaoContabiliza: 'Cumpriu boa prática mas NÃO contabiliza por pendência de cadastro',
-  naoCumpriuCadastroOk: 'Não cumpriu e cadastro ok',
+  naoCumpriuCadastroOk: 'Não cumpriu e cadastro completo e atualizado',
   naoCumpriuPendencia: 'Não cumpriu e com pendência de cadastro',
 };
 
