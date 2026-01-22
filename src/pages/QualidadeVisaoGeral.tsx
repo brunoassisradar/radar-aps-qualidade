@@ -5,6 +5,8 @@ import { FilterBar } from '@/components/financiamento/FilterBar';
 import { ClassificationCard } from '@/components/financiamento/ClassificationCard';
 import { OverviewTable } from '@/components/financiamento/OverviewTable';
 import { VinculoAcompanhamentoTable } from '@/components/financiamento/VinculoAcompanhamentoTable';
+import { ResultadoMunicipio } from '@/components/financiamento/ResultadoMunicipio';
+import { ComparativoCadastro } from '@/components/financiamento/ComparativoCadastro';
 
 const QualidadeVisaoGeral: React.FC = () => {
   const tabItems = [
@@ -14,6 +16,20 @@ const QualidadeVisaoGeral: React.FC = () => {
       children: (
         <div className="space-y-6 pt-4">
           <FilterBar />
+          <ResultadoMunicipio
+            escoreCadastro={3}
+            escoreAcompanhamento={3.5}
+            notaFinal={6.5}
+            classificacao="suficiente"
+          />
+          <ComparativoCadastro
+            municipio="Fortaleza - CE"
+            pessoasCadastradas={2339333}
+            pessoasCadastroAtualizado={1500703}
+            pessoasAcompanhadas={825242}
+            populacaoIBGE={2800000}
+            populacaoLimite={3200000}
+          />
           <VinculoAcompanhamentoTable />
         </div>
       ),
