@@ -125,7 +125,7 @@ const columns: ColumnsType<VinculoData> = [
     render: (classification: Classification) => <StatusCell classification={classification} />,
   },
   {
-    title: 'Dimensão Acompanhamento',
+    title: 'Acompanhamento',
     dataIndex: 'dimensaoAcompanhamento',
     key: 'dimensaoAcompanhamento',
     width: '14%',
