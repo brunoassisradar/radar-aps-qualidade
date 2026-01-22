@@ -12,7 +12,7 @@ interface PessoaData {
   equipe: string;
   unidade: string;
   microarea: string;
-  indicador: string;
+  indicadores: string[];
 }
 
 const sampleData: PessoaData[] = [
@@ -23,7 +23,7 @@ const sampleData: PessoaData[] = [
     equipe: 'Equipe 001 - ESF',
     unidade: 'UBS Centro',
     microarea: '01',
-    indicador: 'C1 - Pré-Natal',
+    indicadores: ['C2', 'C3'],
   },
   {
     key: '2',
@@ -32,7 +32,7 @@ const sampleData: PessoaData[] = [
     equipe: 'Equipe 002 - ESF',
     unidade: 'UBS Norte',
     microarea: '02',
-    indicador: 'C2 - Saúde da Criança',
+    indicadores: ['C4'],
   },
   {
     key: '3',
@@ -41,7 +41,7 @@ const sampleData: PessoaData[] = [
     equipe: 'Equipe 001 - ESF',
     unidade: 'UBS Centro',
     microarea: '01',
-    indicador: 'C3 - Puerpério',
+    indicadores: ['C2', 'C5', 'C6'],
   },
   {
     key: '4',
@@ -50,7 +50,7 @@ const sampleData: PessoaData[] = [
     equipe: 'Equipe 003 - eAP',
     unidade: 'UBS Sul',
     microarea: '03',
-    indicador: 'C4 - Doenças Crônicas',
+    indicadores: ['C5', 'C6'],
   },
   {
     key: '5',
@@ -59,7 +59,7 @@ const sampleData: PessoaData[] = [
     equipe: 'Equipe 002 - ESF',
     unidade: 'UBS Norte',
     microarea: '02',
-    indicador: 'C1 - Pré-Natal',
+    indicadores: ['C2'],
   },
   {
     key: '6',
@@ -68,7 +68,7 @@ const sampleData: PessoaData[] = [
     equipe: 'Equipe 001 - ESF',
     unidade: 'UBS Centro',
     microarea: '04',
-    indicador: 'C5 - Hipertensão',
+    indicadores: ['C5'],
   },
   {
     key: '7',
@@ -77,7 +77,7 @@ const sampleData: PessoaData[] = [
     equipe: 'Equipe 003 - eAP',
     unidade: 'UBS Sul',
     microarea: '03',
-    indicador: 'C6 - Diabetes',
+    indicadores: ['C6', 'C7'],
   },
   {
     key: '8',
@@ -86,7 +86,7 @@ const sampleData: PessoaData[] = [
     equipe: 'Equipe 002 - ESF',
     unidade: 'UBS Norte',
     microarea: '05',
-    indicador: 'C7 - Saúde Mental',
+    indicadores: ['C3', 'C4', 'C7'],
   },
 ];
 
@@ -138,19 +138,30 @@ const columns: ColumnsType<PessoaData> = [
   },
   {
     title: 'Indicador',
-    dataIndex: 'indicador',
-    key: 'indicador',
+    dataIndex: 'indicadores',
+    key: 'indicadores',
     width: '20%',
     filters: [
-      { text: 'C1 - Pré-Natal', value: 'C1 - Pré-Natal' },
-      { text: 'C2 - Saúde da Criança', value: 'C2 - Saúde da Criança' },
-      { text: 'C3 - Puerpério', value: 'C3 - Puerpério' },
-      { text: 'C4 - Doenças Crônicas', value: 'C4 - Doenças Crônicas' },
-      { text: 'C5 - Hipertensão', value: 'C5 - Hipertensão' },
-      { text: 'C6 - Diabetes', value: 'C6 - Diabetes' },
-      { text: 'C7 - Saúde Mental', value: 'C7 - Saúde Mental' },
+      { text: 'C2', value: 'C2' },
+      { text: 'C3', value: 'C3' },
+      { text: 'C4', value: 'C4' },
+      { text: 'C5', value: 'C5' },
+      { text: 'C6', value: 'C6' },
+      { text: 'C7', value: 'C7' },
     ],
-    onFilter: (value, record) => record.indicador === value,
+    onFilter: (value, record) => record.indicadores.includes(value as string),
+    render: (indicadores: string[]) => (
+      <div className="flex flex-wrap gap-1">
+        {indicadores.map((ind) => (
+          <span
+            key={ind}
+            className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-muted text-muted-foreground"
+          >
+            {ind}
+          </span>
+        ))}
+      </div>
+    ),
   },
 ];
 
