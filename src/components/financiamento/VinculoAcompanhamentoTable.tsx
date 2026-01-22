@@ -1,15 +1,24 @@
 import React from 'react';
 import { Table, Button } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
-import { Download, ChevronDown, ChevronRight } from 'lucide-react';
+import { Download, ChevronDown, ChevronRight, ChevronRightIcon } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 type Classification = 'otimo' | 'bom' | 'suficiente' | 'regular';
 
-interface CadastroDetails {
-  cadastroCompletoAtualizado: number;
-  somenteCadastroIndividualAtualizado: number;
-  semCadastroIndividualAtualizado: number;
+interface MonthData {
+  status: Classification;
+  value: string;
+}
+
+interface DimensaoData {
+  id: string;
+  name: string;
+  janeiro: MonthData;
+  fevereiro: MonthData;
+  marco: MonthData;
+  abril: MonthData;
+  resultado: MonthData;
 }
 
 interface VinculoData {
@@ -18,11 +27,9 @@ interface VinculoData {
   unidade: string;
   ine: string;
   cnes: string;
-  dimensaoCadastro: Classification;
-  dimensaoAcompanhamento: Classification;
   notaFinal: number;
   classificacaoFinal: Classification;
-  cadastroDetails: CadastroDetails;
+  dimensoes: DimensaoData[];
 }
 
 const statusColors: Record<Classification, string> = {
@@ -46,13 +53,50 @@ const statusFilters = [
   { text: 'Regular', value: 'regular' },
 ];
 
-const StatusCell: React.FC<{ classification: Classification }> = ({ classification }) => {
-  return (
-    <div className="flex items-center gap-2">
-      <span className={`w-2 h-2 rounded-full ${statusColors[classification]}`} />
-      <span className="text-sm">{statusLabels[classification]}</span>
+const statusOrder: Record<Classification, number> = {
+  otimo: 1,
+  bom: 2,
+  suficiente: 3,
+  regular: 4,
+};
+
+interface StatusCellProps {
+  data: MonthData;
+  showLink?: boolean;
+  dimensao?: string;
+  month?: string;
+  equipeKey?: string;
+}
+
+const StatusCell: React.FC<StatusCellProps> = ({ data, showLink = true, dimensao, month, equipeKey }) => {
+  const content = (
+    <div className={`flex items-center gap-2 ${showLink ? 'cursor-pointer hover:opacity-80 transition-opacity' : ''}`}>
+      <span className={`w-2 h-2 rounded-full ${statusColors[data.status]}`} />
+      <span className="text-sm">
+        {statusLabels[data.status]} | {data.value}
+      </span>
+      {showLink && (
+        <ChevronRightIcon className="h-3 w-3 text-muted-foreground" />
+      )}
     </div>
   );
+
+  if (showLink && dimensao && month) {
+    const params = new URLSearchParams({
+      dimensao,
+      periodo: month,
+    });
+    if (equipeKey) {
+      params.set('equipe', equipeKey);
+    }
+    return (
+      <Link to={`/financiamento-aps/vinculo-acompanhamento/relatorio?${params.toString()}`}>
+        {content}
+      </Link>
+    );
+  }
+
+  return content;
 };
 
 const ResultadoCell: React.FC<{ nota: number; classification: Classification }> = ({ nota, classification }) => {
@@ -64,32 +108,46 @@ const ResultadoCell: React.FC<{ nota: number; classification: Classification }> 
   );
 };
 
-const sampleData: VinculoData[] = [
-  { key: '1', equipeSaude: 'Equipe 001 - ESF', unidade: 'Uaps Anisio Teixeira', ine: '0000123456', cnes: '2529181', dimensaoCadastro: 'bom', dimensaoAcompanhamento: 'regular', notaFinal: 4, classificacaoFinal: 'regular', cadastroDetails: { cadastroCompletoAtualizado: 850, somenteCadastroIndividualAtualizado: 120, semCadastroIndividualAtualizado: 45 } },
-  { key: '2', equipeSaude: 'Equipe 002 - ESF', unidade: 'Uaps Vicentina Campos', ine: '0000234567', cnes: '2529203', dimensaoCadastro: 'otimo', dimensaoAcompanhamento: 'regular', notaFinal: 4.75, classificacaoFinal: 'regular', cadastroDetails: { cadastroCompletoAtualizado: 920, somenteCadastroIndividualAtualizado: 80, semCadastroIndividualAtualizado: 15 } },
-  { key: '3', equipeSaude: 'Equipe 003 - eAP', unidade: 'Uaps Gutemberg Braun', ine: '0000345678', cnes: '2482282', dimensaoCadastro: 'otimo', dimensaoAcompanhamento: 'regular', notaFinal: 4.75, classificacaoFinal: 'regular', cadastroDetails: { cadastroCompletoAtualizado: 780, somenteCadastroIndividualAtualizado: 150, semCadastroIndividualAtualizado: 70 } },
-  { key: '4', equipeSaude: 'Equipe 004 - ESF', unidade: 'Uaps Fausto Freire', ine: '0000456789', cnes: '9686479', dimensaoCadastro: 'bom', dimensaoAcompanhamento: 'regular', notaFinal: 4, classificacaoFinal: 'regular', cadastroDetails: { cadastroCompletoAtualizado: 650, somenteCadastroIndividualAtualizado: 200, semCadastroIndividualAtualizado: 100 } },
-  { key: '5', equipeSaude: 'Equipe 005 - ESF', unidade: 'Uaps Helio Goes', ine: '0000567890', cnes: '2529211', dimensaoCadastro: 'otimo', dimensaoAcompanhamento: 'suficiente', notaFinal: 6.5, classificacaoFinal: 'suficiente', cadastroDetails: { cadastroCompletoAtualizado: 880, somenteCadastroIndividualAtualizado: 90, semCadastroIndividualAtualizado: 30 } },
-  { key: '6', equipeSaude: 'Equipe 006 - eAP', unidade: 'Uaps Licinio Nunes de Miranda', ine: '0000678901', cnes: '9129553', dimensaoCadastro: 'otimo', dimensaoAcompanhamento: 'suficiente', notaFinal: 6.5, classificacaoFinal: 'suficiente', cadastroDetails: { cadastroCompletoAtualizado: 910, somenteCadastroIndividualAtualizado: 60, semCadastroIndividualAtualizado: 20 } },
-  { key: '7', equipeSaude: 'Equipe 007 - ESF', unidade: 'Uaps Pontes Neto', ine: '0000789012', cnes: '9006052', dimensaoCadastro: 'otimo', dimensaoAcompanhamento: 'suficiente', notaFinal: 6.5, classificacaoFinal: 'suficiente', cadastroDetails: { cadastroCompletoAtualizado: 870, somenteCadastroIndividualAtualizado: 100, semCadastroIndividualAtualizado: 35 } },
-  { key: '8', equipeSaude: 'Equipe 008 - ESF', unidade: 'Uaps Fernandes Tavora', ine: '0000890123', cnes: '2528819', dimensaoCadastro: 'otimo', dimensaoAcompanhamento: 'bom', notaFinal: 8.25, classificacaoFinal: 'bom', cadastroDetails: { cadastroCompletoAtualizado: 950, somenteCadastroIndividualAtualizado: 40, semCadastroIndividualAtualizado: 10 } },
-  { key: '9', equipeSaude: 'Equipe 009 - eAP', unidade: 'Uaps Virgilio Tavora', ine: '0000901234', cnes: '2415585', dimensaoCadastro: 'otimo', dimensaoAcompanhamento: 'suficiente', notaFinal: 6.5, classificacaoFinal: 'suficiente', cadastroDetails: { cadastroCompletoAtualizado: 890, somenteCadastroIndividualAtualizado: 85, semCadastroIndividualAtualizado: 25 } },
-  { key: '10', equipeSaude: 'Equipe 010 - ESF', unidade: 'Uaps Cdfam Gilmario Teixeira', ine: '0001012345', cnes: '0407836', dimensaoCadastro: 'otimo', dimensaoAcompanhamento: 'suficiente', notaFinal: 6.5, classificacaoFinal: 'suficiente', cadastroDetails: { cadastroCompletoAtualizado: 860, somenteCadastroIndividualAtualizado: 95, semCadastroIndividualAtualizado: 40 } },
+const createDimensoes = (cadastro: Classification, acompanhamento: Classification): DimensaoData[] => [
+  {
+    id: 'cadastro',
+    name: 'Cadastro',
+    janeiro: { status: cadastro, value: 'X%' },
+    fevereiro: { status: cadastro, value: 'X%' },
+    marco: { status: cadastro, value: 'X%' },
+    abril: { status: cadastro, value: 'X%' },
+    resultado: { status: cadastro, value: 'X%' },
+  },
+  {
+    id: 'acompanhamento',
+    name: 'Acompanhamento',
+    janeiro: { status: acompanhamento, value: 'X%' },
+    fevereiro: { status: acompanhamento, value: 'X%' },
+    marco: { status: acompanhamento, value: 'X%' },
+    abril: { status: acompanhamento, value: 'X%' },
+    resultado: { status: acompanhamento, value: 'X%' },
+  },
 ];
 
-const statusOrder: Record<Classification, number> = {
-  otimo: 1,
-  bom: 2,
-  suficiente: 3,
-  regular: 4,
-};
+const sampleData: VinculoData[] = [
+  { key: '1', equipeSaude: 'Equipe 001 - ESF', unidade: 'Uaps Anisio Teixeira', ine: '0000123456', cnes: '2529181', notaFinal: 4, classificacaoFinal: 'regular', dimensoes: createDimensoes('bom', 'regular') },
+  { key: '2', equipeSaude: 'Equipe 002 - ESF', unidade: 'Uaps Vicentina Campos', ine: '0000234567', cnes: '2529203', notaFinal: 4.75, classificacaoFinal: 'regular', dimensoes: createDimensoes('otimo', 'regular') },
+  { key: '3', equipeSaude: 'Equipe 003 - eAP', unidade: 'Uaps Gutemberg Braun', ine: '0000345678', cnes: '2482282', notaFinal: 4.75, classificacaoFinal: 'regular', dimensoes: createDimensoes('otimo', 'regular') },
+  { key: '4', equipeSaude: 'Equipe 004 - ESF', unidade: 'Uaps Fausto Freire', ine: '0000456789', cnes: '9686479', notaFinal: 4, classificacaoFinal: 'regular', dimensoes: createDimensoes('bom', 'regular') },
+  { key: '5', equipeSaude: 'Equipe 005 - ESF', unidade: 'Uaps Helio Goes', ine: '0000567890', cnes: '2529211', notaFinal: 6.5, classificacaoFinal: 'suficiente', dimensoes: createDimensoes('otimo', 'suficiente') },
+  { key: '6', equipeSaude: 'Equipe 006 - eAP', unidade: 'Uaps Licinio Nunes de Miranda', ine: '0000678901', cnes: '9129553', notaFinal: 6.5, classificacaoFinal: 'suficiente', dimensoes: createDimensoes('otimo', 'suficiente') },
+  { key: '7', equipeSaude: 'Equipe 007 - ESF', unidade: 'Uaps Pontes Neto', ine: '0000789012', cnes: '9006052', notaFinal: 6.5, classificacaoFinal: 'suficiente', dimensoes: createDimensoes('otimo', 'suficiente') },
+  { key: '8', equipeSaude: 'Equipe 008 - ESF', unidade: 'Uaps Fernandes Tavora', ine: '0000890123', cnes: '2528819', notaFinal: 8.25, classificacaoFinal: 'bom', dimensoes: createDimensoes('otimo', 'bom') },
+  { key: '9', equipeSaude: 'Equipe 009 - eAP', unidade: 'Uaps Virgilio Tavora', ine: '0000901234', cnes: '2415585', notaFinal: 6.5, classificacaoFinal: 'suficiente', dimensoes: createDimensoes('otimo', 'suficiente') },
+  { key: '10', equipeSaude: 'Equipe 010 - ESF', unidade: 'Uaps Cdfam Gilmario Teixeira', ine: '0001012345', cnes: '0407836', notaFinal: 6.5, classificacaoFinal: 'suficiente', dimensoes: createDimensoes('otimo', 'suficiente') },
+];
 
 const columns: ColumnsType<VinculoData> = [
   {
     title: 'Equipe de Saúde',
     dataIndex: 'equipeSaude',
     key: 'equipeSaude',
-    width: '18%',
+    width: '22%',
     render: (text: string) => <span className="font-medium">{text}</span>,
     sorter: (a, b) => a.equipeSaude.localeCompare(b.equipeSaude),
   },
@@ -97,48 +155,28 @@ const columns: ColumnsType<VinculoData> = [
     title: 'Unidade',
     dataIndex: 'unidade',
     key: 'unidade',
-    width: '18%',
+    width: '22%',
     sorter: (a, b) => a.unidade.localeCompare(b.unidade),
   },
   {
     title: 'INE',
     dataIndex: 'ine',
     key: 'ine',
-    width: '10%',
+    width: '12%',
     sorter: (a, b) => a.ine.localeCompare(b.ine),
   },
   {
     title: 'CNES',
     dataIndex: 'cnes',
     key: 'cnes',
-    width: '8%',
+    width: '10%',
     sorter: (a, b) => a.cnes.localeCompare(b.cnes),
-  },
-  {
-    title: 'Dimensão Cadastro',
-    dataIndex: 'dimensaoCadastro',
-    key: 'dimensaoCadastro',
-    width: '12%',
-    filters: statusFilters,
-    onFilter: (value, record) => record.dimensaoCadastro === value,
-    sorter: (a, b) => statusOrder[a.dimensaoCadastro] - statusOrder[b.dimensaoCadastro],
-    render: (classification: Classification) => <StatusCell classification={classification} />,
-  },
-  {
-    title: 'Acompanhamento',
-    dataIndex: 'dimensaoAcompanhamento',
-    key: 'dimensaoAcompanhamento',
-    width: '14%',
-    filters: statusFilters,
-    onFilter: (value, record) => record.dimensaoAcompanhamento === value,
-    sorter: (a, b) => statusOrder[a.dimensaoAcompanhamento] - statusOrder[b.dimensaoAcompanhamento],
-    render: (classification: Classification) => <StatusCell classification={classification} />,
   },
   {
     title: 'Nota Final',
     dataIndex: 'notaFinal',
     key: 'notaFinal',
-    width: '10%',
+    width: '16%',
     filters: statusFilters,
     onFilter: (value, record) => record.classificacaoFinal === value,
     sorter: (a, b) => a.notaFinal - b.notaFinal,
@@ -149,7 +187,7 @@ const columns: ColumnsType<VinculoData> = [
   {
     title: 'Ação',
     key: 'acao',
-    width: '10%',
+    width: '18%',
     render: (_: unknown, record: VinculoData) => (
       <div className="flex gap-2">
         <Link to={`/financiamento-aps/vinculo-acompanhamento/relatorio?equipe=${record.key}`}>
@@ -164,37 +202,44 @@ const columns: ColumnsType<VinculoData> = [
 ];
 
 const ExpandedRow: React.FC<{ record: VinculoData }> = ({ record }) => {
-  const details = record.cadastroDetails;
-
   return (
     <div className="bg-muted/20 border-t border-border">
       <div className="overflow-x-auto border border-border rounded-md">
-        <div className="min-w-[600px]">
+        <div className="indicator-grid min-w-[800px]">
           {/* Header row */}
-          <div className="grid grid-cols-3 bg-muted/30 border-b border-border">
-            <div className="px-4 py-3 text-sm font-medium text-muted-foreground">
-              Pessoas com cadastro completo e atualizado
-            </div>
-            <div className="px-4 py-3 text-sm font-medium text-muted-foreground">
-              Pessoas com somente cadastro individual atualizado
-            </div>
-            <div className="px-4 py-3 text-sm font-medium text-muted-foreground">
-              Pessoas sem cadastro individual atualizado
-            </div>
+          <div className="indicator-grid-header">
+            <div className="indicator-grid-cell font-medium text-muted-foreground">Dimensão</div>
+            <div className="indicator-grid-cell font-medium text-muted-foreground">Resultado</div>
+            <div className="indicator-grid-cell font-medium text-muted-foreground">Janeiro</div>
+            <div className="indicator-grid-cell font-medium text-muted-foreground">Fevereiro</div>
+            <div className="indicator-grid-cell font-medium text-muted-foreground">Março</div>
+            <div className="indicator-grid-cell font-medium text-muted-foreground">Abril</div>
           </div>
 
-          {/* Data row */}
-          <div className="grid grid-cols-3 bg-card">
-            <div className="px-4 py-3 text-sm font-semibold">
-              {details.cadastroCompletoAtualizado.toLocaleString('pt-BR')}
+          {/* Data rows */}
+          {record.dimensoes.map((dimensao) => (
+            <div 
+              key={dimensao.id} 
+              className="indicator-grid-row bg-card"
+            >
+              <div className="indicator-grid-cell font-medium">{dimensao.name}</div>
+              <div className="indicator-grid-cell">
+                <StatusCell data={dimensao.resultado} dimensao={dimensao.id} month="resultado" equipeKey={record.key} />
+              </div>
+              <div className="indicator-grid-cell">
+                <StatusCell data={dimensao.janeiro} dimensao={dimensao.id} month="janeiro" equipeKey={record.key} />
+              </div>
+              <div className="indicator-grid-cell">
+                <StatusCell data={dimensao.fevereiro} dimensao={dimensao.id} month="fevereiro" equipeKey={record.key} />
+              </div>
+              <div className="indicator-grid-cell">
+                <StatusCell data={dimensao.marco} dimensao={dimensao.id} month="marco" equipeKey={record.key} />
+              </div>
+              <div className="indicator-grid-cell">
+                <StatusCell data={dimensao.abril} dimensao={dimensao.id} month="abril" equipeKey={record.key} />
+              </div>
             </div>
-            <div className="px-4 py-3 text-sm font-semibold">
-              {details.somenteCadastroIndividualAtualizado.toLocaleString('pt-BR')}
-            </div>
-            <div className="px-4 py-3 text-sm font-semibold">
-              {details.semCadastroIndividualAtualizado.toLocaleString('pt-BR')}
-            </div>
-          </div>
+          ))}
         </div>
       </div>
     </div>
