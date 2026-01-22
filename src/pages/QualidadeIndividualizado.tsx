@@ -158,9 +158,9 @@ const QualidadeIndividualizado: React.FC = () => {
   const [expandedRowKeys, setExpandedRowKeys] = useState<string[]>([]);
 
   const breadcrumbItems = [
-    { label: 'Financiamento APS', href: '/financiamento-aps' },
-    { label: 'Qualidade eSF/eAP', href: '/financiamento-aps/qualidade-esf-eap' },
-    { label: 'Relatório', href: '/financiamento-aps/qualidade-esf-eap/relatorio' },
+    { label: 'Financiamento APS', path: '/financiamento-aps' },
+    { label: 'Qualidade eSF/eAP', path: '/financiamento-aps/qualidade-esf-eap' },
+    { label: 'Relatório', path: '/financiamento-aps/qualidade-esf-eap/relatorio' },
     { label: 'Individualizado' },
   ];
 
