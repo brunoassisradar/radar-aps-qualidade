@@ -7,6 +7,7 @@ import { OverviewTable } from '@/components/financiamento/OverviewTable';
 import { VinculoAcompanhamentoTable } from '@/components/financiamento/VinculoAcompanhamentoTable';
 import { ResultadoMunicipio } from '@/components/financiamento/ResultadoMunicipio';
 import { ComparativoCadastro } from '@/components/financiamento/ComparativoCadastro';
+import { CriteriosVinculacao } from '@/components/financiamento/CriteriosVinculacao';
 
 const QualidadeVisaoGeral: React.FC = () => {
   const tabItems = [
@@ -31,6 +32,7 @@ const QualidadeVisaoGeral: React.FC = () => {
             populacaoLimite={3200000}
           />
           <VinculoAcompanhamentoTable />
+          <CriteriosVinculacao />
         </div>
       ),
     },
