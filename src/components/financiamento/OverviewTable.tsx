@@ -279,7 +279,7 @@ const getColumns = (onHelpClick: () => void): ColumnsType<TeamData> => [
         <Link to={`/financiamento-aps/qualidade-esf-eap/relatorio?equipe=${record.key}`}>
           <Button type="default" size="small">Ver relatório</Button>
         </Link>
-        <Link to={`/financiamento-aps/qualidade-esf-eap/relatorio?equipe=${record.key}&view=individualizado`}>
+        <Link to={`/financiamento-aps/qualidade-esf-eap/individualizado?equipe=${record.key}`}>
           <Button type="default" size="small">Individualizado</Button>
         </Link>
       </div>

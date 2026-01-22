@@ -9,6 +9,7 @@ import { AppLayout } from "./components/layout/AppLayout";
 import FinanciamentoAPS from "./pages/FinanciamentoAPS";
 import QualidadeVisaoGeral from "./pages/QualidadeVisaoGeral";
 import QualidadeRelatorio from "./pages/QualidadeRelatorio";
+import QualidadeIndividualizado from "./pages/QualidadeIndividualizado";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -34,6 +35,7 @@ const App = () => (
               <Route path="/financiamento-aps" element={<FinanciamentoAPS />} />
               <Route path="/financiamento-aps/qualidade-esf-eap" element={<QualidadeVisaoGeral />} />
               <Route path="/financiamento-aps/qualidade-esf-eap/relatorio" element={<QualidadeRelatorio />} />
+              <Route path="/financiamento-aps/qualidade-esf-eap/individualizado" element={<QualidadeIndividualizado />} />
             </Route>
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
