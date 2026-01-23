@@ -144,10 +144,9 @@ const QualidadeRelatorio: React.FC = () => {
               </div>
             </div>
 
-            {/* Card de Classificação Equipe */}
             <div className="rounded-lg bg-card shadow-sm overflow-hidden">
               <div className="p-4">
-                <ReportTable />
+                <ReportTable selectedPeriod={selectedPeriod} />
               </div>
             </div>
           </div>
