@@ -7,6 +7,7 @@ import { IndicatorChart } from '@/components/financiamento/IndicatorChart';
 import { ReportTable } from '@/components/financiamento/ReportTable';
 import { cn } from '@/lib/utils';
 import { Users, Baby, Heart, Activity, Stethoscope, UserCheck, Flower2, ClipboardList, UserSearch } from 'lucide-react';
+import { CriteriosDimensaoCadastro } from '@/components/financiamento/cadastro';
 
 const periods = ['Consolidado', 'Janeiro', 'Fevereiro', 'Março', 'Abril'];
 
@@ -242,8 +243,9 @@ const QualidadeRelatorio: React.FC = () => {
           </div>
         </nav>
 
-        {/* Conteúdo principal - placeholder */}
+        {/* Conteúdo principal */}
         <div className="flex-1 min-w-0 space-y-6">
+          {/* Header da dimensão */}
           <div className="rounded-lg bg-card shadow-sm overflow-hidden">
             <div className="px-6 py-4 border-b border-border bg-gradient-to-r from-primary/5 to-transparent">
               <div className="flex items-center gap-3">
@@ -262,12 +264,18 @@ const QualidadeRelatorio: React.FC = () => {
                 </div>
               </div>
             </div>
-            <div className="p-6">
+          </div>
+
+          {/* Conteúdo da dimensão selecionada */}
+          {selectedDimensao === 'cadastro' ? (
+            <CriteriosDimensaoCadastro />
+          ) : (
+            <div className="rounded-lg bg-card shadow-sm p-6">
               <p className="text-muted-foreground text-center py-8">
                 Conteúdo da dimensão {selectedDimensaoData?.label} em construção...
               </p>
             </div>
-          </div>
+          )}
         </div>
       </div>
     </div>
