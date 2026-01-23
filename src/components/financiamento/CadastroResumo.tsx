@@ -502,6 +502,22 @@ export const CadastroResumo: React.FC<CadastroResumoProps> = ({
           </ResponsiveContainer>
         </div>
       </div>
+
+      {/* Rodapé com informações de envio */}
+      <div className="px-6 py-4 bg-muted/30 border-t border-border flex items-center justify-between">
+        <div className="space-y-1">
+          <p className="text-sm text-muted-foreground">
+            Último envio de Cadastros Individuais do município foi em <span className="font-medium text-foreground">15/01/2026</span>;
+          </p>
+          <p className="text-sm text-muted-foreground">
+            Último envio de Cadastros Domiciliares e territoriais do município foi em <span className="font-medium text-foreground">15/01/2026</span>;
+          </p>
+        </div>
+        <Button variant="outline" size="sm" className="gap-2 shrink-0">
+          <FileText className="w-4 h-4" />
+          Ir para Recebimento de dados
+        </Button>
+      </div>
     </div>;
 };
 export default CadastroResumo;
