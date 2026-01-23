@@ -50,7 +50,7 @@ const FinanciamentoAPS: React.FC = () => {
         />
         <InfoCard
           icon={<BarChart3 className="h-6 w-6 text-white" />}
-          title="Qualidade"
+          title="Qualidade eSF/eAP"
           description="Acesse os dados detalhados sobre os Indicadores de qualidade. Este módulo avalia aspectos como cobertura, gestão de condições crônicas e imunização. O desempenho dos municípios impacta os repasses financeiros e promove melhorias contínuas."
           links={[
             { label: 'Visão geral', path: '/financiamento-aps/qualidade-esf-eap?tab=qualidade' },
