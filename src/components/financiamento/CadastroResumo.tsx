@@ -1,6 +1,5 @@
 import React from 'react';
 import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
-
 interface CadastroResumoProps {
   totalPessoas?: number;
   cadastroAtualizado?: number;
@@ -12,7 +11,6 @@ interface CadastroResumoProps {
   periodoInicio?: string;
   periodoFim?: string;
 }
-
 export const CadastroResumo: React.FC<CadastroResumoProps> = ({
   totalPessoas = 15088,
   cadastroAtualizado = 13358,
@@ -22,15 +20,18 @@ export const CadastroResumo: React.FC<CadastroResumoProps> = ({
   cadastroIndividual = 1041,
   cadastroCompleto = 12317,
   periodoInicio = '01/05/2024',
-  periodoFim = '30/04/2026',
+  periodoFim = '30/04/2026'
 }) => {
-  const chartData = [
-    { name: 'Atualizado', value: cadastroAtualizado, color: '#3C8DBC' },
-    { name: 'Desatualizado', value: semCadastroAtualizado, color: '#E5E7EB' },
-  ];
-
-  return (
-    <div className="rounded-lg bg-card shadow-sm overflow-hidden">
+  const chartData = [{
+    name: 'Atualizado',
+    value: cadastroAtualizado,
+    color: '#3C8DBC'
+  }, {
+    name: 'Desatualizado',
+    value: semCadastroAtualizado,
+    color: '#E5E7EB'
+  }];
+  return <div className="rounded-lg bg-card shadow-sm overflow-hidden">
       <div className="px-6 py-4 border-b border-border">
         <h3 className="text-base font-semibold text-foreground">Resumo</h3>
       </div>
@@ -42,21 +43,8 @@ export const CadastroResumo: React.FC<CadastroResumoProps> = ({
             <div className="relative w-32 h-32">
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
-                  <Pie
-                    data={chartData}
-                    cx="50%"
-                    cy="50%"
-                    innerRadius={40}
-                    outerRadius={55}
-                    paddingAngle={0}
-                    dataKey="value"
-                    startAngle={90}
-                    endAngle={-270}
-                    strokeWidth={0}
-                  >
-                    {chartData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} />
-                    ))}
+                  <Pie data={chartData} cx="50%" cy="50%" innerRadius={40} outerRadius={55} paddingAngle={0} dataKey="value" startAngle={90} endAngle={-270} strokeWidth={0}>
+                    {chartData.map((entry, index) => <Cell key={`cell-${index}`} fill={entry.color} />)}
                   </Pie>
                 </PieChart>
               </ResponsiveContainer>
@@ -74,7 +62,7 @@ export const CadastroResumo: React.FC<CadastroResumoProps> = ({
           {/* Content */}
           <div className="flex-1 space-y-6">
             {/* Cadastro Atualizado */}
-            <div className="flex items-start gap-6">
+            <div className="gap-6 flex items-center justify-start">
               <div className="flex items-start gap-3 flex-1">
                 <div className="mt-1.5 w-3 h-3 rounded-full border-2 border-[#3C8DBC] shrink-0" />
                 <div>
@@ -119,8 +107,6 @@ export const CadastroResumo: React.FC<CadastroResumoProps> = ({
           </div>
         </div>
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default CadastroResumo;
