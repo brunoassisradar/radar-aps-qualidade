@@ -69,14 +69,6 @@ export const ReportTable: React.FC<ReportTableProps> = ({
       dataIndex: 'unidade',
       key: 'unidade',
     },
-    {
-      title: 'Classificação',
-      dataIndex: 'classificacao',
-      key: 'classificacao',
-      render: (classification: Classification) => (
-        <Badge status={classificationStatus[classification]} text={classificationLabels[classification]} />
-      ),
-    },
     ...(!isConsolidado ? [{
       title: 'Numerador',
       dataIndex: 'numerador',
@@ -94,6 +86,14 @@ export const ReportTable: React.FC<ReportTableProps> = ({
       dataIndex: 'pontuacao',
       key: 'pontuacao',
       align: 'center',
+    },
+    {
+      title: 'Classificação',
+      dataIndex: 'classificacao',
+      key: 'classificacao',
+      render: (classification: Classification) => (
+        <Badge status={classificationStatus[classification]} text={classificationLabels[classification]} />
+      ),
     },
     {
       title: 'Fichas desatualizadas',
