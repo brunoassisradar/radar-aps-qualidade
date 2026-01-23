@@ -3,7 +3,7 @@ import { Table, Button } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { Download, ChevronDown, ChevronRight, ChevronRightIcon } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { BarChart, Bar, XAxis, ResponsiveContainer, LabelList, Cell } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, LabelList } from 'recharts';
 
 type Classification = 'otimo' | 'bom' | 'suficiente' | 'regular';
 
@@ -169,31 +169,29 @@ const CadastroBarChart: React.FC<{ data: CadastroBarData }> = ({ data }) => {
   ];
 
   return (
-    <div className="flex items-center gap-2">
-      <div className="flex-1 h-8">
+    <div className="flex items-center gap-2 w-full">
+      <div className="flex-1 h-7 min-w-0">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart
             layout="vertical"
             data={chartData}
             margin={{ top: 0, right: 0, left: 0, bottom: 0 }}
-            barCategoryGap={0}
           >
             <XAxis type="number" domain={[0, total]} hide />
-            <Bar dataKey="cadastroCompleto" stackId="a" fill="#3B82F6" radius={[4, 0, 0, 4]}>
-              <LabelList dataKey="cadastroCompleto" position="center" fill="#fff" fontSize={11} fontWeight={600} />
+            <YAxis type="category" dataKey="name" hide />
+            <Bar dataKey="cadastroCompleto" stackId="a" fill="#3B82F6" radius={[4, 0, 0, 4]} barSize={20}>
+              <LabelList dataKey="cadastroCompleto" position="center" fill="#fff" fontSize={10} fontWeight={600} />
             </Bar>
-            <Bar dataKey="cadastroIndividual" stackId="a" fill="#22C55E">
-              <LabelList dataKey="cadastroIndividual" position="center" fill="#fff" fontSize={11} fontWeight={600} />
+            <Bar dataKey="cadastroIndividual" stackId="a" fill="#22C55E" barSize={20}>
+              <LabelList dataKey="cadastroIndividual" position="center" fill="#fff" fontSize={10} fontWeight={600} />
             </Bar>
-            <Bar dataKey="semCadastro" stackId="a" fill="#EF4444" radius={[0, 4, 4, 0]}>
-              <LabelList dataKey="semCadastro" position="center" fill="#fff" fontSize={11} fontWeight={600} />
+            <Bar dataKey="semCadastro" stackId="a" fill="#EF4444" radius={[0, 4, 4, 0]} barSize={20}>
+              <LabelList dataKey="semCadastro" position="center" fill="#fff" fontSize={10} fontWeight={600} />
             </Bar>
           </BarChart>
         </ResponsiveContainer>
       </div>
-      <div className="w-4 h-4 flex items-center justify-center text-muted-foreground">
-        <ChevronRightIcon className="h-4 w-4" />
-      </div>
+      <ChevronRightIcon className="h-4 w-4 text-muted-foreground shrink-0" />
     </div>
   );
 };
@@ -205,26 +203,24 @@ const AcompanhamentoBarChart: React.FC<{ data: AcompanhamentoBarData }> = ({ dat
   ];
 
   return (
-    <div className="flex items-center gap-2">
-      <div className="flex-1 h-8">
+    <div className="flex items-center gap-2 w-full">
+      <div className="flex-1 h-7 min-w-0">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart
             layout="vertical"
             data={chartData}
             margin={{ top: 0, right: 0, left: 0, bottom: 0 }}
-            barCategoryGap={0}
           >
             <XAxis type="number" domain={[0, data.total]} hide />
-            <Bar dataKey="acompanhadas" stackId="a" fill="#3B82F6" radius={[4, 0, 0, 4]}>
-              <LabelList dataKey="acompanhadas" position="center" fill="#fff" fontSize={11} fontWeight={600} />
+            <YAxis type="category" dataKey="name" hide />
+            <Bar dataKey="acompanhadas" stackId="a" fill="#3B82F6" radius={[4, 0, 0, 4]} barSize={20}>
+              <LabelList dataKey="acompanhadas" position="center" fill="#fff" fontSize={10} fontWeight={600} />
             </Bar>
-            <Bar dataKey="restante" stackId="a" fill="#D1D5DB" radius={[0, 4, 4, 0]} />
+            <Bar dataKey="restante" stackId="a" fill="#D1D5DB" radius={[0, 4, 4, 0]} barSize={20} />
           </BarChart>
         </ResponsiveContainer>
       </div>
-      <div className="w-4 h-4 flex items-center justify-center text-muted-foreground">
-        <ChevronRightIcon className="h-4 w-4" />
-      </div>
+      <ChevronRightIcon className="h-4 w-4 text-muted-foreground shrink-0" />
     </div>
   );
 };
@@ -245,8 +241,8 @@ const ExpandedRow: React.FC<{ record: VinculoData }> = ({ record }) => {
       {/* Dimensão Cadastro */}
       <div>
         {/* Header com título e legenda */}
-        <div className="flex items-center gap-3 mb-2 px-4 py-2 bg-blue-50 rounded-t-md border border-border flex-wrap">
-          <span className="text-base font-semibold text-blue-600">Dimensão Cadastro</span>
+        <div className="flex items-center gap-3 mb-2 px-4 py-2 bg-muted rounded-t-md border border-border flex-wrap">
+          <span className="text-base font-semibold text-foreground">Dimensão Cadastro</span>
           <div className="flex flex-wrap gap-3">
             {cadastroLegend.map((item) => (
               <div key={item.label} className="flex items-center gap-1.5">
@@ -288,8 +284,8 @@ const ExpandedRow: React.FC<{ record: VinculoData }> = ({ record }) => {
       {/* Dimensão Acompanhamento */}
       <div>
         {/* Header com título e legenda */}
-        <div className="flex items-center gap-3 mb-2 px-4 py-2 bg-gray-100 rounded-t-md border border-border flex-wrap">
-          <span className="text-base font-semibold text-gray-700">Dimensão Acompanhamento</span>
+        <div className="flex items-center gap-3 mb-2 px-4 py-2 bg-muted rounded-t-md border border-border flex-wrap">
+          <span className="text-base font-semibold text-foreground">Dimensão Acompanhamento</span>
           <div className="flex flex-wrap gap-3">
             {acompanhamentoLegend.map((item) => (
               <div key={item.label} className="flex items-center gap-1.5">
