@@ -3,22 +3,33 @@ import { Table, Button } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { Download, ChevronDown, ChevronRight, ChevronRightIcon } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { BarChart, Bar, XAxis, ResponsiveContainer, LabelList, Cell } from 'recharts';
 
 type Classification = 'otimo' | 'bom' | 'suficiente' | 'regular';
 
-interface MonthData {
-  status: Classification;
-  value: string;
+interface CadastroBarData {
+  cadastroCompleto: number;
+  cadastroIndividual: number;
+  semCadastro: number;
+}
+
+interface AcompanhamentoBarData {
+  acompanhadas: number;
+  total: number;
 }
 
 interface DimensaoData {
-  id: string;
-  name: string;
-  janeiro: MonthData;
-  fevereiro: MonthData;
-  marco: MonthData;
-  abril: MonthData;
-  resultado: MonthData;
+  janeiro: CadastroBarData;
+  fevereiro: CadastroBarData;
+  marco: CadastroBarData;
+  abril: CadastroBarData;
+}
+
+interface AcompanhamentoDimensaoData {
+  janeiro: AcompanhamentoBarData;
+  fevereiro: AcompanhamentoBarData;
+  marco: AcompanhamentoBarData;
+  abril: AcompanhamentoBarData;
 }
 
 interface VinculoData {
@@ -29,7 +40,8 @@ interface VinculoData {
   cnes: string;
   notaFinal: number;
   classificacaoFinal: Classification;
-  dimensoes: DimensaoData[];
+  cadastro: DimensaoData;
+  acompanhamento: AcompanhamentoDimensaoData;
 }
 
 const statusColors: Record<Classification, string> = {
@@ -53,52 +65,6 @@ const statusFilters = [
   { text: 'Regular', value: 'regular' },
 ];
 
-const statusOrder: Record<Classification, number> = {
-  otimo: 1,
-  bom: 2,
-  suficiente: 3,
-  regular: 4,
-};
-
-interface StatusCellProps {
-  data: MonthData;
-  showLink?: boolean;
-  dimensao?: string;
-  month?: string;
-  equipeKey?: string;
-}
-
-const StatusCell: React.FC<StatusCellProps> = ({ data, showLink = true, dimensao, month, equipeKey }) => {
-  const content = (
-    <div className={`flex items-center gap-2 ${showLink ? 'cursor-pointer hover:opacity-80 transition-opacity' : ''}`}>
-      <span className={`w-2 h-2 rounded-full ${statusColors[data.status]}`} />
-      <span className="text-sm">
-        {statusLabels[data.status]} | {data.value}
-      </span>
-      {showLink && (
-        <ChevronRightIcon className="h-3 w-3 text-muted-foreground" />
-      )}
-    </div>
-  );
-
-  if (showLink && dimensao && month) {
-    const params = new URLSearchParams({
-      dimensao,
-      periodo: month,
-    });
-    if (equipeKey) {
-      params.set('equipe', equipeKey);
-    }
-    return (
-      <Link to={`/financiamento-aps/vinculo-acompanhamento/relatorio?${params.toString()}`}>
-        {content}
-      </Link>
-    );
-  }
-
-  return content;
-};
-
 const ResultadoCell: React.FC<{ nota: number; classification: Classification }> = ({ nota, classification }) => {
   return (
     <div className="flex items-center gap-2">
@@ -108,38 +74,32 @@ const ResultadoCell: React.FC<{ nota: number; classification: Classification }> 
   );
 };
 
-const createDimensoes = (cadastro: Classification, acompanhamento: Classification): DimensaoData[] => [
-  {
-    id: 'cadastro',
-    name: 'Cadastro',
-    janeiro: { status: cadastro, value: 'X%' },
-    fevereiro: { status: cadastro, value: 'X%' },
-    marco: { status: cadastro, value: 'X%' },
-    abril: { status: cadastro, value: 'X%' },
-    resultado: { status: cadastro, value: 'X%' },
+const createDimensoes = (): { cadastro: DimensaoData; acompanhamento: AcompanhamentoDimensaoData } => ({
+  cadastro: {
+    janeiro: { cadastroCompleto: 100, cadastroIndividual: 200, semCadastro: 300 },
+    fevereiro: { cadastroCompleto: 100, cadastroIndividual: 200, semCadastro: 300 },
+    marco: { cadastroCompleto: 100, cadastroIndividual: 200, semCadastro: 300 },
+    abril: { cadastroCompleto: 100, cadastroIndividual: 200, semCadastro: 300 },
   },
-  {
-    id: 'acompanhamento',
-    name: 'Acompanhamento',
-    janeiro: { status: acompanhamento, value: 'X%' },
-    fevereiro: { status: acompanhamento, value: 'X%' },
-    marco: { status: acompanhamento, value: 'X%' },
-    abril: { status: acompanhamento, value: 'X%' },
-    resultado: { status: acompanhamento, value: 'X%' },
+  acompanhamento: {
+    janeiro: { acompanhadas: 300, total: 600 },
+    fevereiro: { acompanhadas: 300, total: 600 },
+    marco: { acompanhadas: 300, total: 600 },
+    abril: { acompanhadas: 300, total: 600 },
   },
-];
+});
 
 const sampleData: VinculoData[] = [
-  { key: '1', equipeSaude: 'Equipe 001 - ESF', unidade: 'Uaps Anisio Teixeira', ine: '0000123456', cnes: '2529181', notaFinal: 4, classificacaoFinal: 'regular', dimensoes: createDimensoes('bom', 'regular') },
-  { key: '2', equipeSaude: 'Equipe 002 - ESF', unidade: 'Uaps Vicentina Campos', ine: '0000234567', cnes: '2529203', notaFinal: 4.75, classificacaoFinal: 'regular', dimensoes: createDimensoes('otimo', 'regular') },
-  { key: '3', equipeSaude: 'Equipe 003 - eAP', unidade: 'Uaps Gutemberg Braun', ine: '0000345678', cnes: '2482282', notaFinal: 4.75, classificacaoFinal: 'regular', dimensoes: createDimensoes('otimo', 'regular') },
-  { key: '4', equipeSaude: 'Equipe 004 - ESF', unidade: 'Uaps Fausto Freire', ine: '0000456789', cnes: '9686479', notaFinal: 4, classificacaoFinal: 'regular', dimensoes: createDimensoes('bom', 'regular') },
-  { key: '5', equipeSaude: 'Equipe 005 - ESF', unidade: 'Uaps Helio Goes', ine: '0000567890', cnes: '2529211', notaFinal: 6.5, classificacaoFinal: 'suficiente', dimensoes: createDimensoes('otimo', 'suficiente') },
-  { key: '6', equipeSaude: 'Equipe 006 - eAP', unidade: 'Uaps Licinio Nunes de Miranda', ine: '0000678901', cnes: '9129553', notaFinal: 6.5, classificacaoFinal: 'suficiente', dimensoes: createDimensoes('otimo', 'suficiente') },
-  { key: '7', equipeSaude: 'Equipe 007 - ESF', unidade: 'Uaps Pontes Neto', ine: '0000789012', cnes: '9006052', notaFinal: 6.5, classificacaoFinal: 'suficiente', dimensoes: createDimensoes('otimo', 'suficiente') },
-  { key: '8', equipeSaude: 'Equipe 008 - ESF', unidade: 'Uaps Fernandes Tavora', ine: '0000890123', cnes: '2528819', notaFinal: 8.25, classificacaoFinal: 'bom', dimensoes: createDimensoes('otimo', 'bom') },
-  { key: '9', equipeSaude: 'Equipe 009 - eAP', unidade: 'Uaps Virgilio Tavora', ine: '0000901234', cnes: '2415585', notaFinal: 6.5, classificacaoFinal: 'suficiente', dimensoes: createDimensoes('otimo', 'suficiente') },
-  { key: '10', equipeSaude: 'Equipe 010 - ESF', unidade: 'Uaps Cdfam Gilmario Teixeira', ine: '0001012345', cnes: '0407836', notaFinal: 6.5, classificacaoFinal: 'suficiente', dimensoes: createDimensoes('otimo', 'suficiente') },
+  { key: '1', equipeSaude: 'Equipe 001 - ESF', unidade: 'Uaps Anisio Teixeira', ine: '0000123456', cnes: '2529181', notaFinal: 4, classificacaoFinal: 'regular', ...createDimensoes() },
+  { key: '2', equipeSaude: 'Equipe 002 - ESF', unidade: 'Uaps Vicentina Campos', ine: '0000234567', cnes: '2529203', notaFinal: 4.75, classificacaoFinal: 'regular', ...createDimensoes() },
+  { key: '3', equipeSaude: 'Equipe 003 - eAP', unidade: 'Uaps Gutemberg Braun', ine: '0000345678', cnes: '2482282', notaFinal: 4.75, classificacaoFinal: 'regular', ...createDimensoes() },
+  { key: '4', equipeSaude: 'Equipe 004 - ESF', unidade: 'Uaps Fausto Freire', ine: '0000456789', cnes: '9686479', notaFinal: 4, classificacaoFinal: 'regular', ...createDimensoes() },
+  { key: '5', equipeSaude: 'Equipe 005 - ESF', unidade: 'Uaps Helio Goes', ine: '0000567890', cnes: '2529211', notaFinal: 6.5, classificacaoFinal: 'suficiente', ...createDimensoes() },
+  { key: '6', equipeSaude: 'Equipe 006 - eAP', unidade: 'Uaps Licinio Nunes de Miranda', ine: '0000678901', cnes: '9129553', notaFinal: 6.5, classificacaoFinal: 'suficiente', ...createDimensoes() },
+  { key: '7', equipeSaude: 'Equipe 007 - ESF', unidade: 'Uaps Pontes Neto', ine: '0000789012', cnes: '9006052', notaFinal: 6.5, classificacaoFinal: 'suficiente', ...createDimensoes() },
+  { key: '8', equipeSaude: 'Equipe 008 - ESF', unidade: 'Uaps Fernandes Tavora', ine: '0000890123', cnes: '2528819', notaFinal: 8.25, classificacaoFinal: 'bom', ...createDimensoes() },
+  { key: '9', equipeSaude: 'Equipe 009 - eAP', unidade: 'Uaps Virgilio Tavora', ine: '0000901234', cnes: '2415585', notaFinal: 6.5, classificacaoFinal: 'suficiente', ...createDimensoes() },
+  { key: '10', equipeSaude: 'Equipe 010 - ESF', unidade: 'Uaps Cdfam Gilmario Teixeira', ine: '0001012345', cnes: '0407836', notaFinal: 6.5, classificacaoFinal: 'suficiente', ...createDimensoes() },
 ];
 
 const columns: ColumnsType<VinculoData> = [
@@ -201,43 +161,136 @@ const columns: ColumnsType<VinculoData> = [
   },
 ];
 
-const ExpandedRow: React.FC<{ record: VinculoData }> = ({ record }) => {
-  return (
-    <div className="bg-muted/20 border-t border-border">
-      <div className="overflow-x-auto border border-border rounded-md">
-        <div className="indicator-grid min-w-[800px]">
-          {/* Header row */}
-          <div className="indicator-grid-header">
-            <div className="indicator-grid-cell font-medium text-muted-foreground">Dimensão</div>
-            <div className="indicator-grid-cell font-medium text-muted-foreground">Resultado</div>
-            <div className="indicator-grid-cell font-medium text-muted-foreground">Janeiro</div>
-            <div className="indicator-grid-cell font-medium text-muted-foreground">Fevereiro</div>
-            <div className="indicator-grid-cell font-medium text-muted-foreground">Março</div>
-            <div className="indicator-grid-cell font-medium text-muted-foreground">Abril</div>
-          </div>
+// Cadastro stacked bar chart component
+const CadastroBarChart: React.FC<{ data: CadastroBarData }> = ({ data }) => {
+  const total = data.cadastroCompleto + data.cadastroIndividual + data.semCadastro;
+  const chartData = [
+    { name: 'bar', cadastroCompleto: data.cadastroCompleto, cadastroIndividual: data.cadastroIndividual, semCadastro: data.semCadastro }
+  ];
 
-          {/* Data rows */}
-          {record.dimensoes.map((dimensao) => (
-            <div 
-              key={dimensao.id} 
-              className="indicator-grid-row bg-card"
-            >
-              <div className="indicator-grid-cell font-medium">{dimensao.name}</div>
-              <div className="indicator-grid-cell">
-                <StatusCell data={dimensao.resultado} dimensao={dimensao.id} month="resultado" equipeKey={record.key} />
+  return (
+    <div className="flex items-center gap-2">
+      <div className="flex-1 h-8">
+        <ResponsiveContainer width="100%" height="100%">
+          <BarChart
+            layout="vertical"
+            data={chartData}
+            margin={{ top: 0, right: 0, left: 0, bottom: 0 }}
+            barCategoryGap={0}
+          >
+            <XAxis type="number" domain={[0, total]} hide />
+            <Bar dataKey="cadastroCompleto" stackId="a" fill="#3B82F6" radius={[4, 0, 0, 4]}>
+              <LabelList dataKey="cadastroCompleto" position="center" fill="#fff" fontSize={11} fontWeight={600} />
+            </Bar>
+            <Bar dataKey="cadastroIndividual" stackId="a" fill="#22C55E">
+              <LabelList dataKey="cadastroIndividual" position="center" fill="#fff" fontSize={11} fontWeight={600} />
+            </Bar>
+            <Bar dataKey="semCadastro" stackId="a" fill="#EF4444" radius={[0, 4, 4, 0]}>
+              <LabelList dataKey="semCadastro" position="center" fill="#fff" fontSize={11} fontWeight={600} />
+            </Bar>
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
+      <div className="w-4 h-4 flex items-center justify-center text-muted-foreground">
+        <ChevronRightIcon className="h-4 w-4" />
+      </div>
+    </div>
+  );
+};
+
+// Acompanhamento bar chart component
+const AcompanhamentoBarChart: React.FC<{ data: AcompanhamentoBarData }> = ({ data }) => {
+  const chartData = [
+    { name: 'bar', acompanhadas: data.acompanhadas, restante: data.total - data.acompanhadas }
+  ];
+
+  return (
+    <div className="flex items-center gap-2">
+      <div className="flex-1 h-8">
+        <ResponsiveContainer width="100%" height="100%">
+          <BarChart
+            layout="vertical"
+            data={chartData}
+            margin={{ top: 0, right: 0, left: 0, bottom: 0 }}
+            barCategoryGap={0}
+          >
+            <XAxis type="number" domain={[0, data.total]} hide />
+            <Bar dataKey="acompanhadas" stackId="a" fill="#3B82F6" radius={[4, 0, 0, 4]}>
+              <LabelList dataKey="acompanhadas" position="center" fill="#fff" fontSize={11} fontWeight={600} />
+            </Bar>
+            <Bar dataKey="restante" stackId="a" fill="#D1D5DB" radius={[0, 4, 4, 0]} />
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
+      <div className="w-4 h-4 flex items-center justify-center text-muted-foreground">
+        <ChevronRightIcon className="h-4 w-4" />
+      </div>
+    </div>
+  );
+};
+
+const ExpandedRow: React.FC<{ record: VinculoData }> = ({ record }) => {
+  const cadastroLegend = [
+    { label: 'Pessoas com cadastro completo e atualizado', color: '#3B82F6' },
+    { label: 'Pessoas com somente cadastro individual atualizado', color: '#22C55E' },
+    { label: 'Pessoas sem cadastro individual atualizado', color: '#EF4444' },
+  ];
+
+  const acompanhamentoLegend = [
+    { label: 'Pessoas acompanhadas', color: '#3B82F6' },
+  ];
+
+  const months = ['janeiro', 'fevereiro', 'marco', 'abril'] as const;
+  const monthLabels: Record<typeof months[number], string> = {
+    janeiro: 'Janeiro',
+    fevereiro: 'Fevereiro',
+    marco: 'Março',
+    abril: 'Abril',
+  };
+
+  return (
+    <div className="bg-muted/20 border-t border-border p-4 space-y-6">
+      {/* Dimensão Cadastro */}
+      <div className="bg-blue-50 rounded-lg p-4">
+        <div className="flex items-center gap-3 mb-4 flex-wrap">
+          <span className="text-lg font-semibold text-blue-600">Dimensão Cadastro</span>
+          <div className="flex flex-wrap gap-3">
+            {cadastroLegend.map((item) => (
+              <div key={item.label} className="flex items-center gap-1.5">
+                <span className="w-3 h-3 rounded-sm" style={{ backgroundColor: item.color }} />
+                <span className="text-xs text-muted-foreground">{item.label}</span>
               </div>
-              <div className="indicator-grid-cell">
-                <StatusCell data={dimensao.janeiro} dimensao={dimensao.id} month="janeiro" equipeKey={record.key} />
+            ))}
+          </div>
+        </div>
+        <div className="grid grid-cols-4 gap-4">
+          {months.map((month) => (
+            <div key={month}>
+              <div className="text-sm font-medium text-foreground mb-2">{monthLabels[month]}</div>
+              <CadastroBarChart data={record.cadastro[month]} />
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Dimensão Acompanhamento */}
+      <div className="bg-gray-50 rounded-lg p-4">
+        <div className="flex items-center gap-3 mb-4 flex-wrap">
+          <span className="text-lg font-semibold text-gray-700">Dimensão Acompanhamento</span>
+          <div className="flex flex-wrap gap-3">
+            {acompanhamentoLegend.map((item) => (
+              <div key={item.label} className="flex items-center gap-1.5">
+                <span className="w-3 h-3 rounded-sm" style={{ backgroundColor: item.color }} />
+                <span className="text-xs text-muted-foreground">{item.label}</span>
               </div>
-              <div className="indicator-grid-cell">
-                <StatusCell data={dimensao.fevereiro} dimensao={dimensao.id} month="fevereiro" equipeKey={record.key} />
-              </div>
-              <div className="indicator-grid-cell">
-                <StatusCell data={dimensao.marco} dimensao={dimensao.id} month="marco" equipeKey={record.key} />
-              </div>
-              <div className="indicator-grid-cell">
-                <StatusCell data={dimensao.abril} dimensao={dimensao.id} month="abril" equipeKey={record.key} />
-              </div>
+            ))}
+          </div>
+        </div>
+        <div className="grid grid-cols-4 gap-4">
+          {months.map((month) => (
+            <div key={month}>
+              <div className="text-sm font-medium text-foreground mb-2">{monthLabels[month]}</div>
+              <AcompanhamentoBarChart data={record.acompanhamento[month]} />
             </div>
           ))}
         </div>
