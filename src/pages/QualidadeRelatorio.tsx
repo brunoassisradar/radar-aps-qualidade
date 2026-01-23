@@ -63,24 +63,36 @@ const QualidadeRelatorio: React.FC = () => {
   const [searchParams] = useSearchParams();
   
   // Get initial values from URL params
+  const initialTab = searchParams.get('tab') || 'vinculo';
   const initialIndicador = searchParams.get('indicador') || 'c1';
   const initialPeriodo = searchParams.get('periodo') || 'Consolidado';
+  const initialDimensao = searchParams.get('dimensao') || 'cadastro';
   
+  const [activeTab, setActiveTab] = useState(initialTab);
   const [selectedPeriod, setSelectedPeriod] = useState(initialPeriodo);
   const [selectedIndicador, setSelectedIndicador] = useState(initialIndicador);
-  const [selectedDimensao, setSelectedDimensao] = useState('cadastro');
-  const [vinculoPeriod, setVinculoPeriod] = useState('Consolidado');
+  const [selectedDimensao, setSelectedDimensao] = useState(initialDimensao);
+  const [vinculoPeriod, setVinculoPeriod] = useState(initialPeriodo);
   
   // Update state when URL params change
   useEffect(() => {
+    const tabParam = searchParams.get('tab');
     const indicadorParam = searchParams.get('indicador');
     const periodoParam = searchParams.get('periodo');
+    const dimensaoParam = searchParams.get('dimensao');
     
+    if (tabParam && ['vinculo', 'qualidade'].includes(tabParam)) {
+      setActiveTab(tabParam);
+    }
     if (indicadorParam && indicadores.some(i => i.value === indicadorParam)) {
       setSelectedIndicador(indicadorParam);
     }
     if (periodoParam && periods.includes(periodoParam)) {
       setSelectedPeriod(periodoParam);
+      setVinculoPeriod(periodoParam);
+    }
+    if (dimensaoParam && dimensoes.some(d => d.value === dimensaoParam)) {
+      setSelectedDimensao(dimensaoParam);
     }
   }, [searchParams]);
 
@@ -286,7 +298,8 @@ const QualidadeRelatorio: React.FC = () => {
       />
 
       <Tabs
-        defaultActiveKey="vinculo"
+        activeKey={activeTab}
+        onChange={(key) => setActiveTab(key)}
         items={tabItems}
         size="large"
         className="financiamento-tabs"
