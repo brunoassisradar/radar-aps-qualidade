@@ -27,7 +27,8 @@ interface TertiaryMenuItem {
 interface SecondaryMenuItem {
   label: string;
   path: string;
-  hasActiveState?: boolean; // Whether this item can show blue/active state
+  hasActiveState?: boolean;
+  tabKey?: string; // The tab key to check for active state
   children?: TertiaryMenuItem[];
 }
 
@@ -50,15 +51,17 @@ const menuItems: MenuItem[] = [
       { 
         label: 'Vínculo e Acompanhamento', 
         path: '/financiamento-aps/qualidade-esf-eap?tab=vinculo',
-        hasActiveState: true 
+        hasActiveState: true,
+        tabKey: 'vinculo'
       },
       { 
         label: 'Qualidade eSF/eAP', 
-        path: '/financiamento-aps/qualidade-esf-eap',
+        path: '/financiamento-aps/qualidade-esf-eap?tab=qualidade',
         hasActiveState: true,
+        tabKey: 'qualidade',
         children: [
-          { label: 'Visão geral', path: '/financiamento-aps/qualidade-esf-eap' },
-          { label: 'Relatório', path: '/financiamento-aps/qualidade-esf-eap/relatorio' },
+          { label: 'Visão geral', path: '/financiamento-aps/qualidade-esf-eap?tab=qualidade' },
+          { label: 'Relatório', path: '/financiamento-aps/qualidade-esf-eap/relatorio?tab=qualidade' },
           { label: 'Individualizado', path: '/financiamento-aps/qualidade-esf-eap/individualizado' },
         ]
       },
@@ -94,30 +97,19 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({ collapsed }) => {
     );
   };
 
-  const isPathActive = (path?: string) => {
-    if (!path || path === '#') return false;
-    // Handle query params separately
-    const [basePath] = path.split('?');
-    const [currentBasePath] = location.pathname.split('?');
-    
-    // Check if it's the vinculo tab
-    if (path.includes('?tab=vinculo')) {
-      return location.pathname.startsWith('/financiamento-aps/qualidade-esf-eap') && 
-             location.search.includes('tab=vinculo');
-    }
-    
-    return currentBasePath === basePath || location.pathname.startsWith(basePath + '/');
-  };
+  // Get current tab from URL
+  const searchParams = new URLSearchParams(location.search);
+  const currentTab = searchParams.get('tab') || 'qualidade'; // default to qualidade if no tab
+
+  const isInQualidadeSection = location.pathname.startsWith('/financiamento-aps/qualidade-esf-eap');
 
   const isSecondaryActive = (item: SecondaryMenuItem) => {
     if (!item.hasActiveState) return false;
+    if (item.path === '#') return false;
     
-    // Check main path
-    if (isPathActive(item.path)) return true;
-    
-    // Check children paths
-    if (item.children) {
-      return item.children.some(child => isPathActive(child.path));
+    // If item has a tabKey, check if we're in the qualidade section AND the tab matches
+    if (item.tabKey && isInQualidadeSection) {
+      return currentTab === item.tabKey;
     }
     
     return false;
