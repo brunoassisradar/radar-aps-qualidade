@@ -101,7 +101,7 @@ const QualidadeVisaoGeral: React.FC = () => {
 
   const headerActions = (
     <Button 
-      variant="outline" 
+      variant="secondary" 
       onClick={() => navigate(individualizadoPath)}
     >
       Individualizado
