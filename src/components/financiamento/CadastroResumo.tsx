@@ -1,5 +1,5 @@
 import React from 'react';
-import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
+import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, LabelList, Legend } from 'recharts';
 import { HelpCircle, Smile, AlertCircle, FileText } from 'lucide-react';
 import { Tooltip } from 'antd';
 import { Button } from '@/components/ui/button';
@@ -439,6 +439,67 @@ export const CadastroResumo: React.FC<CadastroResumoProps> = ({
               </Button>
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* Gráfico de Cadastros por tempo de atualização */}
+      <div className="px-6 pb-6">
+        <h4 className="text-sm font-semibold text-foreground mb-4">
+          Quantitativo de cadastros (individual e domiciliar) de acordo com o tempo desde a última atualização
+        </h4>
+        
+        <div className="h-80">
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart
+              data={[
+                { name: 'Há menos que 6 meses', individual: 7387, domiciliar: 9995 },
+                { name: 'Entre 6 meses e 1 ano', individual: 3766, domiciliar: 2100 },
+                { name: 'Entre 1 ano e 2 anos', individual: 2205, domiciliar: 0 },
+              ]}
+              margin={{ top: 20, right: 30, left: 20, bottom: 60 }}
+            >
+              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E5E7EB" />
+              <XAxis 
+                dataKey="name" 
+                tick={{ fontSize: 12, fill: '#6B7280' }}
+                axisLine={{ stroke: '#E5E7EB' }}
+                tickLine={false}
+              />
+              <YAxis 
+                tick={{ fontSize: 12, fill: '#6B7280' }}
+                axisLine={false}
+                tickLine={false}
+                tickFormatter={(value) => value.toLocaleString('pt-BR')}
+              />
+              <Legend 
+                verticalAlign="bottom"
+                wrapperStyle={{ paddingTop: 20 }}
+                formatter={(value) => (
+                  <span className="text-sm text-muted-foreground capitalize">{value}</span>
+                )}
+              />
+              <Bar dataKey="individual" stackId="a" fill="#C4C4CC" name="Individual" barSize={80}>
+                <LabelList 
+                  dataKey="individual" 
+                  position="inside" 
+                  fill="#fff"
+                  fontSize={12}
+                  fontWeight={500}
+                  formatter={(value: number) => value > 0 ? value.toLocaleString('pt-BR') : ''}
+                />
+              </Bar>
+              <Bar dataKey="domiciliar" stackId="a" fill="#3C8DBC" name="Domiciliar" radius={[4, 4, 0, 0]}>
+                <LabelList 
+                  dataKey="domiciliar" 
+                  position="inside" 
+                  fill="#fff"
+                  fontSize={12}
+                  fontWeight={500}
+                  formatter={(value: number) => value > 0 ? value.toLocaleString('pt-BR') : ''}
+                />
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
         </div>
       </div>
     </div>;
