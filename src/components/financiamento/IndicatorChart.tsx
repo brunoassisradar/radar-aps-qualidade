@@ -386,25 +386,6 @@ export const IndicatorChart: React.FC<IndicatorChartProps> = ({
   if (selectedIndicador === 'c1') {
     return (
       <div className="space-y-6">
-        {/* KPIs */}
-        <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
-          {kpis.map((kpi, index) => (
-            <div 
-              key={kpi.label}
-              className={`rounded-xl border border-primary/20 p-4 ${
-                index === 0 
-                  ? 'bg-gradient-to-br from-primary/10 to-primary/5' 
-                  : 'bg-gradient-to-br from-accent to-accent/50'
-              }`}
-            >
-              <div>
-                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{kpi.label}</p>
-                <p className="text-2xl font-bold text-foreground">{kpi.value}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-
         {/* Bullet Chart */}
         <C1BulletChart kpis={kpis} />
       </div>
