@@ -300,7 +300,7 @@ const QualidadeRelatorio: React.FC = () => {
   const individualizadoPath = `/financiamento-aps/qualidade-esf-eap/individualizado?tab=${activeTab}`;
 
   const headerActions = (
-    <Button onClick={() => navigate(individualizadoPath)}>
+    <Button variant="outline" onClick={() => navigate(individualizadoPath)}>
       Individualizado
     </Button>
   );
