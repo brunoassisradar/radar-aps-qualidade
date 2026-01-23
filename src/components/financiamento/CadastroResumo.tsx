@@ -40,10 +40,10 @@ export const CadastroResumo: React.FC<CadastroResumoProps> = ({
         <div className="flex flex-col lg:flex-row items-start gap-8">
           {/* Donut Chart */}
           <div className="shrink-0 flex flex-col items-center">
-            <div className="relative w-32 h-32">
+            <div className="relative w-36 h-36">
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
-                  <Pie data={chartData} cx="50%" cy="50%" innerRadius={40} outerRadius={55} paddingAngle={0} dataKey="value" startAngle={90} endAngle={-270} strokeWidth={0}>
+                  <Pie data={chartData} cx="50%" cy="50%" innerRadius={45} outerRadius={62} paddingAngle={0} dataKey="value" startAngle={90} endAngle={-270} strokeWidth={0}>
                     {chartData.map((entry, index) => <Cell key={`cell-${index}`} fill={entry.color} />)}
                   </Pie>
                 </PieChart>
