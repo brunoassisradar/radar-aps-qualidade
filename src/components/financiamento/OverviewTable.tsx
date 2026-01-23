@@ -199,6 +199,7 @@ const StatusCell: React.FC<StatusCellProps> = ({ data, showLink = true, indicado
 
   if (showLink && indicador && month) {
     const params = new URLSearchParams({
+      tab: 'qualidade',
       indicador: indicatorToParam[indicador] || indicador,
       periodo: monthToParam[month] || month,
     });
@@ -276,7 +277,7 @@ const getColumns = (onHelpClick: () => void): ColumnsType<TeamData> => [
     width: '20%',
     render: (_: unknown, record: TeamData) => (
       <div className="flex gap-2">
-        <Link to={`/financiamento-aps/qualidade-esf-eap/relatorio?equipe=${record.key}`}>
+        <Link to={`/financiamento-aps/qualidade-esf-eap/relatorio?tab=qualidade&equipe=${record.key}`}>
           <Button type="default" size="small">Ver relatório</Button>
         </Link>
         <Link to={`/financiamento-aps/qualidade-esf-eap/individualizado?equipe=${record.key}`}>
