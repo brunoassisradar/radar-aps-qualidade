@@ -6,6 +6,7 @@ import { FilterBar } from '@/components/financiamento/FilterBar';
 import { IndicatorChart } from '@/components/financiamento/IndicatorChart';
 import { ReportTable } from '@/components/financiamento/ReportTable';
 import { CadastroResumo } from '@/components/financiamento/CadastroResumo';
+import { AcompanhamentoResumo } from '@/components/financiamento/AcompanhamentoResumo';
 import { cn } from '@/lib/utils';
 import { Users, Baby, Heart, Activity, Stethoscope, UserCheck, Flower2, ClipboardList, UserSearch } from 'lucide-react';
 
@@ -267,9 +268,7 @@ const QualidadeRelatorio: React.FC = () => {
               {selectedDimensao === 'cadastro' ? (
                 <CadastroResumo />
               ) : (
-                <p className="text-muted-foreground text-center py-8">
-                  Conteúdo da dimensão {selectedDimensaoData?.label} em construção...
-                </p>
+                <AcompanhamentoResumo />
               )}
             </div>
           </div>
