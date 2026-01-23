@@ -107,6 +107,73 @@ export const CadastroResumo: React.FC<CadastroResumoProps> = ({
           </div>
         </div>
       </div>
+
+      {/* Tabela Fator Multiplicação */}
+      <div className="px-6 pb-6">
+        <h4 className="text-sm font-semibold text-foreground mb-4">1. Fator multiplicação</h4>
+        
+        <div className="overflow-hidden rounded-lg border border-border">
+          {/* Header */}
+          <div className="grid grid-cols-[2fr_1fr_auto_1fr_auto_1fr] bg-muted/50 text-xs font-medium text-muted-foreground">
+            <div className="px-4 py-3 text-center">Tipos de cadastro</div>
+            <div className="px-4 py-3 text-center">Número de pessoas</div>
+            <div className="px-2 py-3 text-center"></div>
+            <div className="px-4 py-3 text-center">Fator multiplicação</div>
+            <div className="px-2 py-3 text-center"></div>
+            <div className="px-4 py-3 text-center">Total</div>
+          </div>
+
+          {/* Row 1 - Cadastro Individual */}
+          <div className="grid grid-cols-[2fr_1fr_auto_1fr_auto_1fr] border-t border-border items-center">
+            <div className="px-4 py-4">
+              <p className="text-sm font-medium text-primary">Pessoas cadastradas</p>
+              <p className="text-xs text-muted-foreground">(Apenas com cadastro individual atualizado)</p>
+            </div>
+            <div className="px-4 py-4 text-center">
+              <span className="inline-flex items-center justify-center px-4 py-2 bg-muted/50 rounded text-sm font-medium text-foreground min-w-[80px]">
+                {cadastroIndividual.toLocaleString('pt-BR')}
+              </span>
+            </div>
+            <div className="px-2 py-4 text-center text-muted-foreground">×</div>
+            <div className="px-4 py-4 text-center">
+              <span className="inline-flex items-center justify-center px-4 py-2 bg-muted/50 rounded text-sm font-medium text-foreground min-w-[80px]">
+                0,75
+              </span>
+            </div>
+            <div className="px-2 py-4 text-center text-muted-foreground">=</div>
+            <div className="px-4 py-4 text-center">
+              <span className="text-sm font-semibold text-foreground">
+                {Math.round(cadastroIndividual * 0.75).toLocaleString('pt-BR')}
+              </span>
+            </div>
+          </div>
+
+          {/* Row 2 - Cadastro Completo */}
+          <div className="grid grid-cols-[2fr_1fr_auto_1fr_auto_1fr] border-t border-border items-center">
+            <div className="px-4 py-4">
+              <p className="text-sm font-medium text-primary">Pessoas com cadastro completo</p>
+              <p className="text-xs text-muted-foreground">(Com cadastro individual e cadastro domiciliar atualizados)</p>
+            </div>
+            <div className="px-4 py-4 text-center">
+              <span className="inline-flex items-center justify-center px-4 py-2 bg-muted/50 rounded text-sm font-medium text-foreground min-w-[80px]">
+                {cadastroCompleto.toLocaleString('pt-BR')}
+              </span>
+            </div>
+            <div className="px-2 py-4 text-center text-muted-foreground">×</div>
+            <div className="px-4 py-4 text-center">
+              <span className="inline-flex items-center justify-center px-4 py-2 bg-muted/50 rounded text-sm font-medium text-foreground min-w-[80px]">
+                1,50
+              </span>
+            </div>
+            <div className="px-2 py-4 text-center text-muted-foreground">=</div>
+            <div className="px-4 py-4 text-center">
+              <span className="text-sm font-semibold text-foreground">
+                {Math.round(cadastroCompleto * 1.50).toLocaleString('pt-BR')}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>;
 };
 export default CadastroResumo;
