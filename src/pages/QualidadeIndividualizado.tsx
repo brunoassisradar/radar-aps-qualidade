@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
-import { Table, Button } from 'antd';
+import React, { useState, useEffect } from 'react';
+import { Table, Button, Tabs } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { Download, ChevronDown, ChevronRight } from 'lucide-react';
+import { useSearchParams } from 'react-router-dom';
 import { PageHeader } from '@/components/layout/PageHeader';
 import { FilterBar } from '@/components/financiamento/FilterBar';
 
@@ -165,15 +166,72 @@ const columns: ColumnsType<PessoaData> = [
   },
 ];
 
-const QualidadeIndividualizado: React.FC = () => {
-  const [expandedRowKeys, setExpandedRowKeys] = useState<string[]>([]);
+// Reusable table content component
+const IndividualizadoTableContent: React.FC<{
+  expandedRowKeys: string[];
+  onExpand: (expanded: boolean, record: PessoaData) => void;
+}> = ({ expandedRowKeys, onExpand }) => (
+  <div className="rounded-lg bg-card p-4 shadow-sm">
+    <div className="flex items-center justify-between mb-4">
+      <span className="text-sm text-muted-foreground">
+        Total de registros: <strong className="text-foreground">{sampleData.length}</strong>
+      </span>
+      <Button icon={<Download className="h-4 w-4" />}>
+        Exportar
+      </Button>
+    </div>
 
-  const breadcrumbItems = [
-    { label: 'Financiamento APS', path: '/financiamento-aps' },
-    { label: 'Qualidade eSF/eAP', path: '/financiamento-aps/qualidade-esf-eap' },
-    { label: 'Relatório', path: '/financiamento-aps/qualidade-esf-eap/relatorio' },
-    { label: 'Individualizado' },
-  ];
+    <Table
+      columns={columns}
+      dataSource={sampleData}
+      expandable={{
+        expandedRowKeys,
+        onExpand,
+        expandedRowRender: () => (
+          <div className="p-4 bg-muted/30 rounded-md">
+            <span className="text-sm text-muted-foreground italic">
+              Detalhes do cadastro individual (em desenvolvimento)
+            </span>
+          </div>
+        ),
+        expandIcon: ({ expanded, onExpand, record }) => (
+          <button
+            onClick={(e) => onExpand(record, e)}
+            className="p-1 hover:bg-muted rounded transition-colors"
+          >
+            {expanded ? (
+              <ChevronDown className="h-4 w-4 text-muted-foreground" />
+            ) : (
+              <ChevronRight className="h-4 w-4 text-muted-foreground" />
+            )}
+          </button>
+        ),
+      }}
+      pagination={{
+        pageSize: 10,
+        showSizeChanger: true,
+        showTotal: (total, range) => `${range[0]}-${range[1]} de ${total} registros`,
+      }}
+      size="middle"
+    />
+  </div>
+);
+
+const QualidadeIndividualizado: React.FC = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [expandedRowKeys, setExpandedRowKeys] = useState<string[]>([]);
+  
+  // Get initial tab from URL params
+  const initialTab = searchParams.get('tab') || 'qualidade';
+  const [activeTab, setActiveTab] = useState(initialTab);
+
+  // Update state when URL params change
+  useEffect(() => {
+    const tabParam = searchParams.get('tab');
+    if (tabParam && ['vinculo', 'qualidade'].includes(tabParam)) {
+      setActiveTab(tabParam);
+    }
+  }, [searchParams]);
 
   const handleExpand = (expanded: boolean, record: PessoaData) => {
     if (expanded) {
@@ -183,59 +241,73 @@ const QualidadeIndividualizado: React.FC = () => {
     }
   };
 
-  return (
+  const handleTabChange = (key: string) => {
+    setActiveTab(key);
+    const newParams = new URLSearchParams(searchParams);
+    newParams.set('tab', key);
+    setSearchParams(newParams, { replace: true });
+  };
+
+  const renderQualidadeContent = () => (
     <div className="space-y-6">
+      <FilterBar />
+      <IndividualizadoTableContent 
+        expandedRowKeys={expandedRowKeys} 
+        onExpand={handleExpand} 
+      />
+    </div>
+  );
+
+  const renderVinculoContent = () => (
+    <div className="space-y-6">
+      <FilterBar />
+      <IndividualizadoTableContent 
+        expandedRowKeys={expandedRowKeys} 
+        onExpand={handleExpand} 
+      />
+    </div>
+  );
+
+  const tabItems = [
+    {
+      key: 'vinculo',
+      label: 'Vínculo e Acompanhamento',
+      children: <div className="pt-4">{renderVinculoContent()}</div>,
+    },
+    {
+      key: 'qualidade',
+      label: 'Qualidade eSF/eAP',
+      children: <div className="pt-4">{renderQualidadeContent()}</div>,
+    },
+  ];
+
+  const breadcrumbLabel = activeTab === 'vinculo' ? 'Vínculo e Acompanhamento' : 'Qualidade eSF/eAP';
+  const breadcrumbPath = activeTab === 'vinculo' 
+    ? '/financiamento-aps/qualidade-esf-eap?tab=vinculo' 
+    : '/financiamento-aps/qualidade-esf-eap?tab=qualidade';
+  const relatorioPath = activeTab === 'vinculo'
+    ? '/financiamento-aps/qualidade-esf-eap/relatorio?tab=vinculo'
+    : '/financiamento-aps/qualidade-esf-eap/relatorio?tab=qualidade';
+
+  return (
+    <div>
       <PageHeader
-        title="Individualizado de Qualidade eSF/eAP"
-        breadcrumbs={breadcrumbItems}
+        title="Individualizado do Financiamento APS"
+        breadcrumbs={[
+          { label: 'Financiamento APS', path: '/financiamento-aps' },
+          { label: breadcrumbLabel, path: breadcrumbPath },
+          { label: 'Relatório', path: relatorioPath },
+          { label: 'Individualizado' },
+        ]}
       />
 
-      <FilterBar />
-
-      <div className="rounded-lg bg-card p-4 shadow-sm">
-        <div className="flex items-center justify-between mb-4">
-          <span className="text-sm text-muted-foreground">
-            Total de registros: <strong className="text-foreground">{sampleData.length}</strong>
-          </span>
-          <Button icon={<Download className="h-4 w-4" />}>
-            Exportar
-          </Button>
-        </div>
-
-        <Table
-          columns={columns}
-          dataSource={sampleData}
-          expandable={{
-            expandedRowKeys,
-            onExpand: handleExpand,
-            expandedRowRender: () => (
-              <div className="p-4 bg-muted/30 rounded-md">
-                <span className="text-sm text-muted-foreground italic">
-                  Detalhes do cadastro individual (em desenvolvimento)
-                </span>
-              </div>
-            ),
-            expandIcon: ({ expanded, onExpand, record }) => (
-              <button
-                onClick={(e) => onExpand(record, e)}
-                className="p-1 hover:bg-muted rounded transition-colors"
-              >
-                {expanded ? (
-                  <ChevronDown className="h-4 w-4 text-muted-foreground" />
-                ) : (
-                  <ChevronRight className="h-4 w-4 text-muted-foreground" />
-                )}
-              </button>
-            ),
-          }}
-          pagination={{
-            pageSize: 10,
-            showSizeChanger: true,
-            showTotal: (total, range) => `${range[0]}-${range[1]} de ${total} registros`,
-          }}
-          size="middle"
-        />
-      </div>
+      <Tabs
+        activeKey={activeTab}
+        onChange={handleTabChange}
+        items={tabItems}
+        size="large"
+        className="financiamento-tabs"
+      />
     </div>
   );
 };
