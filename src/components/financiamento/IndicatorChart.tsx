@@ -2,6 +2,7 @@ import React from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, LabelList, TooltipProps } from 'recharts';
 import { Info } from 'lucide-react';
 import { Tooltip } from 'antd';
+
 interface IndicatorChartData {
   equipe: string;
   equipeName: string;
@@ -230,6 +231,149 @@ const renderSegmentLabel = (props: any) => {
   );
 };
 
+// ==================== BULLET CHART FOR C1 ====================
+
+interface BulletChartData {
+  name: string;
+  value: number;
+  idealMin: number;
+  idealMax: number;
+  color: string;
+}
+
+const C1BulletChart: React.FC<{ kpis: KpiConfig[] }> = ({ kpis }) => {
+  const programadas = kpis.find(k => k.label === 'Demandas programadas')?.value ?? 0;
+  const espontaneas = kpis.find(k => k.label === 'Demandas espontâneas')?.value ?? 0;
+  const total = programadas + espontaneas;
+  
+  const programadasPct = total > 0 ? (programadas / total) * 100 : 0;
+  const espontaneasPct = total > 0 ? (espontaneas / total) * 100 : 0;
+  
+  const bulletData: BulletChartData[] = [
+    { 
+      name: 'Demandas programadas', 
+      value: programadasPct, 
+      idealMin: 65, 
+      idealMax: 75, 
+      color: '#0064FF' 
+    },
+    { 
+      name: 'Demandas espontâneas', 
+      value: espontaneasPct, 
+      idealMin: 25, 
+      idealMax: 35, 
+      color: '#7A7A85' 
+    },
+  ];
+
+  return (
+    <div className="space-y-6">
+      {/* Legend */}
+      <div className="flex flex-wrap items-center gap-x-6 gap-y-2 px-1">
+        <div className="flex items-center gap-2">
+          <div className="w-3 h-3 rounded-full" style={{ backgroundColor: '#0064FF' }} />
+          <span className="text-sm text-muted-foreground">Demandas programadas (ideal: 70%)</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="w-3 h-3 rounded-full" style={{ backgroundColor: '#7A7A85' }} />
+          <span className="text-sm text-muted-foreground">Demandas espontâneas (ideal: 30%)</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="w-8 h-3 rounded" style={{ backgroundColor: 'hsl(142, 76%, 90%)' }} />
+          <span className="text-sm text-muted-foreground">Faixa ideal</span>
+        </div>
+      </div>
+
+      {/* Bullet Charts */}
+      <div className="space-y-8 px-1">
+        {bulletData.map((item) => (
+          <div key={item.name} className="space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="text-sm font-medium text-foreground">{item.name}</span>
+              <span className="text-lg font-bold text-foreground">{item.value.toFixed(1)}%</span>
+            </div>
+            
+            <div className="relative h-10 rounded-lg bg-muted/50 overflow-hidden">
+              {/* Faixa ideal (background) */}
+              <div 
+                className="absolute top-0 h-full rounded"
+                style={{ 
+                  left: `${item.idealMin}%`, 
+                  width: `${item.idealMax - item.idealMin}%`,
+                  backgroundColor: 'hsl(142, 76%, 90%)',
+                }}
+              />
+              
+              {/* Linha do ideal central */}
+              <div 
+                className="absolute top-0 h-full w-0.5"
+                style={{ 
+                  left: item.name === 'Demandas programadas' ? '70%' : '30%',
+                  backgroundColor: 'hsl(142, 76%, 36%)',
+                }}
+              />
+              
+              {/* Barra de valor atual */}
+              <div 
+                className="absolute top-2 h-6 rounded transition-all duration-500"
+                style={{ 
+                  width: `${Math.min(item.value, 100)}%`,
+                  backgroundColor: item.color,
+                }}
+              />
+              
+              {/* Marcador do valor */}
+              <div 
+                className="absolute top-1 h-8 w-1 rounded-full bg-foreground shadow-lg"
+                style={{ 
+                  left: `${Math.min(item.value, 100)}%`,
+                  transform: 'translateX(-50%)',
+                }}
+              />
+            </div>
+            
+            {/* Scale */}
+            <div className="flex justify-between text-xs text-muted-foreground">
+              <span>0%</span>
+              <span>25%</span>
+              <span>50%</span>
+              <span>75%</span>
+              <span>100%</span>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Status indicator */}
+      <div className="rounded-lg border border-border bg-muted/30 p-4">
+        <div className="flex items-start gap-3">
+          <div className={`w-3 h-3 rounded-full mt-0.5 ${
+            programadasPct >= 65 && programadasPct <= 75 
+              ? 'bg-green-500' 
+              : programadasPct >= 60 && programadasPct <= 80 
+                ? 'bg-yellow-500' 
+                : 'bg-red-500'
+          }`} />
+          <div>
+            <p className="text-sm font-medium text-foreground">
+              {programadasPct >= 65 && programadasPct <= 75 
+                ? 'Distribuição ideal atingida' 
+                : programadasPct >= 60 && programadasPct <= 80 
+                  ? 'Distribuição próxima do ideal' 
+                  : 'Distribuição fora do ideal'}
+            </p>
+            <p className="text-xs text-muted-foreground mt-1">
+              A proporção ideal é de aproximadamente 70% de demandas programadas e 30% de demandas espontâneas.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// ==================== MAIN COMPONENT ====================
+
 export const IndicatorChart: React.FC<IndicatorChartProps> = ({
   data = defaultData,
   selectedIndicador = 'c3',
@@ -238,6 +382,36 @@ export const IndicatorChart: React.FC<IndicatorChartProps> = ({
   const kpis = getKpiConfig(selectedIndicador, kpiValues);
   const normalizedData = normalizeData(data);
 
+  // Render Bullet Chart for C1
+  if (selectedIndicador === 'c1') {
+    return (
+      <div className="space-y-6">
+        {/* KPIs */}
+        <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
+          {kpis.map((kpi, index) => (
+            <div 
+              key={kpi.label}
+              className={`rounded-xl border border-primary/20 p-4 ${
+                index === 0 
+                  ? 'bg-gradient-to-br from-primary/10 to-primary/5' 
+                  : 'bg-gradient-to-br from-accent to-accent/50'
+              }`}
+            >
+              <div>
+                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{kpi.label}</p>
+                <p className="text-2xl font-bold text-foreground">{kpi.value}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Bullet Chart */}
+        <C1BulletChart kpis={kpis} />
+      </div>
+    );
+  }
+
+  // Default stacked bar chart for other indicators
   return (
     <div className="space-y-6">
       {/* KPIs dinâmicos baseados no indicador */}
