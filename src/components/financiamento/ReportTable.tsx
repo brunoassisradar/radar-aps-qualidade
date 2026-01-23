@@ -19,6 +19,7 @@ interface ReportData {
 interface ReportTableProps {
   data?: ReportData[];
   totalEquipes?: number;
+  selectedPeriod?: string;
   onViewIndividual?: (key: string) => void;
 }
 
@@ -52,8 +53,10 @@ const sampleData: ReportData[] = [
 export const ReportTable: React.FC<ReportTableProps> = ({
   data = sampleData,
   totalEquipes = 398,
+  selectedPeriod = 'Consolidado',
   onViewIndividual,
 }) => {
+  const isConsolidado = selectedPeriod === 'Consolidado';
   const columns: ColumnsType<ReportData> = [
     {
       title: 'Equipe de saúde',
@@ -74,18 +77,18 @@ export const ReportTable: React.FC<ReportTableProps> = ({
         <Badge status={classificationStatus[classification]} text={classificationLabels[classification]} />
       ),
     },
-    {
+    ...(!isConsolidado ? [{
       title: 'Numerador',
       dataIndex: 'numerador',
       key: 'numerador',
-      align: 'center',
+      align: 'center' as const,
     },
     {
       title: 'Denominador',
       dataIndex: 'denominador',
       key: 'denominador',
-      align: 'center',
-    },
+      align: 'center' as const,
+    }] : []),
     {
       title: 'Pontuação',
       dataIndex: 'pontuacao',
@@ -117,7 +120,9 @@ export const ReportTable: React.FC<ReportTableProps> = ({
         <span className="text-sm text-muted-foreground">
           Total de equipes: <strong className="text-foreground">{totalEquipes}</strong>
         </span>
-        <Button icon={<Download className="h-4 w-4" />}>Exportar equipes</Button>
+        {!isConsolidado && (
+          <Button icon={<Download className="h-4 w-4" />}>Exportar equipes</Button>
+        )}
       </div>
       <Table
         columns={columns}
