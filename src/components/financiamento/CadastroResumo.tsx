@@ -63,7 +63,7 @@ export const CadastroResumo: React.FC<CadastroResumoProps> = ({
           <div className="flex-1 space-y-6">
             {/* Cadastro Atualizado */}
             <div className="gap-6 flex items-center justify-start">
-              <div className="flex items-start gap-3 flex-1">
+              <div className="gap-3 flex-1 flex items-center justify-start">
                 <div className="mt-1.5 w-3 h-3 rounded-full border-2 border-[#3C8DBC] shrink-0" />
                 <div>
                   <p className="text-sm text-foreground">
@@ -95,7 +95,7 @@ export const CadastroResumo: React.FC<CadastroResumoProps> = ({
             </div>
 
             {/* Sem Cadastro Atualizado */}
-            <div className="flex items-start gap-3">
+            <div className="gap-3 flex items-center justify-start">
               <div className="mt-1.5 w-3 h-3 rounded-full border-2 border-muted-foreground/30 shrink-0" />
               <div>
                 <p className="text-sm text-foreground">
