@@ -52,7 +52,12 @@ const menuItems: MenuItem[] = [
         label: 'Vínculo e Acompanhamento', 
         path: '/financiamento-aps/qualidade-esf-eap?tab=vinculo',
         hasActiveState: true,
-        tabKey: 'vinculo'
+        tabKey: 'vinculo',
+        children: [
+          { label: 'Visão geral', path: '/financiamento-aps/qualidade-esf-eap?tab=vinculo' },
+          { label: 'Relatório', path: '/financiamento-aps/qualidade-esf-eap/relatorio?tab=vinculo' },
+          { label: 'Individualizado', path: '/financiamento-aps/qualidade-esf-eap/individualizado?tab=vinculo' },
+        ]
       },
       { 
         label: 'Qualidade eSF/eAP', 
