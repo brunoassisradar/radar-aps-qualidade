@@ -1,6 +1,6 @@
 import React from 'react';
 import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
-import { HelpCircle } from 'lucide-react';
+import { HelpCircle, Smile } from 'lucide-react';
 import { Tooltip } from 'antd';
 
 interface CadastroResumoProps {
@@ -292,6 +292,45 @@ export const CadastroResumo: React.FC<CadastroResumoProps> = ({
           <p className="text-sm text-foreground">
             Valor limite máximo de população vinculada do município: <span className="font-semibold">29.250</span>
           </p>
+        </div>
+      </div>
+
+      {/* Seção 3 - Classificação do município */}
+      <div className="px-6 pb-6">
+        <div className="flex items-center gap-2 mb-6">
+          <h4 className="text-sm font-semibold text-foreground">3. Classificação do município na dimensão cadastro</h4>
+          <Tooltip title="A classificação é calculada dividindo a soma dos cadastros ponderados pelo parâmetro total das equipes, multiplicado por 100">
+            <HelpCircle className="w-4 h-4 text-muted-foreground cursor-help" />
+          </Tooltip>
+        </div>
+        
+        <div className="flex items-center justify-center gap-6">
+          {/* Fração */}
+          <div className="flex flex-col items-center">
+            <div className="flex items-center gap-4 text-lg font-medium text-foreground">
+              <span>{Math.round(cadastroIndividual * 0.75).toLocaleString('pt-BR')}</span>
+              <span className="text-muted-foreground">+</span>
+              <span>{Math.round(cadastroCompleto * 1.50).toLocaleString('pt-BR')}</span>
+            </div>
+            <div className="w-full h-px bg-border my-2" />
+            <div className="text-sm text-muted-foreground">
+              19.500 (Parâmetro calculado pelas equipes)
+            </div>
+          </div>
+
+          {/* Multiplicação e resultado */}
+          <div className="flex items-center gap-4 text-lg font-medium text-foreground">
+            <span className="text-muted-foreground">×</span>
+            <span>100</span>
+            <span className="text-muted-foreground">=</span>
+            <span className="text-xl font-bold">107</span>
+          </div>
+
+          {/* Badge de classificação */}
+          <div className="flex flex-col items-center gap-1 px-6 py-3 bg-[#3C8DBC]/10 rounded-lg">
+            <Smile className="w-8 h-8 text-[#3C8DBC]" />
+            <span className="text-xs font-semibold text-[#3C8DBC] uppercase tracking-wide">Ótimo</span>
+          </div>
         </div>
       </div>
     </div>;
