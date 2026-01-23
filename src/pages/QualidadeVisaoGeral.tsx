@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Tabs } from 'antd';
+import { useSearchParams } from 'react-router-dom';
 import { PageHeader } from '@/components/layout/PageHeader';
 import { FilterBar } from '@/components/financiamento/FilterBar';
 import { ClassificationCard } from '@/components/financiamento/ClassificationCard';
@@ -10,6 +11,25 @@ import { ComparativoCadastro } from '@/components/financiamento/ComparativoCadas
 import { CriteriosVinculacao } from '@/components/financiamento/CriteriosVinculacao';
 
 const QualidadeVisaoGeral: React.FC = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const initialTab = searchParams.get('tab') || 'vinculo';
+  const [activeTab, setActiveTab] = useState(initialTab);
+
+  // Sync state with URL changes
+  useEffect(() => {
+    const tabParam = searchParams.get('tab');
+    if (tabParam && ['vinculo', 'qualidade'].includes(tabParam)) {
+      setActiveTab(tabParam);
+    }
+  }, [searchParams]);
+
+  const handleTabChange = (key: string) => {
+    setActiveTab(key);
+    const newParams = new URLSearchParams(searchParams);
+    newParams.set('tab', key);
+    setSearchParams(newParams, { replace: true });
+  };
+
   const tabItems = [
     {
       key: 'vinculo',
@@ -72,18 +92,21 @@ const QualidadeVisaoGeral: React.FC = () => {
     },
   ];
 
+  const breadcrumbLabel = activeTab === 'vinculo' ? 'Vínculo e Acompanhamento' : 'Qualidade eSF/eAP';
+
   return (
     <div>
       <PageHeader
         title="Visão geral do Financiamento APS"
         breadcrumbs={[
           { label: 'Financiamento APS', path: '/financiamento-aps' },
-          { label: 'Visão Geral' },
+          { label: breadcrumbLabel },
         ]}
       />
 
       <Tabs
-        defaultActiveKey="vinculo"
+        activeKey={activeTab}
+        onChange={handleTabChange}
         items={tabItems}
         size="large"
         className="financiamento-tabs"
