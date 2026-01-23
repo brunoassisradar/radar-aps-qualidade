@@ -286,13 +286,18 @@ const QualidadeRelatorio: React.FC = () => {
     },
   ];
 
+  const breadcrumbLabel = activeTab === 'vinculo' ? 'Vínculo e Acompanhamento' : 'Qualidade eSF/eAP';
+  const breadcrumbPath = activeTab === 'vinculo' 
+    ? '/financiamento-aps/qualidade-esf-eap?tab=vinculo' 
+    : '/financiamento-aps/qualidade-esf-eap?tab=qualidade';
+
   return (
     <div>
       <PageHeader 
         title="Relatório do Financiamento APS" 
         breadcrumbs={[
           { label: 'Financiamento APS', path: '/financiamento-aps' },
-          { label: 'Qualidade eSF/eAP', path: '/financiamento-aps/qualidade-esf-eap' },
+          { label: breadcrumbLabel, path: breadcrumbPath },
           { label: 'Relatório' }
         ]}
       />
