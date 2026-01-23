@@ -43,9 +43,9 @@ const FinanciamentoAPS: React.FC = () => {
           title="Vínculo e acompanhamento"
           description="Acesse os dados detalhados sobre o cálculo do Componente Vínculo e Acompanhamento Territorial. Com isso, você poderá entender os critérios utilizados e aprimorar os resultados na sua APS."
           links={[
-            { label: 'Visão geral', path: '#' },
-            { label: 'Relatório', path: '#' },
-            { label: 'Individualizado', path: '#' },
+            { label: 'Visão geral', path: '/financiamento-aps/qualidade-esf-eap?tab=vinculo' },
+            { label: 'Relatório', path: '/financiamento-aps/qualidade-esf-eap/relatorio?tab=vinculo' },
+            { label: 'Individualizado', path: '/financiamento-aps/qualidade-esf-eap/individualizado?tab=vinculo' },
           ]}
         />
         <InfoCard
@@ -53,9 +53,9 @@ const FinanciamentoAPS: React.FC = () => {
           title="Qualidade"
           description="Acesse os dados detalhados sobre os Indicadores de qualidade. Este módulo avalia aspectos como cobertura, gestão de condições crônicas e imunização. O desempenho dos municípios impacta os repasses financeiros e promove melhorias contínuas."
           links={[
-            { label: 'Visão geral', path: '/financiamento-aps/qualidade-esf-eap' },
-            { label: 'Relatório', path: '/financiamento-aps/qualidade-esf-eap/relatorio' },
-            { label: 'Individualizado', path: '#' },
+            { label: 'Visão geral', path: '/financiamento-aps/qualidade-esf-eap?tab=qualidade' },
+            { label: 'Relatório', path: '/financiamento-aps/qualidade-esf-eap/relatorio?tab=qualidade' },
+            { label: 'Individualizado', path: '/financiamento-aps/qualidade-esf-eap/individualizado?tab=qualidade' },
           ]}
         />
         <InfoCard
