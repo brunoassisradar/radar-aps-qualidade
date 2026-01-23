@@ -136,6 +136,15 @@
     grid-template-columns: minmax(180px, 1.5fr) minmax(160px, 1.2fr) repeat(4, 1fr);
   }
 
+  /* 4-column variant for dimension tables */
+  .indicator-grid:has(.indicator-grid-row-4cols) {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .indicator-grid:has(.indicator-grid-row-4cols) .indicator-grid-header {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
   .indicator-grid-header {
     display: contents;
   }
@@ -149,7 +158,12 @@
     display: contents;
   }
 
-  .indicator-grid-row:hover .indicator-grid-cell {
+  .indicator-grid-row-4cols {
+    display: contents;
+  }
+
+  .indicator-grid-row:hover .indicator-grid-cell,
+  .indicator-grid-row-4cols:hover .indicator-grid-cell {
     background-color: hsl(var(--muted) / 0.3);
   }
 
@@ -160,7 +174,8 @@
     align-items: center;
   }
 
-  .indicator-grid-row:last-child .indicator-grid-cell {
+  .indicator-grid-row:last-child .indicator-grid-cell,
+  .indicator-grid-row-4cols:last-child .indicator-grid-cell {
     border-bottom: none;
   }
 }

@@ -240,20 +240,13 @@ const ExpandedRow: React.FC<{ record: VinculoData }> = ({ record }) => {
     { label: 'Pessoas acompanhadas', color: '#3B82F6' },
   ];
 
-  const months = ['janeiro', 'fevereiro', 'marco', 'abril'] as const;
-  const monthLabels: Record<typeof months[number], string> = {
-    janeiro: 'Janeiro',
-    fevereiro: 'Fevereiro',
-    marco: 'Março',
-    abril: 'Abril',
-  };
-
   return (
-    <div className="bg-muted/20 border-t border-border p-4 space-y-6">
+    <div className="bg-muted/20 border-t border-border space-y-4 py-4">
       {/* Dimensão Cadastro */}
-      <div className="bg-blue-50 rounded-lg p-4">
-        <div className="flex items-center gap-3 mb-4 flex-wrap">
-          <span className="text-lg font-semibold text-blue-600">Dimensão Cadastro</span>
+      <div>
+        {/* Header com título e legenda */}
+        <div className="flex items-center gap-3 mb-2 px-4 py-2 bg-blue-50 rounded-t-md border border-border flex-wrap">
+          <span className="text-base font-semibold text-blue-600">Dimensão Cadastro</span>
           <div className="flex flex-wrap gap-3">
             {cadastroLegend.map((item) => (
               <div key={item.label} className="flex items-center gap-1.5">
@@ -263,20 +256,40 @@ const ExpandedRow: React.FC<{ record: VinculoData }> = ({ record }) => {
             ))}
           </div>
         </div>
-        <div className="grid grid-cols-4 gap-4">
-          {months.map((month) => (
-            <div key={month}>
-              <div className="text-sm font-medium text-foreground mb-2">{monthLabels[month]}</div>
-              <CadastroBarChart data={record.cadastro[month]} />
+        {/* Tabela de meses */}
+        <div className="overflow-x-auto border border-t-0 border-border rounded-b-md">
+          <div className="indicator-grid min-w-[800px]">
+            {/* Header row */}
+            <div className="indicator-grid-header">
+              <div className="indicator-grid-cell font-medium text-muted-foreground">Janeiro</div>
+              <div className="indicator-grid-cell font-medium text-muted-foreground">Fevereiro</div>
+              <div className="indicator-grid-cell font-medium text-muted-foreground">Março</div>
+              <div className="indicator-grid-cell font-medium text-muted-foreground">Abril</div>
             </div>
-          ))}
+            {/* Data row com gráficos */}
+            <div className="indicator-grid-row-4cols bg-card">
+              <div className="indicator-grid-cell">
+                <CadastroBarChart data={record.cadastro.janeiro} />
+              </div>
+              <div className="indicator-grid-cell">
+                <CadastroBarChart data={record.cadastro.fevereiro} />
+              </div>
+              <div className="indicator-grid-cell">
+                <CadastroBarChart data={record.cadastro.marco} />
+              </div>
+              <div className="indicator-grid-cell">
+                <CadastroBarChart data={record.cadastro.abril} />
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
       {/* Dimensão Acompanhamento */}
-      <div className="bg-gray-50 rounded-lg p-4">
-        <div className="flex items-center gap-3 mb-4 flex-wrap">
-          <span className="text-lg font-semibold text-gray-700">Dimensão Acompanhamento</span>
+      <div>
+        {/* Header com título e legenda */}
+        <div className="flex items-center gap-3 mb-2 px-4 py-2 bg-gray-100 rounded-t-md border border-border flex-wrap">
+          <span className="text-base font-semibold text-gray-700">Dimensão Acompanhamento</span>
           <div className="flex flex-wrap gap-3">
             {acompanhamentoLegend.map((item) => (
               <div key={item.label} className="flex items-center gap-1.5">
@@ -286,13 +299,32 @@ const ExpandedRow: React.FC<{ record: VinculoData }> = ({ record }) => {
             ))}
           </div>
         </div>
-        <div className="grid grid-cols-4 gap-4">
-          {months.map((month) => (
-            <div key={month}>
-              <div className="text-sm font-medium text-foreground mb-2">{monthLabels[month]}</div>
-              <AcompanhamentoBarChart data={record.acompanhamento[month]} />
+        {/* Tabela de meses */}
+        <div className="overflow-x-auto border border-t-0 border-border rounded-b-md">
+          <div className="indicator-grid min-w-[800px]">
+            {/* Header row */}
+            <div className="indicator-grid-header">
+              <div className="indicator-grid-cell font-medium text-muted-foreground">Janeiro</div>
+              <div className="indicator-grid-cell font-medium text-muted-foreground">Fevereiro</div>
+              <div className="indicator-grid-cell font-medium text-muted-foreground">Março</div>
+              <div className="indicator-grid-cell font-medium text-muted-foreground">Abril</div>
             </div>
-          ))}
+            {/* Data row com gráficos */}
+            <div className="indicator-grid-row-4cols bg-card">
+              <div className="indicator-grid-cell">
+                <AcompanhamentoBarChart data={record.acompanhamento.janeiro} />
+              </div>
+              <div className="indicator-grid-cell">
+                <AcompanhamentoBarChart data={record.acompanhamento.fevereiro} />
+              </div>
+              <div className="indicator-grid-cell">
+                <AcompanhamentoBarChart data={record.acompanhamento.marco} />
+              </div>
+              <div className="indicator-grid-cell">
+                <AcompanhamentoBarChart data={record.acompanhamento.abril} />
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
