@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Tabs } from 'antd';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import { PageHeader } from '@/components/layout/PageHeader';
 import { FilterBar } from '@/components/financiamento/FilterBar';
 import { ClassificationCard } from '@/components/financiamento/ClassificationCard';
@@ -9,9 +9,11 @@ import { VinculoAcompanhamentoTable } from '@/components/financiamento/VinculoAc
 import { ResultadoMunicipio } from '@/components/financiamento/ResultadoMunicipio';
 import { ComparativoCadastro } from '@/components/financiamento/ComparativoCadastro';
 import { CriteriosVinculacao } from '@/components/financiamento/CriteriosVinculacao';
+import { Button } from '@/components/ui/button';
 
 const QualidadeVisaoGeral: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
   const initialTab = searchParams.get('tab') || 'vinculo';
   const [activeTab, setActiveTab] = useState(initialTab);
 
@@ -93,6 +95,25 @@ const QualidadeVisaoGeral: React.FC = () => {
   ];
 
   const breadcrumbLabel = activeTab === 'vinculo' ? 'Vínculo e Acompanhamento' : 'Qualidade eSF/eAP';
+  
+  const relatorioPath = `/financiamento-aps/qualidade-esf-eap/relatorio?tab=${activeTab}`;
+  const individualizadoPath = `/financiamento-aps/qualidade-esf-eap/individualizado?tab=${activeTab}`;
+
+  const headerActions = (
+    <>
+      <Button 
+        variant="outline" 
+        onClick={() => navigate(individualizadoPath)}
+      >
+        Individualizado
+      </Button>
+      <Button 
+        onClick={() => navigate(relatorioPath)}
+      >
+        Relatório
+      </Button>
+    </>
+  );
 
   return (
     <div>
@@ -102,6 +123,7 @@ const QualidadeVisaoGeral: React.FC = () => {
           { label: 'Financiamento APS', path: '/financiamento-aps' },
           { label: breadcrumbLabel },
         ]}
+        actions={headerActions}
       />
 
       <Tabs
