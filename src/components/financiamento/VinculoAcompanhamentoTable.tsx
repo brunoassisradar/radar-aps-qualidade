@@ -2,7 +2,7 @@ import React from 'react';
 import { Table, Button } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { Download, ChevronDown, ChevronRight, ChevronRightIcon } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, LabelList } from 'recharts';
 
 type Classification = 'otimo' | 'bom' | 'suficiente' | 'regular';
@@ -64,6 +64,13 @@ const statusFilters = [
   { text: 'Suficiente', value: 'suficiente' },
   { text: 'Regular', value: 'regular' },
 ];
+
+const monthToLabel: Record<string, string> = {
+  janeiro: 'Janeiro',
+  fevereiro: 'Fevereiro',
+  marco: 'Março',
+  abril: 'Abril',
+};
 
 const ResultadoCell: React.FC<{ nota: number; classification: Classification }> = ({ nota, classification }) => {
   return (
@@ -150,10 +157,10 @@ const columns: ColumnsType<VinculoData> = [
     width: '18%',
     render: (_: unknown, record: VinculoData) => (
       <div className="flex gap-2">
-        <Link to={`/financiamento-aps/vinculo-acompanhamento/relatorio?equipe=${record.key}`}>
+        <Link to={`/financiamento-aps/qualidade-esf-eap/relatorio?tab=vinculo&equipe=${record.key}`}>
           <Button type="default" size="small">Relatório</Button>
         </Link>
-        <Link to={`/financiamento-aps/vinculo-acompanhamento/individualizado?equipe=${record.key}`}>
+        <Link to={`/financiamento-aps/qualidade-esf-eap/individualizado?equipe=${record.key}`}>
           <Button type="default" size="small">Individualizado</Button>
         </Link>
       </div>
@@ -162,14 +169,23 @@ const columns: ColumnsType<VinculoData> = [
 ];
 
 // Cadastro stacked bar chart component
-const CadastroBarChart: React.FC<{ data: CadastroBarData }> = ({ data }) => {
+const CadastroBarChart: React.FC<{ data: CadastroBarData; month: string; equipeKey: string }> = ({ data, month, equipeKey }) => {
+  const navigate = useNavigate();
   const total = data.cadastroCompleto + data.cadastroIndividual + data.semCadastro;
   const chartData = [
     { name: 'bar', cadastroCompleto: data.cadastroCompleto, cadastroIndividual: data.cadastroIndividual, semCadastro: data.semCadastro }
   ];
 
+  const handleClick = () => {
+    const periodo = monthToLabel[month] || 'Consolidado';
+    navigate(`/financiamento-aps/qualidade-esf-eap/relatorio?tab=vinculo&dimensao=cadastro&periodo=${periodo}&equipe=${equipeKey}`);
+  };
+
   return (
-    <div className="flex items-center gap-2 w-full">
+    <div 
+      className="flex items-center gap-2 w-full cursor-pointer hover:opacity-80 transition-opacity" 
+      onClick={handleClick}
+    >
       <div className="flex-1 h-7 min-w-0">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart
@@ -197,13 +213,22 @@ const CadastroBarChart: React.FC<{ data: CadastroBarData }> = ({ data }) => {
 };
 
 // Acompanhamento bar chart component
-const AcompanhamentoBarChart: React.FC<{ data: AcompanhamentoBarData }> = ({ data }) => {
+const AcompanhamentoBarChart: React.FC<{ data: AcompanhamentoBarData; month: string; equipeKey: string }> = ({ data, month, equipeKey }) => {
+  const navigate = useNavigate();
   const chartData = [
     { name: 'bar', acompanhadas: data.acompanhadas, restante: data.total - data.acompanhadas }
   ];
 
+  const handleClick = () => {
+    const periodo = monthToLabel[month] || 'Consolidado';
+    navigate(`/financiamento-aps/qualidade-esf-eap/relatorio?tab=vinculo&dimensao=acompanhamento&periodo=${periodo}&equipe=${equipeKey}`);
+  };
+
   return (
-    <div className="flex items-center gap-2 w-full">
+    <div 
+      className="flex items-center gap-2 w-full cursor-pointer hover:opacity-80 transition-opacity" 
+      onClick={handleClick}
+    >
       <div className="flex-1 h-7 min-w-0">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart
@@ -265,16 +290,16 @@ const ExpandedRow: React.FC<{ record: VinculoData }> = ({ record }) => {
             {/* Data row com gráficos */}
             <div className="indicator-grid-row-4cols bg-card">
               <div className="indicator-grid-cell">
-                <CadastroBarChart data={record.cadastro.janeiro} />
+                <CadastroBarChart data={record.cadastro.janeiro} month="janeiro" equipeKey={record.key} />
               </div>
               <div className="indicator-grid-cell">
-                <CadastroBarChart data={record.cadastro.fevereiro} />
+                <CadastroBarChart data={record.cadastro.fevereiro} month="fevereiro" equipeKey={record.key} />
               </div>
               <div className="indicator-grid-cell">
-                <CadastroBarChart data={record.cadastro.marco} />
+                <CadastroBarChart data={record.cadastro.marco} month="marco" equipeKey={record.key} />
               </div>
               <div className="indicator-grid-cell">
-                <CadastroBarChart data={record.cadastro.abril} />
+                <CadastroBarChart data={record.cadastro.abril} month="abril" equipeKey={record.key} />
               </div>
             </div>
           </div>
@@ -308,16 +333,16 @@ const ExpandedRow: React.FC<{ record: VinculoData }> = ({ record }) => {
             {/* Data row com gráficos */}
             <div className="indicator-grid-row-4cols bg-card">
               <div className="indicator-grid-cell">
-                <AcompanhamentoBarChart data={record.acompanhamento.janeiro} />
+                <AcompanhamentoBarChart data={record.acompanhamento.janeiro} month="janeiro" equipeKey={record.key} />
               </div>
               <div className="indicator-grid-cell">
-                <AcompanhamentoBarChart data={record.acompanhamento.fevereiro} />
+                <AcompanhamentoBarChart data={record.acompanhamento.fevereiro} month="fevereiro" equipeKey={record.key} />
               </div>
               <div className="indicator-grid-cell">
-                <AcompanhamentoBarChart data={record.acompanhamento.marco} />
+                <AcompanhamentoBarChart data={record.acompanhamento.marco} month="marco" equipeKey={record.key} />
               </div>
               <div className="indicator-grid-cell">
-                <AcompanhamentoBarChart data={record.acompanhamento.abril} />
+                <AcompanhamentoBarChart data={record.acompanhamento.abril} month="abril" equipeKey={record.key} />
               </div>
             </div>
           </div>
