@@ -160,7 +160,7 @@ const columns: ColumnsType<VinculoData> = [
         <Link to={`/financiamento-aps/qualidade-esf-eap/relatorio?tab=vinculo&equipe=${record.key}`}>
           <Button type="default" size="small">Relatório</Button>
         </Link>
-        <Link to={`/financiamento-aps/qualidade-esf-eap/individualizado?equipe=${record.key}`}>
+        <Link to={`/financiamento-aps/qualidade-esf-eap/individualizado?tab=vinculo&equipe=${record.key}`}>
           <Button type="default" size="small">Individualizado</Button>
         </Link>
       </div>
