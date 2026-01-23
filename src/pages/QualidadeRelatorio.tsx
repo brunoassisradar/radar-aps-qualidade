@@ -146,17 +146,6 @@ const QualidadeRelatorio: React.FC = () => {
 
             {/* Card de Classificação Equipe */}
             <div className="rounded-lg bg-card shadow-sm overflow-hidden">
-              <div className="px-6 py-4 border-b border-border bg-gradient-to-r from-primary/5 to-transparent">
-                <div className="flex items-center gap-3">
-                  <span className="flex items-center justify-center w-10 h-10 rounded-lg bg-primary text-primary-foreground">
-                    <Users className="w-5 h-5" />
-                  </span>
-                  <div>
-                    <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">GESTANTE E PUÉRPERA</p>
-                    <h2 className="text-lg font-semibold text-foreground">Classificação de equipes</h2>
-                  </div>
-                </div>
-              </div>
               <div className="p-4">
                 <ReportTable />
               </div>
