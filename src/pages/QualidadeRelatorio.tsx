@@ -61,7 +61,7 @@ const dimensoes = [{
 }];
 
 const QualidadeRelatorio: React.FC = () => {
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   
   // Get initial values from URL params
   const initialTab = searchParams.get('tab') || 'vinculo';
@@ -309,7 +309,13 @@ const QualidadeRelatorio: React.FC = () => {
 
       <Tabs
         activeKey={activeTab}
-        onChange={(key) => setActiveTab(key)}
+        onChange={(key) => {
+          setActiveTab(key);
+          // Update URL to reflect tab change
+          const newParams = new URLSearchParams(searchParams);
+          newParams.set('tab', key);
+          setSearchParams(newParams, { replace: true });
+        }}
         items={tabItems}
         size="large"
         className="financiamento-tabs"
