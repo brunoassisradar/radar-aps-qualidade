@@ -42,7 +42,7 @@ const Login: React.FC = () => {
           <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary">
             <Lock className="h-8 w-8 text-primary-foreground" />
           </div>
-          <CardTitle className="text-2xl font-bold">Radar APS</CardTitle>
+          <CardTitle className="text-2xl font-bold">Figma Teste</CardTitle>
           <CardDescription>
             Digite suas credenciais para acessar o sistema
           </CardDescription>
