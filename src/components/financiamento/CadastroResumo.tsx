@@ -1,7 +1,8 @@
 import React from 'react';
 import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
-import { HelpCircle, Smile } from 'lucide-react';
+import { HelpCircle, Smile, AlertCircle, FileText } from 'lucide-react';
 import { Tooltip } from 'antd';
+import { Button } from '@/components/ui/button';
 
 interface CadastroResumoProps {
   totalPessoas?: number;
@@ -383,6 +384,59 @@ export const CadastroResumo: React.FC<CadastroResumoProps> = ({
                 <p className="text-sm font-semibold text-foreground">29.250</p>
                 <p className="text-xs text-muted-foreground">Limite máximo</p>
               </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Seção Pontos de Atenção */}
+      <div className="px-6 pb-6">
+        <h4 className="text-sm font-semibold text-foreground mb-4">Pontos de atenção</h4>
+        
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {/* Card 1 - Cadastros completando 2 anos */}
+          <div className="rounded-lg border border-border bg-card p-5">
+            <p className="text-sm text-foreground mb-4">
+              Quantitativo de pessoas cujo cadastro completará 2 anos no quadrimestre
+            </p>
+            <div className="flex flex-col items-center gap-2">
+              <AlertCircle className="w-8 h-8 text-[#3C8DBC]" />
+              <span className="text-3xl font-bold text-foreground">1.718</span>
+            </div>
+          </div>
+
+          {/* Card 2 - Sem identificação no CADSUS */}
+          <div className="rounded-lg border border-border bg-card p-5">
+            <div className="flex items-start gap-1 mb-4">
+              <p className="text-sm text-foreground">
+                Quantitativo de cadastros individuais dos últimos 6 meses, sem identificação no CADSUS
+              </p>
+              <Tooltip title="Cadastros que não possuem CPF ou CNS válidos no sistema CADSUS">
+                <HelpCircle className="w-4 h-4 text-muted-foreground shrink-0 cursor-help" />
+              </Tooltip>
+            </div>
+            <div className="flex flex-col items-center gap-2">
+              <AlertCircle className="w-8 h-8 text-[#F0AD4E]" />
+              <span className="text-3xl font-bold text-foreground">44</span>
+              <Button variant="outline" size="sm" className="mt-2 gap-2">
+                <FileText className="w-4 h-4" />
+                Ir para Inconsistências
+              </Button>
+            </div>
+          </div>
+
+          {/* Card 3 - Sem vínculo à equipe */}
+          <div className="rounded-lg border border-border bg-card p-5">
+            <p className="text-sm text-foreground mb-4">
+              Quantitativo de cadastros individuais dos últimos 6 meses, registrados sem vínculo à uma equipe
+            </p>
+            <div className="flex flex-col items-center gap-2">
+              <AlertCircle className="w-8 h-8 text-[#F0AD4E]" />
+              <span className="text-3xl font-bold text-foreground">62</span>
+              <Button variant="outline" size="sm" className="mt-2 gap-2">
+                <FileText className="w-4 h-4" />
+                Ir para Inconsistências
+              </Button>
             </div>
           </div>
         </div>
