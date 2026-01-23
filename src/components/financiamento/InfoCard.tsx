@@ -34,7 +34,7 @@ export const InfoCard: React.FC<InfoCardProps> = ({
         <div
           className={cn(
             'inline-flex h-12 w-12 items-center justify-center rounded-full',
-            variant === 'primary' ? 'bg-primary-foreground/20' : 'bg-status-suficiente'
+            variant === 'primary' ? 'bg-primary-foreground/20' : 'bg-primary/10'
           )}
         >
           {icon}
