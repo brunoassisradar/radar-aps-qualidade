@@ -120,9 +120,21 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({ collapsed }) => {
     return false;
   };
 
-  const isTertiaryActive = (path: string) => {
-    const [basePath] = path.split('?');
-    return location.pathname === basePath;
+  const isTertiaryActive = (path: string, parentTabKey?: string) => {
+    const [basePath, queryString] = path.split('?');
+    const pathParams = new URLSearchParams(queryString);
+    const pathTab = pathParams.get('tab');
+    
+    // Check if pathname matches AND if the tab parameter matches
+    if (location.pathname !== basePath) return false;
+    
+    // If the path has a tab parameter, it must match the current tab
+    if (pathTab && pathTab !== currentTab) return false;
+    
+    // If parent has a tabKey, current tab must match it
+    if (parentTabKey && parentTabKey !== currentTab) return false;
+    
+    return true;
   };
 
   const isInFinanciamentoSection = location.pathname.startsWith('/financiamento-aps');
@@ -197,16 +209,16 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({ collapsed }) => {
                               {expandedSecondary.includes(child.label) && (
                                 <ul className="ml-4 mt-1 space-y-1 border-l border-border pl-3">
                                   {child.children.map((tertiary) => (
-                                    <li key={tertiary.label}>
-                                      <NavLink
-                                        to={tertiary.path}
-                                        className={cn(
-                                          'block rounded-md px-2 py-1.5 text-xs transition-colors',
-                                          isTertiaryActive(tertiary.path)
-                                            ? 'font-medium text-sidebar-primary'
-                                            : 'text-muted-foreground hover:text-sidebar-primary'
-                                        )}
-                                      >
+                                                    <li key={tertiary.label}>
+                                                      <NavLink
+                                                        to={tertiary.path}
+                                                        className={cn(
+                                                          'block rounded-md px-2 py-1.5 text-xs transition-colors',
+                                                          isTertiaryActive(tertiary.path, child.tabKey)
+                                                            ? 'font-medium text-sidebar-primary'
+                                                            : 'text-muted-foreground hover:text-sidebar-primary'
+                                                        )}
+                                                      >
                                         {tertiary.label}
                                       </NavLink>
                                     </li>
