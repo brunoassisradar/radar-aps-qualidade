@@ -44,7 +44,7 @@ const QualidadeVisaoGeral: React.FC = () => {
             classificacao="suficiente"
           />
           <ComparativoCadastro
-            municipio="Fortaleza - CE"
+            municipio="Lorem ipsum"
             pessoasCadastradas={2339333}
             pessoasCadastroAtualizado={1500703}
             pessoasAcompanhadas={825242}
