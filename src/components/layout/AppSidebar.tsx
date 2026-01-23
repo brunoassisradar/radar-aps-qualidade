@@ -19,11 +19,23 @@ interface AppSidebarProps {
   onCollapse: (collapsed: boolean) => void;
 }
 
+interface TertiaryMenuItem {
+  label: string;
+  path: string;
+}
+
+interface SecondaryMenuItem {
+  label: string;
+  path: string;
+  hasActiveState?: boolean; // Whether this item can show blue/active state
+  children?: TertiaryMenuItem[];
+}
+
 interface MenuItem {
   label: string;
   icon: React.ComponentType<{ className?: string }>;
   path?: string;
-  children?: { label: string; path: string }[];
+  children?: SecondaryMenuItem[];
 }
 
 const menuItems: MenuItem[] = [
@@ -34,10 +46,24 @@ const menuItems: MenuItem[] = [
     label: 'Financiamento APS',
     icon: FileText,
     children: [
-      { label: 'Resumo', path: '/financiamento-aps' },
-      { label: 'Qualidade eSF/eAP', path: '/financiamento-aps/qualidade-esf-eap' },
-      { label: 'Qualidade eSB', path: '#' },
-      { label: 'Qualidade eMulti', path: '#' },
+      { label: 'Resumo', path: '/financiamento-aps', hasActiveState: false },
+      { 
+        label: 'Vínculo e Acompanhamento', 
+        path: '/financiamento-aps/qualidade-esf-eap?tab=vinculo',
+        hasActiveState: true 
+      },
+      { 
+        label: 'Qualidade eSF/eAP', 
+        path: '/financiamento-aps/qualidade-esf-eap',
+        hasActiveState: true,
+        children: [
+          { label: 'Visão geral', path: '/financiamento-aps/qualidade-esf-eap' },
+          { label: 'Relatório', path: '/financiamento-aps/qualidade-esf-eap/relatorio' },
+          { label: 'Individualizado', path: '/financiamento-aps/qualidade-esf-eap/individualizado' },
+        ]
+      },
+      { label: 'Qualidade eSB', path: '#', hasActiveState: true },
+      { label: 'Qualidade eMulti', path: '#', hasActiveState: true },
     ],
   },
   { label: 'Linhas de cuidado', icon: Heart, path: '#' },
@@ -50,6 +76,7 @@ const menuItems: MenuItem[] = [
 export const AppSidebar: React.FC<AppSidebarProps> = ({ collapsed }) => {
   const location = useLocation();
   const [expandedItems, setExpandedItems] = useState<string[]>(['Financiamento APS']);
+  const [expandedSecondary, setExpandedSecondary] = useState<string[]>([]);
 
   const toggleExpanded = (label: string) => {
     setExpandedItems((prev) =>
@@ -59,14 +86,51 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({ collapsed }) => {
     );
   };
 
-  const isActive = (path?: string) => {
-    if (!path || path === '#') return false;
-    return location.pathname === path || location.pathname.startsWith(path + '/');
+  const toggleSecondaryExpanded = (label: string) => {
+    setExpandedSecondary((prev) =>
+      prev.includes(label)
+        ? prev.filter((item) => item !== label)
+        : [...prev, label]
+    );
   };
 
-  const isParentActive = (children?: { label: string; path: string }[]) => {
+  const isPathActive = (path?: string) => {
+    if (!path || path === '#') return false;
+    // Handle query params separately
+    const [basePath] = path.split('?');
+    const [currentBasePath] = location.pathname.split('?');
+    
+    // Check if it's the vinculo tab
+    if (path.includes('?tab=vinculo')) {
+      return location.pathname.startsWith('/financiamento-aps/qualidade-esf-eap') && 
+             location.search.includes('tab=vinculo');
+    }
+    
+    return currentBasePath === basePath || location.pathname.startsWith(basePath + '/');
+  };
+
+  const isSecondaryActive = (item: SecondaryMenuItem) => {
+    if (!item.hasActiveState) return false;
+    
+    // Check main path
+    if (isPathActive(item.path)) return true;
+    
+    // Check children paths
+    if (item.children) {
+      return item.children.some(child => isPathActive(child.path));
+    }
+    
+    return false;
+  };
+
+  const isTertiaryActive = (path: string) => {
+    const [basePath] = path.split('?');
+    return location.pathname === basePath;
+  };
+
+  const isParentActive = (children?: SecondaryMenuItem[]) => {
     if (!children) return false;
-    return children.some((child) => isActive(child.path));
+    return children.some((child) => isSecondaryActive(child));
   };
 
   return (
@@ -108,19 +172,59 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({ collapsed }) => {
                     <ul className="ml-8 mt-1 space-y-1">
                       {item.children.map((child) => (
                         <li key={child.label}>
-                          <NavLink
-                            to={child.path}
-                            className={({ isActive: active }) =>
-                              cn(
+                          {child.children ? (
+                            // Secondary item with tertiary menu
+                            <div>
+                              <button
+                                onClick={() => toggleSecondaryExpanded(child.label)}
+                                className={cn(
+                                  'flex w-full items-center justify-between rounded-md px-3 py-2 text-sm transition-colors',
+                                  isSecondaryActive(child)
+                                    ? 'font-medium text-sidebar-primary'
+                                    : 'text-sidebar-foreground hover:text-sidebar-primary'
+                                )}
+                              >
+                                <span>{child.label}</span>
+                                {expandedSecondary.includes(child.label) ? (
+                                  <ChevronDown className="h-3 w-3" />
+                                ) : (
+                                  <ChevronRight className="h-3 w-3" />
+                                )}
+                              </button>
+                              {expandedSecondary.includes(child.label) && (
+                                <ul className="ml-4 mt-1 space-y-1 border-l border-border pl-3">
+                                  {child.children.map((tertiary) => (
+                                    <li key={tertiary.label}>
+                                      <NavLink
+                                        to={tertiary.path}
+                                        className={cn(
+                                          'block rounded-md px-2 py-1.5 text-xs transition-colors',
+                                          isTertiaryActive(tertiary.path)
+                                            ? 'font-medium text-sidebar-primary'
+                                            : 'text-muted-foreground hover:text-sidebar-primary'
+                                        )}
+                                      >
+                                        {tertiary.label}
+                                      </NavLink>
+                                    </li>
+                                  ))}
+                                </ul>
+                              )}
+                            </div>
+                          ) : (
+                            // Simple secondary item
+                            <NavLink
+                              to={child.path}
+                              className={cn(
                                 'block rounded-md px-3 py-2 text-sm transition-colors',
-                                active || isActive(child.path)
+                                isSecondaryActive(child)
                                   ? 'font-medium text-sidebar-primary'
                                   : 'text-sidebar-foreground hover:text-sidebar-primary'
-                              )
-                            }
-                          >
-                            {child.label}
-                          </NavLink>
+                              )}
+                            >
+                              {child.label}
+                            </NavLink>
+                          )}
                         </li>
                       ))}
                     </ul>
