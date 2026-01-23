@@ -333,6 +333,60 @@ export const CadastroResumo: React.FC<CadastroResumoProps> = ({
           </div>
         </div>
       </div>
+
+      {/* Seção 4 - Gráfico de Cadastros de acordo com o parâmetro */}
+      <div className="px-6 pb-6">
+        <h4 className="text-sm font-semibold text-foreground mb-6">Cadastros de acordo com o parâmetro</h4>
+        
+        <div className="relative">
+          {/* Header com total */}
+          <div className="flex justify-end mb-2">
+            <div className="text-center">
+              <p className="text-xs text-muted-foreground">Total de cadastros</p>
+              <p className="text-sm font-semibold text-foreground">{totalPessoas.toLocaleString('pt-BR')}</p>
+            </div>
+          </div>
+
+          {/* Barra de progresso */}
+          <div className="relative h-6 bg-muted/30 rounded overflow-visible">
+            {/* Barra preenchida (cadastros atualizados) */}
+            <div 
+              className="absolute top-0 left-0 h-full bg-[#00A65A] rounded-l flex items-center justify-end pr-2"
+              style={{ width: `${(cadastroAtualizado / 29250) * 100}%` }}
+            >
+              <span className="text-xs font-medium text-white">{cadastroAtualizadoPercent.toLocaleString('pt-BR')}%</span>
+            </div>
+            
+            {/* Marcador do Parâmetro (19.500) */}
+            <div 
+              className="absolute top-0 h-full border-r-2 border-dashed border-muted-foreground/50"
+              style={{ left: `${(19500 / 29250) * 100}%` }}
+            />
+            
+            {/* Marcador do Limite máximo (29.250) - fim da barra */}
+            <div 
+              className="absolute top-0 right-0 h-full border-r-2 border-dashed border-muted-foreground/50"
+            />
+          </div>
+
+          {/* Legenda inferior */}
+          <div className="flex items-start justify-between mt-2">
+            <p className="text-xs text-muted-foreground">
+              {cadastroAtualizado.toLocaleString('pt-BR')} ({cadastroAtualizadoPercent.toLocaleString('pt-BR')}%) pessoas com cadastro atualizado
+            </p>
+            <div className="flex gap-8">
+              <div className="text-center" style={{ marginLeft: `${((19500 / 29250) * 100) - 50}%` }}>
+                <p className="text-sm font-semibold text-foreground">19.500</p>
+                <p className="text-xs text-muted-foreground">Parâmetro</p>
+              </div>
+              <div className="text-right">
+                <p className="text-sm font-semibold text-foreground">29.250</p>
+                <p className="text-xs text-muted-foreground">Limite máximo</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>;
 };
 export default CadastroResumo;
