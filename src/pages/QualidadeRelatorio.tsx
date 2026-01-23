@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Segmented, Tabs } from 'antd';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import { PageHeader } from '@/components/layout/PageHeader';
 import { FilterBar } from '@/components/financiamento/FilterBar';
 import { IndicatorChart } from '@/components/financiamento/IndicatorChart';
@@ -9,6 +9,7 @@ import { CadastroResumo } from '@/components/financiamento/CadastroResumo';
 import { AcompanhamentoResumo } from '@/components/financiamento/AcompanhamentoResumo';
 import { cn } from '@/lib/utils';
 import { Users, Baby, Heart, Activity, Stethoscope, UserCheck, Flower2, ClipboardList, UserSearch } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 const periods = ['Consolidado', 'Janeiro', 'Fevereiro', 'Março', 'Abril'];
 
@@ -62,6 +63,7 @@ const dimensoes = [{
 }];
 
 const QualidadeRelatorio: React.FC = () => {
+  const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   
   // Get initial values from URL params
@@ -294,6 +296,14 @@ const QualidadeRelatorio: React.FC = () => {
   const breadcrumbPath = activeTab === 'vinculo' 
     ? '/financiamento-aps/qualidade-esf-eap?tab=vinculo' 
     : '/financiamento-aps/qualidade-esf-eap?tab=qualidade';
+  
+  const individualizadoPath = `/financiamento-aps/qualidade-esf-eap/individualizado?tab=${activeTab}`;
+
+  const headerActions = (
+    <Button onClick={() => navigate(individualizadoPath)}>
+      Individualizado
+    </Button>
+  );
 
   return (
     <div>
@@ -304,6 +314,7 @@ const QualidadeRelatorio: React.FC = () => {
           { label: breadcrumbLabel, path: breadcrumbPath },
           { label: 'Relatório' }
         ]}
+        actions={headerActions}
       />
 
       <Tabs
