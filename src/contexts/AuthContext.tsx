@@ -14,13 +14,13 @@ const AUTH_KEY = 'temp_auth_session';
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
-    return sessionStorage.getItem(AUTH_KEY) === 'true';
+    return localStorage.getItem(AUTH_KEY) === 'true';
   });
 
   const login = (username: string, password: string): boolean => {
     if (username === VALID_USERNAME && password === VALID_PASSWORD) {
       setIsAuthenticated(true);
-      sessionStorage.setItem(AUTH_KEY, 'true');
+      localStorage.setItem(AUTH_KEY, 'true');
       return true;
     }
     return false;
@@ -28,7 +28,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const logout = () => {
     setIsAuthenticated(false);
-    sessionStorage.removeItem(AUTH_KEY);
+    localStorage.removeItem(AUTH_KEY);
   };
 
   return (
