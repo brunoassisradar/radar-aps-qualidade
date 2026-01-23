@@ -6,6 +6,7 @@ import {
   Users,
   FileText,
   Heart,
+  Wallet,
   ClipboardList,
   AlertCircle,
   CheckSquare,
@@ -45,7 +46,7 @@ const menuItems: MenuItem[] = [
   { label: 'Previne Brasil', icon: Users, path: '#' },
   {
     label: 'Financiamento APS',
-    icon: FileText,
+    icon: Wallet,
     children: [
       { label: 'Resumo', path: '/financiamento-aps', hasActiveState: false },
       { 
