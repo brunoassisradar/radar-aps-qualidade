@@ -125,9 +125,15 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({ collapsed }) => {
     return location.pathname === basePath;
   };
 
-  const isParentActive = (children?: SecondaryMenuItem[]) => {
-    if (!children) return false;
-    return children.some((child) => isSecondaryActive(child));
+  const isInFinanciamentoSection = location.pathname.startsWith('/financiamento-aps');
+
+  const isParentActive = (item: MenuItem) => {
+    if (!item.children) return false;
+    // Check if we're in the Financiamento APS section (including the resume page)
+    if (item.label === 'Financiamento APS' && isInFinanciamentoSection) {
+      return true;
+    }
+    return item.children.some((child) => isSecondaryActive(child));
   };
 
   return (
@@ -148,7 +154,7 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({ collapsed }) => {
                     onClick={() => toggleExpanded(item.label)}
                     className={cn(
                       'flex w-full items-center justify-between rounded-md px-3 py-2.5 text-sm font-medium transition-colors',
-                      isParentActive(item.children)
+                      isParentActive(item)
                         ? 'bg-sidebar-accent text-sidebar-accent-foreground'
                         : 'text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground'
                     )}
