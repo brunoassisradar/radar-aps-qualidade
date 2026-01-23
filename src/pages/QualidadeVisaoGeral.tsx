@@ -100,19 +100,12 @@ const QualidadeVisaoGeral: React.FC = () => {
   const individualizadoPath = `/financiamento-aps/qualidade-esf-eap/individualizado?tab=${activeTab}`;
 
   const headerActions = (
-    <>
-      <Button 
-        variant="outline" 
-        onClick={() => navigate(individualizadoPath)}
-      >
-        Individualizado
-      </Button>
-      <Button 
-        onClick={() => navigate(relatorioPath)}
-      >
-        Relatório
-      </Button>
-    </>
+    <Button 
+      variant="outline" 
+      onClick={() => navigate(individualizadoPath)}
+    >
+      Individualizado
+    </Button>
   );
 
   return (
