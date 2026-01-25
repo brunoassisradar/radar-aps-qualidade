@@ -5,10 +5,11 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { ConfigProvider } from "antd";
 import ptBR from "antd/locale/pt_BR";
-import { AuthProvider } from "./contexts/AuthContext";
-import { ProtectedRoute } from "./components/auth/ProtectedRoute";
+// TEMPORARIAMENTE DESABILITADO - Reativar quando necessário
+// import { AuthProvider } from "./contexts/AuthContext";
+// import { ProtectedRoute } from "./components/auth/ProtectedRoute";
 import { AppLayout } from "./components/layout/AppLayout";
-import Login from "./pages/Login";
+// import Login from "./pages/Login";
 import FinanciamentoAPS from "./pages/FinanciamentoAPS";
 import QualidadeVisaoGeral from "./pages/QualidadeVisaoGeral";
 import QualidadeRelatorio from "./pages/QualidadeRelatorio";
@@ -29,18 +30,22 @@ const App = () => (
   <QueryClientProvider client={queryClient}>
     <ConfigProvider locale={ptBR} theme={antTheme}>
       <TooltipProvider>
-        <AuthProvider>
+        {/* TEMPORARIAMENTE DESABILITADO - Reativar AuthProvider quando necessário */}
+        {/* <AuthProvider> */}
           <Toaster />
           <Sonner />
           <BrowserRouter>
             <Routes>
-              <Route path="/login" element={<Login />} />
+              {/* TEMPORARIAMENTE DESABILITADO - Rota de login */}
+              {/* <Route path="/login" element={<Login />} /> */}
               <Route path="/" element={<Navigate to="/financiamento-aps" replace />} />
-              <Route element={
+              {/* TEMPORARIAMENTE DESABILITADO - ProtectedRoute wrapper */}
+              {/* <Route element={
                 <ProtectedRoute>
                   <AppLayout />
                 </ProtectedRoute>
-              }>
+              }> */}
+              <Route element={<AppLayout />}>
                 <Route path="/financiamento-aps" element={<FinanciamentoAPS />} />
                 <Route path="/financiamento-aps/qualidade-esf-eap" element={<QualidadeVisaoGeral />} />
                 <Route path="/financiamento-aps/qualidade-esf-eap/relatorio" element={<QualidadeRelatorio />} />
@@ -50,7 +55,7 @@ const App = () => (
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>
-        </AuthProvider>
+        {/* </AuthProvider> */}
       </TooltipProvider>
     </ConfigProvider>
   </QueryClientProvider>
