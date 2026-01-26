@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { NavLink, useLocation } from 'react-router-dom';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import {
   Home,
   LayoutDashboard,
@@ -30,6 +30,7 @@ interface SecondaryMenuItem {
   path: string;
   hasActiveState?: boolean;
   tabKey?: string; // The tab key to check for active state
+  isNavigableWithChildren?: boolean; // If true, clicking navigates AND expands children
   children?: TertiaryMenuItem[];
 }
 
@@ -61,23 +62,16 @@ const menuItems: MenuItem[] = [
       //     { label: 'Individualizado', path: '/financiamento-aps/qualidade-esf-eap/individualizado?tab=vinculo' },
       //   ]
       // },
-      // TEMPORARIAMENTE SIMPLIFICADO - Reativar submenus quando voltar a trabalhar no Vínculo e Acompanhamento
-      // { 
-      //   label: 'Qualidade eSF/eAP', 
-      //   path: '/financiamento-aps/qualidade-esf-eap?tab=qualidade',
-      //   hasActiveState: true,
-      //   tabKey: 'qualidade',
-      //   children: [
-      //     { label: 'Visão geral', path: '/financiamento-aps/qualidade-esf-eap?tab=qualidade' },
-      //     { label: 'Relatório', path: '/financiamento-aps/qualidade-esf-eap/relatorio?tab=qualidade' },
-      //     { label: 'Individualizado', path: '/financiamento-aps/qualidade-esf-eap/individualizado?tab=qualidade' },
-      //   ]
-      // },
-      // Versão temporária simplificada - item único sem submenus
+      // Qualidade eSF/eAP com submenus - clique navega para Visão Geral E expande subitens
       { 
         label: 'Qualidade eSF/eAP', 
         path: '/financiamento-aps/qualidade-esf-eap',
         hasActiveState: true,
+        isNavigableWithChildren: true, // Flag para indicar que é navegável E tem filhos
+        children: [
+          { label: 'Relatório', path: '/financiamento-aps/qualidade-esf-eap/relatorio' },
+          { label: 'Individualizado', path: '/financiamento-aps/qualidade-esf-eap/individualizado' },
+        ]
       },
       { label: 'Qualidade eSB', path: '#', hasActiveState: true },
       { label: 'Qualidade eMulti', path: '#', hasActiveState: true },
@@ -202,8 +196,53 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({ collapsed }) => {
                     <ul className="ml-8 mt-1 space-y-1">
                       {item.children.map((child) => (
                         <li key={child.label}>
-                          {child.children ? (
-                            // Secondary item with tertiary menu
+                          {child.children && child.isNavigableWithChildren ? (
+                            // Secondary item that navigates AND expands children
+                            <div>
+                              <NavLink
+                                to={child.path}
+                                onClick={() => {
+                                  // Expand children when clicking
+                                  if (!expandedSecondary.includes(child.label)) {
+                                    setExpandedSecondary([...expandedSecondary, child.label]);
+                                  }
+                                }}
+                                className={cn(
+                                  'flex w-full items-center justify-between rounded-md px-3 py-2 text-sm text-left transition-colors',
+                                  isSecondaryActive(child)
+                                    ? 'font-medium text-sidebar-primary'
+                                    : 'text-sidebar-foreground hover:text-sidebar-primary'
+                                )}
+                              >
+                                <span>{child.label}</span>
+                                {expandedSecondary.includes(child.label) ? (
+                                  <ChevronDown className="h-3 w-3" />
+                                ) : (
+                                  <ChevronRight className="h-3 w-3" />
+                                )}
+                              </NavLink>
+                              {expandedSecondary.includes(child.label) && (
+                                <ul className="ml-4 mt-1 space-y-1 border-l border-border pl-3">
+                                  {child.children.map((tertiary) => (
+                                    <li key={tertiary.label}>
+                                      <NavLink
+                                        to={tertiary.path}
+                                        className={cn(
+                                          'block rounded-md px-2 py-1.5 text-xs transition-colors',
+                                          isTertiaryActive(tertiary.path, child.tabKey)
+                                            ? 'font-medium text-sidebar-primary'
+                                            : 'text-muted-foreground hover:text-sidebar-primary'
+                                        )}
+                                      >
+                                        {tertiary.label}
+                                      </NavLink>
+                                    </li>
+                                  ))}
+                                </ul>
+                              )}
+                            </div>
+                          ) : child.children ? (
+                            // Secondary item with tertiary menu (button only, no navigation)
                             <div>
                               <button
                                 onClick={() => toggleSecondaryExpanded(child.label)}
@@ -224,16 +263,16 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({ collapsed }) => {
                               {expandedSecondary.includes(child.label) && (
                                 <ul className="ml-4 mt-1 space-y-1 border-l border-border pl-3">
                                   {child.children.map((tertiary) => (
-                                                    <li key={tertiary.label}>
-                                                      <NavLink
-                                                        to={tertiary.path}
-                                                        className={cn(
-                                                          'block rounded-md px-2 py-1.5 text-xs transition-colors',
-                                                          isTertiaryActive(tertiary.path, child.tabKey)
-                                                            ? 'font-medium text-sidebar-primary'
-                                                            : 'text-muted-foreground hover:text-sidebar-primary'
-                                                        )}
-                                                      >
+                                    <li key={tertiary.label}>
+                                      <NavLink
+                                        to={tertiary.path}
+                                        className={cn(
+                                          'block rounded-md px-2 py-1.5 text-xs transition-colors',
+                                          isTertiaryActive(tertiary.path, child.tabKey)
+                                            ? 'font-medium text-sidebar-primary'
+                                            : 'text-muted-foreground hover:text-sidebar-primary'
+                                        )}
+                                      >
                                         {tertiary.label}
                                       </NavLink>
                                     </li>
