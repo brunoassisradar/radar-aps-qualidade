@@ -49,27 +49,35 @@ const menuItems: MenuItem[] = [
     icon: Wallet,
     children: [
       { label: 'Resumo', path: '/financiamento-aps', hasActiveState: false },
-      { 
-        label: 'Vínculo e Acompanhamento', 
-        path: '/financiamento-aps/qualidade-esf-eap?tab=vinculo',
-        hasActiveState: true,
-        tabKey: 'vinculo',
-        children: [
-          { label: 'Visão geral', path: '/financiamento-aps/qualidade-esf-eap?tab=vinculo' },
-          { label: 'Relatório', path: '/financiamento-aps/qualidade-esf-eap/relatorio?tab=vinculo' },
-          { label: 'Individualizado', path: '/financiamento-aps/qualidade-esf-eap/individualizado?tab=vinculo' },
-        ]
-      },
+      // TEMPORARIAMENTE OCULTO - Reativar quando voltar a trabalhar no Vínculo e Acompanhamento
+      // { 
+      //   label: 'Vínculo e Acompanhamento', 
+      //   path: '/financiamento-aps/qualidade-esf-eap?tab=vinculo',
+      //   hasActiveState: true,
+      //   tabKey: 'vinculo',
+      //   children: [
+      //     { label: 'Visão geral', path: '/financiamento-aps/qualidade-esf-eap?tab=vinculo' },
+      //     { label: 'Relatório', path: '/financiamento-aps/qualidade-esf-eap/relatorio?tab=vinculo' },
+      //     { label: 'Individualizado', path: '/financiamento-aps/qualidade-esf-eap/individualizado?tab=vinculo' },
+      //   ]
+      // },
+      // TEMPORARIAMENTE SIMPLIFICADO - Reativar submenus quando voltar a trabalhar no Vínculo e Acompanhamento
+      // { 
+      //   label: 'Qualidade eSF/eAP', 
+      //   path: '/financiamento-aps/qualidade-esf-eap?tab=qualidade',
+      //   hasActiveState: true,
+      //   tabKey: 'qualidade',
+      //   children: [
+      //     { label: 'Visão geral', path: '/financiamento-aps/qualidade-esf-eap?tab=qualidade' },
+      //     { label: 'Relatório', path: '/financiamento-aps/qualidade-esf-eap/relatorio?tab=qualidade' },
+      //     { label: 'Individualizado', path: '/financiamento-aps/qualidade-esf-eap/individualizado?tab=qualidade' },
+      //   ]
+      // },
+      // Versão temporária simplificada - item único sem submenus
       { 
         label: 'Qualidade eSF/eAP', 
-        path: '/financiamento-aps/qualidade-esf-eap?tab=qualidade',
+        path: '/financiamento-aps/qualidade-esf-eap',
         hasActiveState: true,
-        tabKey: 'qualidade',
-        children: [
-          { label: 'Visão geral', path: '/financiamento-aps/qualidade-esf-eap?tab=qualidade' },
-          { label: 'Relatório', path: '/financiamento-aps/qualidade-esf-eap/relatorio?tab=qualidade' },
-          { label: 'Individualizado', path: '/financiamento-aps/qualidade-esf-eap/individualizado?tab=qualidade' },
-        ]
       },
       { label: 'Qualidade eSB', path: '#', hasActiveState: true },
       { label: 'Qualidade eMulti', path: '#', hasActiveState: true },
