@@ -126,6 +126,12 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({ collapsed }) => {
       return currentTab === item.tabKey;
     }
     
+    // For items without tabKey, check if the current path starts with the item path
+    if (!item.tabKey && item.path !== '#') {
+      const itemBasePath = item.path.split('?')[0];
+      return location.pathname.startsWith(itemBasePath);
+    }
+    
     return false;
   };
 
