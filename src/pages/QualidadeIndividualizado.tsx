@@ -562,7 +562,7 @@ const QualidadeIndividualizado: React.FC = () => {
   return (
     <div>
       <PageHeader
-        title="Individualizado do Financiamento APS"
+        title="Individualizado"
         breadcrumbs={[
           { label: 'Financiamento APS', path: '/financiamento-aps' },
           { label: breadcrumbLabel, path: breadcrumbPath },
