@@ -311,7 +311,7 @@ const QualidadeRelatorio: React.FC = () => {
       className="border-primary text-primary hover:bg-primary/5"
       onClick={() => navigate(individualizadoPath)}
     >
-      Individualizado
+      Busca ativa
     </Button>
   );
 
