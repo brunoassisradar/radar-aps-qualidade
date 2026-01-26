@@ -571,13 +571,17 @@ const QualidadeIndividualizado: React.FC = () => {
         ]}
       />
 
-      <Tabs
+      {/* TEMPORARIAMENTE OCULTO - Reativar Tabs quando voltar a trabalhar no Vínculo e Acompanhamento */}
+      {/* <Tabs
         activeKey={activeTab}
         onChange={handleTabChange}
         items={tabItems}
         size="large"
         className="financiamento-tabs"
-      />
+      /> */}
+      
+      {/* Renderiza diretamente o conteúdo de Qualidade */}
+      <div className="pt-4">{renderQualidadeContent()}</div>
     </div>
   );
 };
