@@ -479,13 +479,17 @@ const QualidadeIndividualizado: React.FC = () => {
   const [expandedVinculoKeys, setExpandedVinculoKeys] = useState<string[]>([]);
   
   // Get initial tab from URL params
-  const initialTab = searchParams.get('tab') || 'qualidade';
+  // TEMPORARIAMENTE FIXADO EM 'qualidade' - Reativar quando necessário
+  // const initialTab = searchParams.get('tab') || 'qualidade';
+  const initialTab = 'qualidade';
   const [activeTab, setActiveTab] = useState(initialTab);
 
   // Update state when URL params change
   useEffect(() => {
     const tabParam = searchParams.get('tab');
-    if (tabParam && ['vinculo', 'qualidade'].includes(tabParam)) {
+    // TEMPORARIAMENTE DESABILITADO - Reativar quando necessário
+    // if (tabParam && ['vinculo', 'qualidade'].includes(tabParam)) {
+    if (tabParam && ['qualidade'].includes(tabParam)) {
       setActiveTab(tabParam);
     }
   }, [searchParams]);
@@ -534,11 +538,12 @@ const QualidadeIndividualizado: React.FC = () => {
   );
 
   const tabItems = [
-    {
-      key: 'vinculo',
-      label: 'Vínculo e Acompanhamento',
-      children: <div className="pt-4">{renderVinculoContent()}</div>,
-    },
+    // TEMPORARIAMENTE OCULTO - Reativar quando necessário
+    // {
+    //   key: 'vinculo',
+    //   label: 'Vínculo e Acompanhamento',
+    //   children: <div className="pt-4">{renderVinculoContent()}</div>,
+    // },
     {
       key: 'qualidade',
       label: 'Qualidade eSF/eAP',
