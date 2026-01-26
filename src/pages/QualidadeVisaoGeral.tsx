@@ -126,13 +126,44 @@ const QualidadeVisaoGeral: React.FC = () => {
         actions={headerActions}
       />
 
-      <Tabs
+      {/* TEMPORARIAMENTE OCULTO - Reativar Tabs quando voltar a trabalhar no Vínculo e Acompanhamento */}
+      {/* <Tabs
         activeKey={activeTab}
         onChange={handleTabChange}
         items={tabItems}
         size="large"
         className="financiamento-tabs"
-      />
+      /> */}
+      
+      {/* Renderiza diretamente o conteúdo de Qualidade */}
+      <div className="space-y-6 pt-4">
+        <FilterBar />
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <ClassificationCard
+            classification="otimo"
+            count={0}
+            description="Ótimo: > 50 e ≤ 70"
+          />
+          <ClassificationCard
+            classification="bom"
+            count={36}
+            description="Bom: > 30 e ≤ 50"
+          />
+          <ClassificationCard
+            classification="suficiente"
+            count={68}
+            description="Suficiente: > 10 e ≤ 30"
+          />
+          <ClassificationCard
+            classification="regular"
+            count={304}
+            description="Regular: ≤ 10 ou > 70"
+          />
+        </div>
+
+        <OverviewTable />
+      </div>
     </div>
   );
 };
