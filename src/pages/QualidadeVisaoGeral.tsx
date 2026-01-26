@@ -14,13 +14,17 @@ import { Button } from '@/components/ui/button';
 const QualidadeVisaoGeral: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
-  const initialTab = searchParams.get('tab') || 'vinculo';
+  // TEMPORARIAMENTE FIXADO EM 'qualidade' - Reativar quando necessário
+  // const initialTab = searchParams.get('tab') || 'vinculo';
+  const initialTab = 'qualidade';
   const [activeTab, setActiveTab] = useState(initialTab);
 
   // Sync state with URL changes
   useEffect(() => {
     const tabParam = searchParams.get('tab');
-    if (tabParam && ['vinculo', 'qualidade'].includes(tabParam)) {
+    // TEMPORARIAMENTE DESABILITADO - Reativar quando necessário
+    // if (tabParam && ['vinculo', 'qualidade'].includes(tabParam)) {
+    if (tabParam && ['qualidade'].includes(tabParam)) {
       setActiveTab(tabParam);
     }
   }, [searchParams]);
@@ -33,31 +37,32 @@ const QualidadeVisaoGeral: React.FC = () => {
   };
 
   const tabItems = [
-    {
-      key: 'vinculo',
-      label: 'Vínculo e Acompanhamento',
-      children: (
-        <div className="space-y-6 pt-4">
-          <FilterBar />
-          <ResultadoMunicipio
-            escoreCadastro={3}
-            escoreAcompanhamento={3.5}
-            notaFinal={6.5}
-            classificacao="suficiente"
-          />
-          <ComparativoCadastro
-            municipio="Lorem ipsum"
-            pessoasCadastradas={2339333}
-            pessoasCadastroAtualizado={1500703}
-            pessoasAcompanhadas={825242}
-            populacaoIBGE={2800000}
-            populacaoLimite={3200000}
-          />
-          <VinculoAcompanhamentoTable />
-          <CriteriosVinculacao />
-        </div>
-      ),
-    },
+    // TEMPORARIAMENTE OCULTO - Reativar quando necessário
+    // {
+    //   key: 'vinculo',
+    //   label: 'Vínculo e Acompanhamento',
+    //   children: (
+    //     <div className="space-y-6 pt-4">
+    //       <FilterBar />
+    //       <ResultadoMunicipio
+    //         escoreCadastro={3}
+    //         escoreAcompanhamento={3.5}
+    //         notaFinal={6.5}
+    //         classificacao="suficiente"
+    //       />
+    //       <ComparativoCadastro
+    //         municipio="Lorem ipsum"
+    //         pessoasCadastradas={2339333}
+    //         pessoasCadastroAtualizado={1500703}
+    //         pessoasAcompanhadas={825242}
+    //         populacaoIBGE={2800000}
+    //         populacaoLimite={3200000}
+    //       />
+    //       <VinculoAcompanhamentoTable />
+    //       <CriteriosVinculacao />
+    //     </div>
+    //   ),
+    // },
     {
       key: 'qualidade',
       label: 'Qualidade eSF/eAP',

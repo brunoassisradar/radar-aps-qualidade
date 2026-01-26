@@ -67,7 +67,9 @@ const QualidadeRelatorio: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   
   // Get initial values from URL params
-  const initialTab = searchParams.get('tab') || 'vinculo';
+  // TEMPORARIAMENTE FIXADO EM 'qualidade' - Reativar quando necessário
+  // const initialTab = searchParams.get('tab') || 'vinculo';
+  const initialTab = 'qualidade';
   const initialIndicador = searchParams.get('indicador') || 'c1';
   const initialPeriodo = searchParams.get('periodo') || 'Consolidado';
   const initialDimensao = searchParams.get('dimensao') || 'cadastro';
@@ -85,7 +87,9 @@ const QualidadeRelatorio: React.FC = () => {
     const periodoParam = searchParams.get('periodo');
     const dimensaoParam = searchParams.get('dimensao');
     
-    if (tabParam && ['vinculo', 'qualidade'].includes(tabParam)) {
+    // TEMPORARIAMENTE DESABILITADO - Reativar quando necessário
+    // if (tabParam && ['vinculo', 'qualidade'].includes(tabParam)) {
+    if (tabParam && ['qualidade'].includes(tabParam)) {
       setActiveTab(tabParam);
     }
     if (indicadorParam && indicadores.some(i => i.value === indicadorParam)) {
@@ -280,11 +284,12 @@ const QualidadeRelatorio: React.FC = () => {
   );
 
   const tabItems = [
-    {
-      key: 'vinculo',
-      label: 'Vínculo e Acompanhamento',
-      children: <div className="pt-4">{renderVinculoContent()}</div>,
-    },
+    // TEMPORARIAMENTE OCULTO - Reativar quando necessário
+    // {
+    //   key: 'vinculo',
+    //   label: 'Vínculo e Acompanhamento',
+    //   children: <div className="pt-4">{renderVinculoContent()}</div>,
+    // },
     {
       key: 'qualidade',
       label: 'Qualidade eSF/eAP',
