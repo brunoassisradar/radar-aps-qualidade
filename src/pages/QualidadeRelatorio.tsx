@@ -327,7 +327,8 @@ const QualidadeRelatorio: React.FC = () => {
         actions={headerActions}
       />
 
-      <Tabs
+      {/* TEMPORARIAMENTE OCULTO - Reativar Tabs quando voltar a trabalhar no Vínculo e Acompanhamento */}
+      {/* <Tabs
         activeKey={activeTab}
         onChange={(key) => {
           setActiveTab(key);
@@ -339,7 +340,10 @@ const QualidadeRelatorio: React.FC = () => {
         items={tabItems}
         size="large"
         className="financiamento-tabs"
-      />
+      /> */}
+      
+      {/* Renderiza diretamente o conteúdo de Qualidade */}
+      <div className="pt-4">{renderQualidadeContent()}</div>
     </div>
   );
 };
