@@ -66,17 +66,19 @@ export const CadastroResumo: React.FC<CadastroResumoProps> = ({
           {/* Content */}
           <div className="flex-1 space-y-6">
             {/* Cadastro Atualizado */}
-            <div className="flex flex-wrap items-start gap-6">
-              <div className="flex items-start gap-3 min-w-0 flex-1">
+            <div className="gap-6 flex items-center justify-start">
+              <div className="gap-3 flex-1 flex items-center justify-start">
                 <div className="mt-1.5 w-3 h-3 rounded-full border-2 border-[#3C8DBC] shrink-0" />
-                <p className="text-sm text-foreground">
-                  <span className="font-semibold">{cadastroAtualizado.toLocaleString('pt-BR')} ({cadastroAtualizadoPercent.toLocaleString('pt-BR')}%)</span>{' '}
-                  pessoas com cadastro atualizado nos 24 meses anteriores à data de término do quadrimestre ({periodoInicio} - {periodoFim})
-                </p>
+                <div>
+                  <p className="text-sm text-foreground">
+                    <span className="font-semibold">{cadastroAtualizado.toLocaleString('pt-BR')} ({cadastroAtualizadoPercent.toLocaleString('pt-BR')}%)</span>{' '}
+                    pessoas com cadastro atualizado nos 24 meses anteriores à data de término do quadrimestre ({periodoInicio} - {periodoFim})
+                  </p>
+                </div>
               </div>
               
               {/* Detalhamento */}
-              <div className="shrink-0 border-l-2 border-muted pl-4 flex gap-6">
+              <div className="shrink-0 border-l-2 border-muted pl-4 space-y-3">
                 <div>
                   <p className="text-sm text-foreground">
                     <span className="font-semibold">{cadastroIndividual.toLocaleString('pt-BR')}</span> possuem apenas Cadastro Individual
