@@ -67,9 +67,7 @@ const QualidadeRelatorio: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   
   // Get initial values from URL params
-  // TEMPORARIAMENTE FIXADO EM 'qualidade' - Reativar quando necessário
-  // const initialTab = searchParams.get('tab') || 'vinculo';
-  const initialTab = 'qualidade';
+  const initialTab = searchParams.get('tab') || 'vinculo';
   const initialIndicador = searchParams.get('indicador') || 'c1';
   const initialPeriodo = searchParams.get('periodo') || 'Consolidado';
   const initialDimensao = searchParams.get('dimensao') || 'cadastro';
@@ -87,9 +85,7 @@ const QualidadeRelatorio: React.FC = () => {
     const periodoParam = searchParams.get('periodo');
     const dimensaoParam = searchParams.get('dimensao');
     
-    // TEMPORARIAMENTE DESABILITADO - Reativar quando necessário
-    // if (tabParam && ['vinculo', 'qualidade'].includes(tabParam)) {
-    if (tabParam && ['qualidade'].includes(tabParam)) {
+    if (tabParam && ['vinculo', 'qualidade'].includes(tabParam)) {
       setActiveTab(tabParam);
     }
     if (indicadorParam && indicadores.some(i => i.value === indicadorParam)) {
@@ -284,12 +280,11 @@ const QualidadeRelatorio: React.FC = () => {
   );
 
   const tabItems = [
-    // TEMPORARIAMENTE OCULTO - Reativar quando necessário
-    // {
-    //   key: 'vinculo',
-    //   label: 'Vínculo e Acompanhamento',
-    //   children: <div className="pt-4">{renderVinculoContent()}</div>,
-    // },
+    {
+      key: 'vinculo',
+      label: 'Vínculo e Acompanhamento',
+      children: <div className="pt-4">{renderVinculoContent()}</div>,
+    },
     {
       key: 'qualidade',
       label: 'Qualidade eSF/eAP',
@@ -315,10 +310,12 @@ const QualidadeRelatorio: React.FC = () => {
     </Button>
   );
 
+  const pageTitle = activeTab === 'vinculo' ? 'Relatório de Vínculo e Acompanhamento' : 'Relatório de Qualidade eSF/eAP';
+
   return (
     <div>
       <PageHeader 
-        title="Relatório de Qualidade eSF/eAP" 
+        title={pageTitle}
         breadcrumbs={[
           { label: 'Financiamento APS', path: '/financiamento-aps' },
           { label: breadcrumbLabel, path: breadcrumbPath },
@@ -327,8 +324,7 @@ const QualidadeRelatorio: React.FC = () => {
         actions={headerActions}
       />
 
-      {/* TEMPORARIAMENTE OCULTO - Reativar Tabs quando voltar a trabalhar no Vínculo e Acompanhamento */}
-      {/* <Tabs
+      <Tabs
         activeKey={activeTab}
         onChange={(key) => {
           setActiveTab(key);
@@ -340,10 +336,7 @@ const QualidadeRelatorio: React.FC = () => {
         items={tabItems}
         size="large"
         className="financiamento-tabs"
-      /> */}
-      
-      {/* Renderiza diretamente o conteúdo de Qualidade */}
-      <div className="pt-4">{renderQualidadeContent()}</div>
+      />
     </div>
   );
 };
