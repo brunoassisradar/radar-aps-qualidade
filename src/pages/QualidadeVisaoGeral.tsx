@@ -34,6 +34,28 @@ const QualidadeVisaoGeral: React.FC = () => {
 
   const tabItems = [
     {
+      key: 'tab1',
+      label: 'Tab 1',
+      children: (
+        <div className="space-y-6 pt-4">
+          <div className="rounded-lg bg-card p-8 shadow-sm text-center">
+            <p className="text-muted-foreground">Conteúdo da Tab 1 (em desenvolvimento)</p>
+          </div>
+        </div>
+      ),
+    },
+    {
+      key: 'tab2',
+      label: 'Tab 2',
+      children: (
+        <div className="space-y-6 pt-4">
+          <div className="rounded-lg bg-card p-8 shadow-sm text-center">
+            <p className="text-muted-foreground">Conteúdo da Tab 2 (em desenvolvimento)</p>
+          </div>
+        </div>
+      ),
+    },
+    {
       key: 'vinculo',
       label: 'Vínculo e Acompanhamento',
       children: (
@@ -89,6 +111,28 @@ const QualidadeVisaoGeral: React.FC = () => {
           </div>
 
           <OverviewTable />
+        </div>
+      ),
+    },
+    {
+      key: 'tab5',
+      label: 'Tab 5',
+      children: (
+        <div className="space-y-6 pt-4">
+          <div className="rounded-lg bg-card p-8 shadow-sm text-center">
+            <p className="text-muted-foreground">Conteúdo da Tab 5 (em desenvolvimento)</p>
+          </div>
+        </div>
+      ),
+    },
+    {
+      key: 'tab6',
+      label: 'Tab 6',
+      children: (
+        <div className="space-y-6 pt-4">
+          <div className="rounded-lg bg-card p-8 shadow-sm text-center">
+            <p className="text-muted-foreground">Conteúdo da Tab 6 (em desenvolvimento)</p>
+          </div>
         </div>
       ),
     },
