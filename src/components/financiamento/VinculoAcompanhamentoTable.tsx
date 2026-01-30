@@ -366,6 +366,7 @@ export const VinculoAcompanhamentoTable: React.FC = () => {
         dataSource={sampleData}
         expandable={{
           expandedRowRender: (record) => <ExpandedRow record={record} />,
+          defaultExpandedRowKeys: [sampleData[0]?.key],
           expandIcon: ({ expanded, onExpand, record }) => (
             <span 
               className="inline-flex cursor-pointer text-muted-foreground hover:text-foreground transition-colors"
