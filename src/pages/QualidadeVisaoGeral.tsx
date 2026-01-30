@@ -14,17 +14,13 @@ import { Button } from '@/components/ui/button';
 const QualidadeVisaoGeral: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
-  // TEMPORARIAMENTE FIXADO EM 'qualidade' - Reativar quando necessário
-  // const initialTab = searchParams.get('tab') || 'vinculo';
-  const initialTab = 'qualidade';
+  const initialTab = searchParams.get('tab') || 'vinculo';
   const [activeTab, setActiveTab] = useState(initialTab);
 
   // Sync state with URL changes
   useEffect(() => {
     const tabParam = searchParams.get('tab');
-    // TEMPORARIAMENTE DESABILITADO - Reativar quando necessário
-    // if (tabParam && ['vinculo', 'qualidade'].includes(tabParam)) {
-    if (tabParam && ['qualidade'].includes(tabParam)) {
+    if (tabParam && ['vinculo', 'qualidade'].includes(tabParam)) {
       setActiveTab(tabParam);
     }
   }, [searchParams]);
@@ -37,32 +33,31 @@ const QualidadeVisaoGeral: React.FC = () => {
   };
 
   const tabItems = [
-    // TEMPORARIAMENTE OCULTO - Reativar quando necessário
-    // {
-    //   key: 'vinculo',
-    //   label: 'Vínculo e Acompanhamento',
-    //   children: (
-    //     <div className="space-y-6 pt-4">
-    //       <FilterBar />
-    //       <ResultadoMunicipio
-    //         escoreCadastro={3}
-    //         escoreAcompanhamento={3.5}
-    //         notaFinal={6.5}
-    //         classificacao="suficiente"
-    //       />
-    //       <ComparativoCadastro
-    //         municipio="Lorem ipsum"
-    //         pessoasCadastradas={2339333}
-    //         pessoasCadastroAtualizado={1500703}
-    //         pessoasAcompanhadas={825242}
-    //         populacaoIBGE={2800000}
-    //         populacaoLimite={3200000}
-    //       />
-    //       <VinculoAcompanhamentoTable />
-    //       <CriteriosVinculacao />
-    //     </div>
-    //   ),
-    // },
+    {
+      key: 'vinculo',
+      label: 'Vínculo e Acompanhamento',
+      children: (
+        <div className="space-y-6 pt-4">
+          <FilterBar />
+          <ResultadoMunicipio
+            escoreCadastro={3}
+            escoreAcompanhamento={3.5}
+            notaFinal={6.5}
+            classificacao="suficiente"
+          />
+          <ComparativoCadastro
+            municipio="Lorem ipsum"
+            pessoasCadastradas={2339333}
+            pessoasCadastroAtualizado={1500703}
+            pessoasAcompanhadas={825242}
+            populacaoIBGE={2800000}
+            populacaoLimite={3200000}
+          />
+          <VinculoAcompanhamentoTable />
+          <CriteriosVinculacao />
+        </div>
+      ),
+    },
     {
       key: 'qualidade',
       label: 'Qualidade eSF/eAP',
@@ -115,10 +110,12 @@ const QualidadeVisaoGeral: React.FC = () => {
     </Button>
   );
 
+  const pageTitle = activeTab === 'vinculo' ? 'Visão geral de Vínculo e Acompanhamento' : 'Visão geral de Qualidade eSF/eAP';
+
   return (
     <div>
       <PageHeader
-        title="Visão geral de Qualidade eSF/eAP"
+        title={pageTitle}
         breadcrumbs={[
           { label: 'Financiamento APS', path: '/financiamento-aps' },
           { label: breadcrumbLabel },
@@ -126,44 +123,13 @@ const QualidadeVisaoGeral: React.FC = () => {
         actions={headerActions}
       />
 
-      {/* TEMPORARIAMENTE OCULTO - Reativar Tabs quando voltar a trabalhar no Vínculo e Acompanhamento */}
-      {/* <Tabs
+      <Tabs
         activeKey={activeTab}
         onChange={handleTabChange}
         items={tabItems}
         size="large"
         className="financiamento-tabs"
-      /> */}
-      
-      {/* Renderiza diretamente o conteúdo de Qualidade */}
-      <div className="space-y-6 pt-4">
-        <FilterBar />
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <ClassificationCard
-            classification="otimo"
-            count={0}
-            description="Ótimo: > 50 e ≤ 70"
-          />
-          <ClassificationCard
-            classification="bom"
-            count={36}
-            description="Bom: > 30 e ≤ 50"
-          />
-          <ClassificationCard
-            classification="suficiente"
-            count={68}
-            description="Suficiente: > 10 e ≤ 30"
-          />
-          <ClassificationCard
-            classification="regular"
-            count={304}
-            description="Regular: ≤ 10 ou > 70"
-          />
-        </div>
-
-        <OverviewTable />
-      </div>
+      />
     </div>
   );
 };

@@ -479,17 +479,13 @@ const QualidadeIndividualizado: React.FC = () => {
   const [expandedVinculoKeys, setExpandedVinculoKeys] = useState<string[]>([]);
   
   // Get initial tab from URL params
-  // TEMPORARIAMENTE FIXADO EM 'qualidade' - Reativar quando necessário
-  // const initialTab = searchParams.get('tab') || 'qualidade';
-  const initialTab = 'qualidade';
+  const initialTab = searchParams.get('tab') || 'vinculo';
   const [activeTab, setActiveTab] = useState(initialTab);
 
   // Update state when URL params change
   useEffect(() => {
     const tabParam = searchParams.get('tab');
-    // TEMPORARIAMENTE DESABILITADO - Reativar quando necessário
-    // if (tabParam && ['vinculo', 'qualidade'].includes(tabParam)) {
-    if (tabParam && ['qualidade'].includes(tabParam)) {
+    if (tabParam && ['vinculo', 'qualidade'].includes(tabParam)) {
       setActiveTab(tabParam);
     }
   }, [searchParams]);
@@ -538,12 +534,11 @@ const QualidadeIndividualizado: React.FC = () => {
   );
 
   const tabItems = [
-    // TEMPORARIAMENTE OCULTO - Reativar quando necessário
-    // {
-    //   key: 'vinculo',
-    //   label: 'Vínculo e Acompanhamento',
-    //   children: <div className="pt-4">{renderVinculoContent()}</div>,
-    // },
+    {
+      key: 'vinculo',
+      label: 'Vínculo e Acompanhamento',
+      children: <div className="pt-4">{renderVinculoContent()}</div>,
+    },
     {
       key: 'qualidade',
       label: 'Qualidade eSF/eAP',
@@ -559,29 +554,27 @@ const QualidadeIndividualizado: React.FC = () => {
     ? '/financiamento-aps/qualidade-esf-eap/relatorio?tab=vinculo'
     : '/financiamento-aps/qualidade-esf-eap/relatorio?tab=qualidade';
 
+  const pageTitle = activeTab === 'vinculo' ? 'Busca ativa de Vínculo e Acompanhamento' : 'Busca ativa de Qualidade eSF/eAP';
+
   return (
     <div>
       <PageHeader
-        title="Individualizado"
+        title={pageTitle}
         breadcrumbs={[
           { label: 'Financiamento APS', path: '/financiamento-aps' },
           { label: breadcrumbLabel, path: breadcrumbPath },
           { label: 'Relatório', path: relatorioPath },
-          { label: 'Individualizado' },
+          { label: 'Busca ativa' },
         ]}
       />
 
-      {/* TEMPORARIAMENTE OCULTO - Reativar Tabs quando voltar a trabalhar no Vínculo e Acompanhamento */}
-      {/* <Tabs
+      <Tabs
         activeKey={activeTab}
         onChange={handleTabChange}
         items={tabItems}
         size="large"
         className="financiamento-tabs"
-      /> */}
-      
-      {/* Renderiza diretamente o conteúdo de Qualidade */}
-      <div className="pt-4">{renderQualidadeContent()}</div>
+      />
     </div>
   );
 };
