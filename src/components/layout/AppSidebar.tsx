@@ -209,10 +209,19 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({ collapsed }) => {
                             <div>
                               <NavLink
                                 to={child.path}
-                                onClick={() => {
-                                  // Expand children when clicking
-                                  if (!expandedSecondary.includes(child.label)) {
-                                    setExpandedSecondary([...expandedSecondary, child.label]);
+                                onClick={(e) => {
+                                  const isAlreadyExpanded = expandedSecondary.includes(child.label);
+                                  const isCurrentlyActive = isSecondaryActive(child);
+                                  
+                                  if (isCurrentlyActive && isAlreadyExpanded) {
+                                    // Se já está na página e expandido, apenas recolhe
+                                    e.preventDefault();
+                                    setExpandedSecondary(expandedSecondary.filter(l => l !== child.label));
+                                  } else {
+                                    // Se não está na página ou não está expandido, expande
+                                    if (!isAlreadyExpanded) {
+                                      setExpandedSecondary([...expandedSecondary, child.label]);
+                                    }
                                   }
                                 }}
                                 className={cn(
