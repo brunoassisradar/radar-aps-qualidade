@@ -37,7 +37,7 @@ interface SecondaryMenuItem {
 interface MenuItem {
   label: string;
   icon: React.ComponentType<{ className?: string }>;
-  path?: string;
+  path?: string; // Página principal do menu (opcional - para itens com filhos que também navegam)
   children?: SecondaryMenuItem[];
 }
 
@@ -48,8 +48,9 @@ const menuItems: MenuItem[] = [
   {
     label: 'Financiamento APS',
     icon: Wallet,
+    path: '/financiamento-aps', // Página principal acessível pelo menu pai
     children: [
-      { label: 'Resumo', path: '/financiamento-aps', hasActiveState: false },
+      { label: 'Resumo', path: '#', hasActiveState: false }, // Página ainda não implementada
       { 
         label: 'Vínculo e Acompanhamento', 
         path: '/financiamento-aps/qualidade-esf-eap?tab=vinculo',
@@ -170,8 +171,16 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({ collapsed }) => {
             <li key={item.label}>
               {item.children ? (
                 <div>
-                  <button
-                    onClick={() => toggleExpanded(item.label)}
+                  <NavLink
+                    to={item.path || '#'}
+                    onClick={(e) => {
+                      // Expande/colapsa os filhos
+                      toggleExpanded(item.label);
+                      // Se não tem path válido, previne navegação
+                      if (!item.path || item.path === '#') {
+                        e.preventDefault();
+                      }
+                    }}
                     className={cn(
                       'flex w-full items-center justify-between rounded-md px-3 py-2.5 text-sm font-medium transition-colors',
                       isParentActive(item)
@@ -190,7 +199,7 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({ collapsed }) => {
                         <ChevronRight className="h-4 w-4" />
                       )
                     )}
-                  </button>
+                  </NavLink>
                   {!collapsed && expandedItems.includes(item.label) && (
                     <ul className="ml-8 mt-1 space-y-1">
                       {item.children.map((child) => (
