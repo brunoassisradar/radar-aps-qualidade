@@ -1,0 +1,118 @@
+import { Meta } from '@storybook/blocks';
+
+<Meta title="Design Tokens/Typography" />
+
+# Tipografia
+
+O sistema tipográfico é baseado na fonte **Inter**, otimizada para interfaces digitais.
+
+## Fonte Principal
+
+<div style={{ marginTop: '24px', padding: '24px', borderRadius: '8px', border: '1px solid #e5e7eb' }}>
+  <p style={{ fontFamily: 'Inter, sans-serif', fontSize: '24px', marginBottom: '8px' }}>
+    Inter - A typeface carefully crafted & designed for computer screens.
+  </p>
+  <p style={{ fontFamily: 'Inter, sans-serif', color: '#64748B', fontSize: '14px' }}>
+    ABCDEFGHIJKLMNOPQRSTUVWXYZ<br />
+    abcdefghijklmnopqrstuvwxyz<br />
+    0123456789
+  </p>
+</div>
+
+## Tamanhos
+
+<div style={{ marginTop: '24px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+  <div style={{ display: 'flex', alignItems: 'baseline', gap: '16px', padding: '12px', borderRadius: '8px', backgroundColor: '#f8fafc' }}>
+    <code style={{ width: '60px' }}>text-xs</code>
+    <span style={{ fontSize: '0.75rem', lineHeight: '1rem' }}>The quick brown fox (12px)</span>
+  </div>
+  <div style={{ display: 'flex', alignItems: 'baseline', gap: '16px', padding: '12px', borderRadius: '8px', backgroundColor: '#f8fafc' }}>
+    <code style={{ width: '60px' }}>text-sm</code>
+    <span style={{ fontSize: '0.875rem', lineHeight: '1.25rem' }}>The quick brown fox (14px)</span>
+  </div>
+  <div style={{ display: 'flex', alignItems: 'baseline', gap: '16px', padding: '12px', borderRadius: '8px', backgroundColor: '#f8fafc' }}>
+    <code style={{ width: '60px' }}>text-base</code>
+    <span style={{ fontSize: '1rem', lineHeight: '1.5rem' }}>The quick brown fox (16px)</span>
+  </div>
+  <div style={{ display: 'flex', alignItems: 'baseline', gap: '16px', padding: '12px', borderRadius: '8px', backgroundColor: '#f8fafc' }}>
+    <code style={{ width: '60px' }}>text-lg</code>
+    <span style={{ fontSize: '1.125rem', lineHeight: '1.75rem' }}>The quick brown fox (18px)</span>
+  </div>
+  <div style={{ display: 'flex', alignItems: 'baseline', gap: '16px', padding: '12px', borderRadius: '8px', backgroundColor: '#f8fafc' }}>
+    <code style={{ width: '60px' }}>text-xl</code>
+    <span style={{ fontSize: '1.25rem', lineHeight: '1.75rem' }}>The quick brown fox (20px)</span>
+  </div>
+  <div style={{ display: 'flex', alignItems: 'baseline', gap: '16px', padding: '12px', borderRadius: '8px', backgroundColor: '#f8fafc' }}>
+    <code style={{ width: '60px' }}>text-2xl</code>
+    <span style={{ fontSize: '1.5rem', lineHeight: '2rem' }}>The quick brown fox (24px)</span>
+  </div>
+</div>
+
+## Pesos
+
+<div style={{ marginTop: '24px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+  <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+    <code style={{ width: '120px' }}>font-normal</code>
+    <span style={{ fontWeight: 400, fontSize: '18px' }}>Regular (400)</span>
+  </div>
+  <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+    <code style={{ width: '120px' }}>font-medium</code>
+    <span style={{ fontWeight: 500, fontSize: '18px' }}>Medium (500)</span>
+  </div>
+  <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+    <code style={{ width: '120px' }}>font-semibold</code>
+    <span style={{ fontWeight: 600, fontSize: '18px' }}>Semibold (600)</span>
+  </div>
+  <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+    <code style={{ width: '120px' }}>font-bold</code>
+    <span style={{ fontWeight: 700, fontSize: '18px' }}>Bold (700)</span>
+  </div>
+</div>
+
+## Estilos de Texto Predefinidos
+
+<div style={{ marginTop: '24px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+  <div style={{ padding: '16px', borderRadius: '8px', border: '1px solid #e5e7eb' }}>
+    <code>h1 / text-2xl font-semibold</code>
+    <h1 style={{ fontSize: '1.5rem', fontWeight: 600, marginTop: '8px' }}>Título Principal</h1>
+  </div>
+  <div style={{ padding: '16px', borderRadius: '8px', border: '1px solid #e5e7eb' }}>
+    <code>h2 / text-xl font-semibold</code>
+    <h2 style={{ fontSize: '1.25rem', fontWeight: 600, marginTop: '8px' }}>Título Secundário</h2>
+  </div>
+  <div style={{ padding: '16px', borderRadius: '8px', border: '1px solid #e5e7eb' }}>
+    <code>h3 / text-lg font-semibold</code>
+    <h3 style={{ fontSize: '1.125rem', fontWeight: 600, marginTop: '8px' }}>Subtítulo</h3>
+  </div>
+  <div style={{ padding: '16px', borderRadius: '8px', border: '1px solid #e5e7eb' }}>
+    <code>body / text-sm font-normal</code>
+    <p style={{ fontSize: '0.875rem', fontWeight: 400, marginTop: '8px' }}>
+      Texto de parágrafo padrão usado em descrições e conteúdo geral.
+    </p>
+  </div>
+  <div style={{ padding: '16px', borderRadius: '8px', border: '1px solid #e5e7eb' }}>
+    <code>caption / text-xs font-medium</code>
+    <p style={{ fontSize: '0.75rem', fontWeight: 500, marginTop: '8px', color: '#64748B' }}>
+      Texto auxiliar para legendas e informações secundárias
+    </p>
+  </div>
+</div>
+
+## Uso em Código
+
+```tsx
+// Tailwind Classes
+<h1 className="text-2xl font-semibold">Título</h1>
+<p className="text-sm text-muted-foreground">Descrição</p>
+<span className="text-xs font-medium">Label</span>
+```
+
+```tsx
+// Design Tokens
+import { typography, textStyles } from '@/lib/design-tokens';
+
+// Acessar valores
+typography.fontSize.sm.size; // "0.875rem"
+typography.fontWeight.semibold; // "600"
+textStyles.h1.fontSize; // "1.5rem"
+```

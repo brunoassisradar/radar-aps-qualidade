@@ -1,0 +1,104 @@
+import { Meta } from '@storybook/blocks';
+
+<Meta title="Introdução" />
+
+# Radar APS - Design System
+
+Bem-vindo à biblioteca de componentes do **Radar APS**, construída seguindo a metodologia **Atomic Design**.
+
+## 🎯 O que é Atomic Design?
+
+Atomic Design é uma metodologia criada por Brad Frost que organiza componentes em 5 níveis hierárquicos:
+
+| Nível | Descrição | Exemplos |
+|-------|-----------|----------|
+| **Tokens** | Valores de design fundamentais | Cores, tipografia, espaçamentos |
+| **Atoms** | Elementos básicos indivisíveis | Button, Input, Badge |
+| **Molecules** | Grupos de átomos funcionando juntos | FilterBar, PageHeader, InfoCard |
+| **Organisms** | Seções complexas de UI | AppSidebar, OverviewTable, Charts |
+| **Templates** | Layouts de página completos | AppLayout, DashboardTemplate |
+
+## 🎨 Design Tokens
+
+O sistema utiliza CSS Variables (HSL) para máxima flexibilidade:
+
+### Cores Principais
+- `--primary`: Azul principal (#0064FF)
+- `--background`: Fundo da aplicação
+- `--foreground`: Texto principal
+- `--muted`: Elementos secundários
+
+### Status de Indicadores
+- `--status-otimo`: Azul (#3C8DBC) - Meta alcançada
+- `--status-bom`: Verde (#00A65A) - Próximo da meta
+- `--status-suficiente`: Amarelo (#F0AD4E) - Precisa atenção
+- `--status-regular`: Vermelho (#DD4B39) - Ação necessária
+
+## 🛠 Tecnologias
+
+Esta biblioteca é construída com:
+
+- **React 18** - Framework UI
+- **TypeScript** - Tipagem estática
+- **Tailwind CSS** - Estilização utility-first
+- **Ant Design v4** - Componentes base complexos
+- **Radix UI** - Primitivas acessíveis
+- **CVA** - Class Variance Authority para variantes
+
+## 📦 Como Usar
+
+### Importando Átomos
+
+```tsx
+import { Button, Input, Badge, StatusBadge } from '@/components/atoms';
+
+// Uso
+<Button variant="default">Salvar</Button>
+<StatusBadge status="otimo" value="85%" />
+```
+
+### Importando Design Tokens
+
+```tsx
+import { colors, typography, spacing } from '@/lib/design-tokens';
+
+// Os tokens documentam os valores do CSS
+console.log(colors.status.otimo.hex); // "#3C8DBC"
+```
+
+## 🚀 Estrutura de Pastas
+
+```
+src/
+├── lib/
+│   └── design-tokens/     # Tokens de design
+│       ├── colors.ts
+│       ├── typography.ts
+│       ├── spacing.ts
+│       └── shadows.ts
+│
+├── components/
+│   ├── atoms/             # Componentes básicos
+│   ├── molecules/         # Combinações de átomos
+│   ├── organisms/         # Seções complexas
+│   └── templates/         # Layouts de página
+```
+
+## 📚 Navegando pelo Storybook
+
+Use a sidebar à esquerda para explorar:
+
+1. **Design Tokens** - Documentação visual de cores, tipografia e espaçamentos
+2. **Atoms** - Componentes fundamentais com todas as variantes
+3. **Molecules** - Componentes compostos
+4. **Organisms** - Seções completas de UI
+5. **Templates** - Layouts de página
+
+Cada componente possui:
+- **Docs** - Documentação automática
+- **Controls** - Playground interativo
+- **Stories** - Exemplos de uso
+
+---
+
+Desenvolvido para o sistema de monitoramento da Atenção Primária à Saúde.
