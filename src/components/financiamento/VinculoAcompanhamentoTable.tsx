@@ -192,73 +192,96 @@ const AcompanhamentoBarChart: React.FC<{ data: AcompanhamentoBarData; month: str
   );
 };
 
-// Mobile card component for each team
-const MobileTeamCard: React.FC<{ record: VinculoData }> = ({ record }) => {
-  const [isExpanded, setIsExpanded] = React.useState(false);
-  
+// Mobile list item component for each team - shows ALL information
+const MobileTeamListItem: React.FC<{ record: VinculoData }> = ({ record }) => {
+  const cadastroLegend = [
+    { label: 'Completo', color: '#3B82F6' },
+    { label: 'Individual', color: '#22C55E' },
+    { label: 'Sem cadastro', color: '#EF4444' },
+  ];
+
   return (
-    <div className="bg-card rounded-lg border border-border p-3 space-y-3">
-      {/* Header */}
-      <div className="flex items-start justify-between">
-        <div className="flex-1 min-w-0">
-          <p className="font-medium text-sm text-foreground truncate">{record.equipeSaude}</p>
-          <p className="text-xs text-muted-foreground truncate">{record.unidade}</p>
+    <div className="bg-card rounded-lg border border-border overflow-hidden">
+      {/* Header with team info and classification */}
+      <div className="p-4 border-b border-border">
+        <div className="flex items-start justify-between gap-3 mb-3">
+          <div className="flex-1 min-w-0">
+            <h3 className="font-semibold text-sm text-foreground">{record.equipeSaude}</h3>
+            <p className="text-xs text-muted-foreground mt-0.5">{record.unidade}</p>
+          </div>
+          <div className="shrink-0">
+            <ResultadoCell nota={record.notaFinal} classification={record.classificacaoFinal} />
+          </div>
         </div>
-        <ResultadoCell nota={record.notaFinal} classification={record.classificacaoFinal} />
+        
+        {/* Metadata row */}
+        <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs">
+          <div className="flex items-center gap-1.5">
+            <span className="text-muted-foreground">INE:</span>
+            <span className="font-medium text-foreground">{record.ine}</span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <span className="text-muted-foreground">CNES:</span>
+            <span className="font-medium text-foreground">{record.cnes}</span>
+          </div>
+        </div>
       </div>
       
-      {/* INE/CNES */}
-      <div className="flex gap-4 text-xs">
-        <span className="text-muted-foreground">INE: <span className="text-foreground">{record.ine}</span></span>
-        <span className="text-muted-foreground">CNES: <span className="text-foreground">{record.cnes}</span></span>
+      {/* Dimensão Cadastro - Always visible */}
+      <div className="p-4 border-b border-border bg-muted/30">
+        <div className="flex items-center justify-between mb-3">
+          <span className="text-xs font-semibold text-foreground">Dimensão Cadastro</span>
+          <div className="flex gap-2">
+            {cadastroLegend.map((item) => (
+              <div key={item.label} className="flex items-center gap-1">
+                <span className="w-2 h-2 rounded-sm" style={{ backgroundColor: item.color }} />
+                <span className="text-[10px] text-muted-foreground">{item.label}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className="space-y-2">
+          {Object.entries(record.cadastro).map(([month, data]) => (
+            <div key={month} className="flex items-center gap-3">
+              <span className="text-xs text-muted-foreground w-16 shrink-0">{monthToLabel[month]}</span>
+              <div className="flex-1">
+                <CadastroBarChart data={data} month={month} equipeKey={record.key} />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+      
+      {/* Dimensão Acompanhamento - Always visible */}
+      <div className="p-4 border-b border-border">
+        <div className="flex items-center justify-between mb-3">
+          <span className="text-xs font-semibold text-foreground">Dimensão Acompanhamento</span>
+          <div className="flex items-center gap-1">
+            <span className="w-2 h-2 rounded-sm bg-[#3B82F6]" />
+            <span className="text-[10px] text-muted-foreground">Acompanhadas</span>
+          </div>
+        </div>
+        <div className="space-y-2">
+          {Object.entries(record.acompanhamento).map(([month, data]) => (
+            <div key={month} className="flex items-center gap-3">
+              <span className="text-xs text-muted-foreground w-16 shrink-0">{monthToLabel[month]}</span>
+              <div className="flex-1">
+                <AcompanhamentoBarChart data={data} month={month} equipeKey={record.key} />
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
       
       {/* Actions */}
-      <div className="flex gap-2">
+      <div className="p-3 flex gap-2 bg-muted/20">
         <Link to={`/financiamento-aps/qualidade-esf-eap/relatorio?tab=vinculo&equipe=${record.key}`} className="flex-1">
-          <Button type="default" size="small" block>Relatório</Button>
+          <Button type="primary" size="small" block>Ver Relatório</Button>
         </Link>
         <Link to={`/financiamento-aps/qualidade-esf-eap/individualizado?tab=vinculo&equipe=${record.key}`} className="flex-1">
           <Button type="default" size="small" block>Individual</Button>
         </Link>
-        <Button 
-          type="text" 
-          size="small"
-          onClick={() => setIsExpanded(!isExpanded)}
-          icon={isExpanded ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
-        />
       </div>
-      
-      {/* Expanded content */}
-      {isExpanded && (
-        <div className="pt-3 border-t border-border space-y-4">
-          {/* Cadastro */}
-          <div>
-            <p className="text-xs font-medium text-foreground mb-2">Dimensão Cadastro</p>
-            <div className="grid grid-cols-2 gap-2">
-              {Object.entries(record.cadastro).map(([month, data]) => (
-                <div key={month} className="space-y-1">
-                  <p className="text-[10px] text-muted-foreground capitalize">{monthToLabel[month]}</p>
-                  <CadastroBarChart data={data} month={month} equipeKey={record.key} />
-                </div>
-              ))}
-            </div>
-          </div>
-          
-          {/* Acompanhamento */}
-          <div>
-            <p className="text-xs font-medium text-foreground mb-2">Dimensão Acompanhamento</p>
-            <div className="grid grid-cols-2 gap-2">
-              {Object.entries(record.acompanhamento).map(([month, data]) => (
-                <div key={month} className="space-y-1">
-                  <p className="text-[10px] text-muted-foreground capitalize">{monthToLabel[month]}</p>
-                  <AcompanhamentoBarChart data={data} month={month} equipeKey={record.key} />
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
@@ -434,7 +457,7 @@ export const VinculoAcompanhamentoTable: React.FC = () => {
         </div>
         <div className="space-y-3">
           {sampleData.map((record) => (
-            <MobileTeamCard key={record.key} record={record} />
+            <MobileTeamListItem key={record.key} record={record} />
           ))}
         </div>
       </div>
