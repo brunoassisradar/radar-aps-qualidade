@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Tabs } from 'antd';
+
+const { TabPane } = Tabs;
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { PageHeader } from '@/components/layout/PageHeader';
 import { FilterBar } from '@/components/financiamento/FilterBar';
@@ -170,10 +172,15 @@ const QualidadeVisaoGeral: React.FC = () => {
       <Tabs
         activeKey={activeTab}
         onChange={handleTabChange}
-        items={tabItems}
         size="large"
         className="financiamento-tabs"
-      />
+      >
+        {tabItems.map(item => (
+          <TabPane tab={item.label} key={item.key}>
+            {item.children}
+          </TabPane>
+        ))}
+      </Tabs>
     </div>
   );
 };

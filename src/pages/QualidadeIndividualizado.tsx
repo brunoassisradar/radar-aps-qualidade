@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Button, Tabs } from 'antd';
+
+const { TabPane } = Tabs;
 import type { ColumnsType } from 'antd/es/table';
 import { Download, ChevronDown, ChevronRight } from 'lucide-react';
 import { useSearchParams } from 'react-router-dom';
@@ -615,10 +617,15 @@ const QualidadeIndividualizado: React.FC = () => {
       <Tabs
         activeKey={activeTab}
         onChange={handleTabChange}
-        items={tabItems}
         size="large"
         className="financiamento-tabs"
-      />
+      >
+        {tabItems.map(item => (
+          <TabPane tab={item.label} key={item.key}>
+            {item.children}
+          </TabPane>
+        ))}
+      </Tabs>
     </div>
   );
 };

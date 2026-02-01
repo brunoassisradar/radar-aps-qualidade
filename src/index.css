@@ -180,29 +180,41 @@
   }
 }
 
-/* Ant Design Segmented custom styles */
-.ant-segmented {
-  background: hsl(var(--muted)) !important;
-  padding: 4px !important;
+/* Ant Design Radio.Group (button style) custom styles - replacement for Segmented */
+.ant-radio-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0;
 }
 
-.ant-segmented-item {
+.ant-radio-group.w-full {
+  width: 100%;
+}
+
+.ant-radio-group.w-full .ant-radio-button-wrapper {
+  flex: 1;
+  text-align: center;
+}
+
+.ant-radio-button-wrapper {
   color: hsl(var(--muted-foreground)) !important;
+  border-color: hsl(var(--border)) !important;
+  background: hsl(var(--muted)) !important;
   transition: all 0.2s ease !important;
 }
 
-.ant-segmented-item:hover:not(.ant-segmented-item-selected) {
+.ant-radio-button-wrapper:hover:not(.ant-radio-button-wrapper-checked) {
   color: hsl(var(--foreground)) !important;
 }
 
-.ant-segmented-item-selected {
+.ant-radio-button-wrapper-checked {
   background: #EBF3FE !important;
   color: hsl(var(--primary)) !important;
   font-weight: 600 !important;
+  border-color: hsl(var(--primary)) !important;
   box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1) !important;
 }
 
-.ant-segmented-thumb {
-  background: #EBF3FE !important;
-  box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1) !important;
+.ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled)::before {
+  background-color: hsl(var(--primary)) !important;
 }
