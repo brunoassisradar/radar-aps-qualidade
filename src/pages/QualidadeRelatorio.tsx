@@ -377,10 +377,15 @@ const QualidadeRelatorio: React.FC = () => {
           newParams.set('tab', key);
           setSearchParams(newParams, { replace: true });
         }}
-        items={tabItems}
         size="large"
         className="financiamento-tabs"
-      />
+      >
+        {tabItems.map(item => (
+          <Tabs.TabPane key={item.key} tab={item.label}>
+            {item.children}
+          </Tabs.TabPane>
+        ))}
+      </Tabs>
     </div>
   );
 };

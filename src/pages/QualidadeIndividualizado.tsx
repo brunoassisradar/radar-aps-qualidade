@@ -615,10 +615,15 @@ const QualidadeIndividualizado: React.FC = () => {
       <Tabs
         activeKey={activeTab}
         onChange={handleTabChange}
-        items={tabItems}
         size="large"
         className="financiamento-tabs"
-      />
+      >
+        {tabItems.map(item => (
+          <Tabs.TabPane key={item.key} tab={item.label}>
+            {item.children}
+          </Tabs.TabPane>
+        ))}
+      </Tabs>
     </div>
   );
 };
