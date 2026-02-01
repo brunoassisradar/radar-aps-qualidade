@@ -232,55 +232,68 @@ const statusFilters = [
   { text: 'Regular', value: 'regular' },
 ];
 
-// Mobile card component for each team
-const MobileTeamCard: React.FC<{ record: TeamData }> = ({ record }) => {
-  const [isExpanded, setIsExpanded] = React.useState(false);
-  
+// Mobile list item component for each team - shows ALL information
+const MobileTeamListItem: React.FC<{ record: TeamData }> = ({ record }) => {
   return (
-    <div className="bg-card rounded-lg border border-border p-3 space-y-3">
-      {/* Header */}
-      <div className="flex items-start justify-between gap-2">
-        <div className="flex-1 min-w-0">
-          <p className="font-medium text-sm text-foreground truncate">{record.equipe}</p>
-          <p className="text-xs text-muted-foreground truncate">{record.unidade}</p>
-          <span className="inline-block mt-1 px-2 py-0.5 bg-muted rounded text-xs">{record.tipoEquipe}</span>
+    <div className="bg-card rounded-lg border border-border overflow-hidden">
+      {/* Header with team info */}
+      <div className="p-4 border-b border-border">
+        <div className="flex items-start justify-between gap-3 mb-2">
+          <div className="flex-1 min-w-0">
+            <h3 className="font-semibold text-sm text-foreground">{record.equipe}</h3>
+            <p className="text-xs text-muted-foreground mt-0.5">{record.unidade}</p>
+          </div>
+          <span className="shrink-0 px-2 py-0.5 bg-muted rounded text-xs font-medium">{record.tipoEquipe}</span>
         </div>
-        <StatusCell data={record.consolidado} showLink={false} compact />
+        <div className="flex items-center justify-between">
+          <span className="text-xs text-muted-foreground">Conceito Consolidado:</span>
+          <StatusCell data={record.consolidado} showLink={false} />
+        </div>
+      </div>
+      
+      {/* Indicators list - Always visible */}
+      <div className="divide-y divide-border">
+        {record.indicadores.map((indicador) => (
+          <div key={indicador.id} className="p-3 bg-muted/10">
+            <div className="flex items-start justify-between gap-2 mb-2">
+              <span className="text-xs font-medium text-foreground flex-1">{indicador.name}</span>
+            </div>
+            {/* Monthly breakdown */}
+            <div className="grid grid-cols-2 gap-2">
+              <div className="flex items-center justify-between text-xs">
+                <span className="text-muted-foreground">Consolidado:</span>
+                <StatusCell data={indicador.consolidado} indicador={indicador.id} month="consolidado" equipeKey={record.key} compact />
+              </div>
+              <div className="flex items-center justify-between text-xs">
+                <span className="text-muted-foreground">Janeiro:</span>
+                <StatusCell data={indicador.janeiro} indicador={indicador.id} month="janeiro" equipeKey={record.key} compact />
+              </div>
+              <div className="flex items-center justify-between text-xs">
+                <span className="text-muted-foreground">Fevereiro:</span>
+                <StatusCell data={indicador.fevereiro} indicador={indicador.id} month="fevereiro" equipeKey={record.key} compact />
+              </div>
+              <div className="flex items-center justify-between text-xs">
+                <span className="text-muted-foreground">Março:</span>
+                <StatusCell data={indicador.marco} indicador={indicador.id} month="marco" equipeKey={record.key} compact />
+              </div>
+              <div className="flex items-center justify-between text-xs col-span-2">
+                <span className="text-muted-foreground">Abril:</span>
+                <StatusCell data={indicador.abril} indicador={indicador.id} month="abril" equipeKey={record.key} compact />
+              </div>
+            </div>
+          </div>
+        ))}
       </div>
       
       {/* Actions */}
-      <div className="flex gap-2">
+      <div className="p-3 flex gap-2 bg-muted/20 border-t border-border">
         <Link to={`/financiamento-aps/qualidade-esf-eap/relatorio?tab=qualidade&equipe=${record.key}`} className="flex-1">
-          <Button type="default" size="small" block>Relatório</Button>
+          <Button type="primary" size="small" block>Ver Relatório</Button>
         </Link>
         <Link to={`/financiamento-aps/qualidade-esf-eap/individualizado?equipe=${record.key}`} className="flex-1">
           <Button type="default" size="small" block>Individual</Button>
         </Link>
-        <Button 
-          type="text" 
-          size="small"
-          onClick={() => setIsExpanded(!isExpanded)}
-          icon={isExpanded ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
-        />
       </div>
-      
-      {/* Expanded content - Indicators */}
-      {isExpanded && (
-        <div className="pt-3 border-t border-border space-y-2">
-          {record.indicadores.map((indicador) => (
-            <div key={indicador.id} className="flex items-center justify-between py-1.5 border-b border-border last:border-0">
-              <span className="text-xs text-muted-foreground flex-1 mr-2">{indicador.name}</span>
-              <StatusCell 
-                data={indicador.consolidado} 
-                indicador={indicador.id} 
-                month="consolidado" 
-                equipeKey={record.key}
-                compact
-              />
-            </div>
-          ))}
-        </div>
-      )}
     </div>
   );
 };
@@ -411,7 +424,7 @@ export const OverviewTable: React.FC<OverviewTableProps> = ({
         </div>
         <div className="space-y-3">
           {data.map((record) => (
-            <MobileTeamCard key={record.key} record={record} />
+            <MobileTeamListItem key={record.key} record={record} />
           ))}
         </div>
       </div>
