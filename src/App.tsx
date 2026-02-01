@@ -4,7 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { ConfigProvider } from "antd";
-import ptBR from "antd/lib/locale/pt_BR";
+import ptBR from "@/lib/antd-locale-pt-BR";
 // TEMPORARIAMENTE DESABILITADO - Reativar quando necessário
 // import { AuthProvider } from "./contexts/AuthContext";
 // import { ProtectedRoute } from "./components/auth/ProtectedRoute";
