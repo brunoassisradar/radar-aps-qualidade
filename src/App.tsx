@@ -4,7 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { ConfigProvider } from "antd";
-import ptBR from "antd/lib/locale/pt_BR";
+import ptBR from "antd/locale/pt_BR";
 // TEMPORARIAMENTE DESABILITADO - Reativar quando necessário
 // import { AuthProvider } from "./contexts/AuthContext";
 // import { ProtectedRoute } from "./components/auth/ProtectedRoute";
@@ -18,9 +18,17 @@ import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
+const antTheme = {
+  token: {
+    colorPrimary: "#1677ff",
+    borderRadius: 6,
+    fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+  },
+};
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <ConfigProvider locale={ptBR}>
+    <ConfigProvider locale={ptBR} theme={antTheme}>
       <TooltipProvider>
         {/* TEMPORARIAMENTE DESABILITADO - Reativar AuthProvider quando necessário */}
         {/* <AuthProvider> */}

@@ -1,8 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Tabs, Radio } from 'antd';
-import type { RadioChangeEvent } from 'antd';
-
-const { TabPane } = Tabs;
+import { Segmented, Tabs } from 'antd';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { PageHeader } from '@/components/layout/PageHeader';
 import { FilterBar } from '@/components/financiamento/FilterBar';
@@ -113,14 +110,7 @@ const QualidadeRelatorio: React.FC = () => {
 
       {/* Seletor de período - visual melhorado */}
       <div className="rounded-lg bg-card p-1 shadow-sm">
-        <Radio.Group
-          value={selectedPeriod}
-          onChange={(e: RadioChangeEvent) => setSelectedPeriod(e.target.value)}
-          options={periods.map(p => ({ label: p, value: p }))}
-          optionType="button"
-          buttonStyle="solid"
-          className="w-full"
-        />
+        <Segmented block value={selectedPeriod} onChange={value => setSelectedPeriod(value as string)} options={periods} className="!bg-transparent" />
       </div>
 
       {/* Layout principal com navegação de indicadores */}
@@ -211,14 +201,7 @@ const QualidadeRelatorio: React.FC = () => {
 
       {/* Seletor de período */}
       <div className="rounded-lg bg-card p-1 shadow-sm">
-        <Radio.Group
-          value={vinculoPeriod}
-          onChange={(e: RadioChangeEvent) => setVinculoPeriod(e.target.value)}
-          options={periods.map(p => ({ label: p, value: p }))}
-          optionType="button"
-          buttonStyle="solid"
-          className="w-full"
-        />
+        <Segmented block value={vinculoPeriod} onChange={value => setVinculoPeriod(value as string)} options={periods} className="!bg-transparent" />
       </div>
 
       {/* Layout principal com navegação de dimensões */}
@@ -394,15 +377,10 @@ const QualidadeRelatorio: React.FC = () => {
           newParams.set('tab', key);
           setSearchParams(newParams, { replace: true });
         }}
+        items={tabItems}
         size="large"
         className="financiamento-tabs"
-      >
-        {tabItems.map(item => (
-          <TabPane tab={item.label} key={item.key}>
-            {item.children}
-          </TabPane>
-        ))}
-      </Tabs>
+      />
     </div>
   );
 };

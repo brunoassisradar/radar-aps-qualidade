@@ -383,7 +383,7 @@ export const OverviewTable: React.FC<OverviewTableProps> = ({
 
       <Modal
         title="Conceito Geral Obtido"
-        visible={isHelpModalOpen}
+        open={isHelpModalOpen}
         onCancel={() => setIsHelpModalOpen(false)}
         footer={[
           <Button key="ok" type="primary" onClick={() => setIsHelpModalOpen(false)}>
