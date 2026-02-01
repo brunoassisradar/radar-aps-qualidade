@@ -109,7 +109,7 @@ export const ResultadoMunicipio: React.FC<ResultadoMunicipioProps> = ({
         </div>
       </div>
 
-      <Modal title="Resultado Final do Município" open={isHelpOpen} onCancel={() => setIsHelpOpen(false)} footer={null}>
+      <Modal title="Resultado Final do Município" visible={isHelpOpen} onCancel={() => setIsHelpOpen(false)} footer={null}>
         <div className="space-y-4">
           <p className="text-sm text-muted-foreground">
             O resultado final do município é calculado pela soma dos escores das dimensões de Cadastro e Acompanhamento.
