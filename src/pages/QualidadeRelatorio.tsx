@@ -104,24 +104,25 @@ const QualidadeRelatorio: React.FC = () => {
   const selectedDimensaoData = dimensoes.find(d => d.value === selectedDimensao);
 
   const renderQualidadeContent = () => (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* Filtros colapsados em um card clean */}
       <FilterBar periods={periods} selectedPeriod={selectedPeriod} onPeriodChange={setSelectedPeriod} />
 
       {/* Seletor de período - visual melhorado */}
-      <div className="rounded-lg bg-card p-1 shadow-sm">
-        <Segmented block value={selectedPeriod} onChange={value => setSelectedPeriod(value as string)} options={periods} className="!bg-transparent" />
+      <div className="rounded-lg bg-card p-1 shadow-sm overflow-x-auto">
+        <Segmented block value={selectedPeriod} onChange={value => setSelectedPeriod(value as string)} options={periods} className="!bg-transparent min-w-[400px]" />
       </div>
 
       {/* Layout principal com navegação de indicadores */}
-      <div className="flex flex-col lg:flex-row gap-6">
+      <div className="flex flex-col lg:flex-row gap-4 sm:gap-6">
         {/* Sidebar de indicadores - redesenhada */}
         <nav className="shrink-0 lg:w-64">
           <div className="rounded-lg bg-card shadow-sm p-2">
             <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider px-3 py-2">
               Indicadores
             </p>
-            <div className="space-y-1">
+            {/* Mobile: horizontal scroll, Desktop: vertical list */}
+            <div className="flex lg:flex-col gap-1 overflow-x-auto lg:overflow-visible pb-2 lg:pb-0">
               {indicadores.map(ind => {
                 const Icon = ind.icon;
                 const isSelected = selectedIndicador === ind.value;
@@ -130,20 +131,20 @@ const QualidadeRelatorio: React.FC = () => {
                     key={ind.value} 
                     onClick={() => setSelectedIndicador(ind.value)} 
                     className={cn(
-                      "w-full flex items-center gap-3 px-3 py-2.5 rounded-md text-left transition-all duration-150",
+                      "flex items-center gap-2 lg:gap-3 px-3 py-2 lg:py-2.5 rounded-md text-left transition-all duration-150 shrink-0",
                       "hover:bg-muted/50",
                       isSelected 
-                        ? "bg-primary/8 border-l-[3px] border-primary shadow-sm" 
-                        : "text-muted-foreground hover:text-foreground border-l-[3px] border-transparent"
+                        ? "bg-primary/8 border-l-0 lg:border-l-[3px] border-primary shadow-sm" 
+                        : "text-muted-foreground hover:text-foreground border-l-0 lg:border-l-[3px] border-transparent"
                     )}
                   >
                     <span className={cn(
-                      "flex items-center justify-center w-8 h-8 rounded-md text-sm font-semibold shrink-0 transition-colors",
+                      "flex items-center justify-center w-7 h-7 lg:w-8 lg:h-8 rounded-md text-xs lg:text-sm font-semibold shrink-0 transition-colors",
                       isSelected ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"
                     )}>
                       {ind.shortLabel}
                     </span>
-                    <div className="min-w-0 flex-1">
+                    <div className="min-w-0 flex-1 hidden lg:block">
                       <p className={cn("text-sm font-medium truncate", isSelected ? "text-foreground" : "")}>
                         {ind.label}
                       </p>
@@ -156,27 +157,27 @@ const QualidadeRelatorio: React.FC = () => {
         </nav>
 
         {/* Conteúdo principal */}
-        <div className="flex-1 min-w-0 space-y-6">
+        <div className="flex-1 min-w-0 space-y-4 sm:space-y-6">
           {/* Card de Boas Práticas */}
           <div className="rounded-lg bg-card shadow-sm overflow-hidden">
-            <div className="px-6 py-4 border-b border-border bg-gradient-to-r from-primary/5 to-transparent">
+            <div className="px-4 sm:px-6 py-3 sm:py-4 border-b border-border bg-gradient-to-r from-primary/5 to-transparent">
               <div className="flex items-center gap-3">
                 {selectedIndicadorData && (
-                  <span className="flex items-center justify-center w-10 h-10 rounded-lg bg-primary text-primary-foreground">
-                    <selectedIndicadorData.icon className="w-5 h-5" />
+                  <span className="flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-primary text-primary-foreground">
+                    <selectedIndicadorData.icon className="w-4 h-4 sm:w-5 sm:h-5" />
                   </span>
                 )}
                 <div>
-                  <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                  <p className="text-[10px] sm:text-xs font-medium text-muted-foreground uppercase tracking-wider">
                     Boas práticas
                   </p>
-                  <h2 className="text-lg font-semibold text-foreground">
+                  <h2 className="text-base sm:text-lg font-semibold text-foreground">
                     {selectedIndicadorData?.label}
                   </h2>
                 </div>
               </div>
             </div>
-            <div className="p-4">
+            <div className="p-3 sm:p-4">
               <IndicatorChart 
                 selectedIndicador={selectedIndicador}
                 kpiValues={{ primary: 50, secondary: 40 }}
@@ -185,7 +186,7 @@ const QualidadeRelatorio: React.FC = () => {
           </div>
 
           <div className="rounded-lg bg-card shadow-sm overflow-hidden">
-            <div className="p-4">
+            <div className="p-3 sm:p-4">
               <ReportTable selectedPeriod={selectedPeriod} />
             </div>
           </div>
@@ -195,24 +196,25 @@ const QualidadeRelatorio: React.FC = () => {
   );
 
   const renderVinculoContent = () => (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* Filtros */}
       <FilterBar periods={periods} selectedPeriod={vinculoPeriod} onPeriodChange={setVinculoPeriod} />
 
       {/* Seletor de período */}
-      <div className="rounded-lg bg-card p-1 shadow-sm">
-        <Segmented block value={vinculoPeriod} onChange={value => setVinculoPeriod(value as string)} options={periods} className="!bg-transparent" />
+      <div className="rounded-lg bg-card p-1 shadow-sm overflow-x-auto">
+        <Segmented block value={vinculoPeriod} onChange={value => setVinculoPeriod(value as string)} options={periods} className="!bg-transparent min-w-[400px]" />
       </div>
 
       {/* Layout principal com navegação de dimensões */}
-      <div className="flex flex-col lg:flex-row gap-6">
+      <div className="flex flex-col lg:flex-row gap-4 sm:gap-6">
         {/* Sidebar de dimensões */}
         <nav className="shrink-0 lg:w-64">
           <div className="rounded-lg bg-card shadow-sm p-2">
             <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider px-3 py-2">
               Dimensões
             </p>
-            <div className="space-y-1">
+            {/* Mobile: horizontal, Desktop: vertical */}
+            <div className="flex lg:flex-col gap-1 overflow-x-auto lg:overflow-visible pb-2 lg:pb-0">
               {dimensoes.map(dim => {
                 const Icon = dim.icon;
                 const isSelected = selectedDimensao === dim.value;
@@ -221,15 +223,15 @@ const QualidadeRelatorio: React.FC = () => {
                     key={dim.value} 
                     onClick={() => setSelectedDimensao(dim.value)} 
                     className={cn(
-                      "w-full flex items-center gap-3 px-3 py-2.5 rounded-md text-left transition-all duration-150",
+                      "flex items-center gap-2 lg:gap-3 px-3 py-2 lg:py-2.5 rounded-md text-left transition-all duration-150 shrink-0",
                       "hover:bg-muted/50",
                       isSelected 
-                        ? "bg-primary/8 border-l-[3px] border-primary shadow-sm" 
-                        : "text-muted-foreground hover:text-foreground border-l-[3px] border-transparent"
+                        ? "bg-primary/8 border-l-0 lg:border-l-[3px] border-primary shadow-sm" 
+                        : "text-muted-foreground hover:text-foreground border-l-0 lg:border-l-[3px] border-transparent"
                     )}
                   >
                     <span className={cn(
-                      "flex items-center justify-center w-8 h-8 rounded-md text-sm font-semibold shrink-0 transition-colors",
+                      "flex items-center justify-center w-7 h-7 lg:w-8 lg:h-8 rounded-md text-xs lg:text-sm font-semibold shrink-0 transition-colors",
                       isSelected ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"
                     )}>
                       {dim.shortLabel}
@@ -246,27 +248,27 @@ const QualidadeRelatorio: React.FC = () => {
           </div>
         </nav>
 
-        {/* Conteúdo principal - placeholder */}
-        <div className="flex-1 min-w-0 space-y-6">
+        {/* Conteúdo principal */}
+        <div className="flex-1 min-w-0 space-y-4 sm:space-y-6">
           <div className="rounded-lg bg-card shadow-sm overflow-hidden">
-            <div className="px-6 py-4 border-b border-border bg-gradient-to-r from-primary/5 to-transparent">
+            <div className="px-4 sm:px-6 py-3 sm:py-4 border-b border-border bg-gradient-to-r from-primary/5 to-transparent">
               <div className="flex items-center gap-3">
                 {selectedDimensaoData && (
-                  <span className="flex items-center justify-center w-10 h-10 rounded-lg bg-primary text-primary-foreground">
-                    <selectedDimensaoData.icon className="w-5 h-5" />
+                  <span className="flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-primary text-primary-foreground">
+                    <selectedDimensaoData.icon className="w-4 h-4 sm:w-5 sm:h-5" />
                   </span>
                 )}
                 <div>
-                  <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                  <p className="text-[10px] sm:text-xs font-medium text-muted-foreground uppercase tracking-wider">
                     Dimensão
                   </p>
-                  <h2 className="text-lg font-semibold text-foreground">
+                  <h2 className="text-base sm:text-lg font-semibold text-foreground">
                     {selectedDimensaoData?.label}
                   </h2>
                 </div>
               </div>
             </div>
-            <div className="p-6">
+            <div className="p-4 sm:p-6">
               {selectedDimensao === 'cadastro' ? (
                 <CadastroResumo />
               ) : (

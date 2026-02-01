@@ -133,16 +133,22 @@
   /* Indicator grid table-like styles */
   .indicator-grid {
     display: grid;
-    grid-template-columns: minmax(180px, 1.5fr) minmax(160px, 1.2fr) repeat(4, 1fr);
+    grid-template-columns: minmax(140px, 1.5fr) minmax(120px, 1fr) repeat(4, minmax(80px, 1fr));
+  }
+
+  @media (min-width: 640px) {
+    .indicator-grid {
+      grid-template-columns: minmax(180px, 1.5fr) minmax(160px, 1.2fr) repeat(4, 1fr);
+    }
   }
 
   /* 4-column variant for dimension tables */
   .indicator-grid:has(.indicator-grid-row-4cols) {
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(4, minmax(120px, 1fr));
   }
 
   .indicator-grid:has(.indicator-grid-row-4cols) .indicator-grid-header {
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(4, minmax(120px, 1fr));
   }
 
   .indicator-grid-header {
@@ -168,10 +174,16 @@
   }
 
   .indicator-grid-cell {
-    padding: 12px 16px;
+    padding: 8px 12px;
     border-bottom: 1px solid hsl(var(--border));
     display: flex;
     align-items: center;
+  }
+
+  @media (min-width: 640px) {
+    .indicator-grid-cell {
+      padding: 12px 16px;
+    }
   }
 
   .indicator-grid-row:last-child .indicator-grid-cell,

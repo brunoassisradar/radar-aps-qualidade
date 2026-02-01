@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { NavLink, useLocation, useNavigate } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 import {
   Home,
   LayoutDashboard,
@@ -12,12 +12,15 @@ import {
   CheckSquare,
   ChevronDown,
   ChevronRight,
+  X,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface AppSidebarProps {
   collapsed: boolean;
   onCollapse: (collapsed: boolean) => void;
+  onCloseMobile?: () => void;
+  isMobile?: boolean;
 }
 
 interface TertiaryMenuItem {
@@ -29,15 +32,15 @@ interface SecondaryMenuItem {
   label: string;
   path: string;
   hasActiveState?: boolean;
-  tabKey?: string; // The tab key to check for active state
-  isNavigableWithChildren?: boolean; // If true, clicking navigates AND expands children
+  tabKey?: string;
+  isNavigableWithChildren?: boolean;
   children?: TertiaryMenuItem[];
 }
 
 interface MenuItem {
   label: string;
   icon: React.ComponentType<{ className?: string }>;
-  path?: string; // Página principal do menu (opcional - para itens com filhos que também navegam)
+  path?: string;
   children?: SecondaryMenuItem[];
 }
 
@@ -48,9 +51,9 @@ const menuItems: MenuItem[] = [
   {
     label: 'Financiamento APS',
     icon: Wallet,
-    path: '/financiamento-aps', // Página principal acessível pelo menu pai
+    path: '/financiamento-aps',
     children: [
-      { label: 'Resumo', path: '#', hasActiveState: false }, // Página ainda não implementada
+      { label: 'Resumo', path: '#', hasActiveState: false },
       { 
         label: 'Vínculo e Acompanhamento', 
         path: '/financiamento-aps/qualidade-esf-eap?tab=vinculo',
@@ -84,7 +87,11 @@ const menuItems: MenuItem[] = [
   { label: 'Gestão de ações', icon: CheckSquare, path: '#' },
 ];
 
-export const AppSidebar: React.FC<AppSidebarProps> = ({ collapsed }) => {
+export const AppSidebar: React.FC<AppSidebarProps> = ({ 
+  collapsed,
+  onCloseMobile,
+  isMobile = false,
+}) => {
   const location = useLocation();
   const [expandedItems, setExpandedItems] = useState<string[]>(['Financiamento APS']);
   const [expandedSecondary, setExpandedSecondary] = useState<string[]>([]);
@@ -105,9 +112,8 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({ collapsed }) => {
     );
   };
 
-  // Get current tab from URL
   const searchParams = new URLSearchParams(location.search);
-  const currentTab = searchParams.get('tab') || 'qualidade'; // default to qualidade if no tab
+  const currentTab = searchParams.get('tab') || 'qualidade';
 
   const isInQualidadeSection = location.pathname.startsWith('/financiamento-aps/qualidade-esf-eap');
 
@@ -115,12 +121,10 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({ collapsed }) => {
     if (!item.hasActiveState) return false;
     if (item.path === '#') return false;
     
-    // If item has a tabKey, check if we're in the qualidade section AND the tab matches
     if (item.tabKey && isInQualidadeSection) {
       return currentTab === item.tabKey;
     }
     
-    // For items without tabKey, check if the current path starts with the item path
     if (!item.tabKey && item.path !== '#') {
       const itemBasePath = item.path.split('?')[0];
       return location.pathname.startsWith(itemBasePath);
@@ -134,13 +138,8 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({ collapsed }) => {
     const pathParams = new URLSearchParams(queryString);
     const pathTab = pathParams.get('tab');
     
-    // Check if pathname matches AND if the tab parameter matches
     if (location.pathname !== basePath) return false;
-    
-    // If the path has a tab parameter, it must match the current tab
     if (pathTab && pathTab !== currentTab) return false;
-    
-    // If parent has a tabKey, current tab must match it
     if (parentTabKey && parentTabKey !== currentTab) return false;
     
     return true;
@@ -150,20 +149,37 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({ collapsed }) => {
 
   const isParentActive = (item: MenuItem) => {
     if (!item.children) return false;
-    // Check if we're in the Financiamento APS section (including the resume page)
     if (item.label === 'Financiamento APS' && isInFinanciamentoSection) {
       return true;
     }
     return item.children.some((child) => isSecondaryActive(child));
   };
 
+  const handleNavClick = () => {
+    if (isMobile && onCloseMobile) {
+      onCloseMobile();
+    }
+  };
+
   return (
     <aside
       className={cn(
-        'flex flex-col border-r border-sidebar-border bg-sidebar transition-all duration-300',
+        'flex flex-col border-r border-sidebar-border bg-sidebar transition-all duration-300 h-full',
         collapsed ? 'w-16' : 'w-64'
       )}
     >
+      {/* Mobile close button */}
+      {isMobile && (
+        <div className="flex items-center justify-between p-3 border-b border-sidebar-border">
+          <span className="font-semibold text-sidebar-foreground">Menu</span>
+          <button
+            onClick={onCloseMobile}
+            className="p-2 rounded-md hover:bg-sidebar-accent text-sidebar-foreground"
+          >
+            <X className="h-5 w-5" />
+          </button>
+        </div>
+      )}
 
       <nav className="flex-1 overflow-y-auto p-3">
         <ul className="space-y-1">
@@ -174,9 +190,7 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({ collapsed }) => {
                   <NavLink
                     to={item.path || '#'}
                     onClick={(e) => {
-                      // Expande/colapsa os filhos
                       toggleExpanded(item.label);
-                      // Se não tem path válido, previne navegação
                       if (!item.path || item.path === '#') {
                         e.preventDefault();
                       }
@@ -205,7 +219,6 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({ collapsed }) => {
                       {item.children.map((child) => (
                         <li key={child.label}>
                           {child.children && child.isNavigableWithChildren ? (
-                            // Secondary item that navigates AND expands children
                             <div>
                               <NavLink
                                 to={child.path}
@@ -214,14 +227,13 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({ collapsed }) => {
                                   const isCurrentlyActive = isSecondaryActive(child);
                                   
                                   if (isCurrentlyActive && isAlreadyExpanded) {
-                                    // Se já está na página e expandido, apenas recolhe
                                     e.preventDefault();
                                     setExpandedSecondary(expandedSecondary.filter(l => l !== child.label));
                                   } else {
-                                    // Se não está na página ou não está expandido, expande
                                     if (!isAlreadyExpanded) {
                                       setExpandedSecondary([...expandedSecondary, child.label]);
                                     }
+                                    handleNavClick();
                                   }
                                 }}
                                 className={cn(
@@ -244,6 +256,7 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({ collapsed }) => {
                                     <li key={tertiary.label}>
                                       <NavLink
                                         to={tertiary.path}
+                                        onClick={handleNavClick}
                                         className={cn(
                                           'block rounded-md px-2 py-1.5 text-xs transition-colors',
                                           isTertiaryActive(tertiary.path, child.tabKey)
@@ -259,7 +272,6 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({ collapsed }) => {
                               )}
                             </div>
                           ) : child.children ? (
-                            // Secondary item with tertiary menu (button only, no navigation)
                             <div>
                               <button
                                 onClick={() => toggleSecondaryExpanded(child.label)}
@@ -283,6 +295,7 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({ collapsed }) => {
                                     <li key={tertiary.label}>
                                       <NavLink
                                         to={tertiary.path}
+                                        onClick={handleNavClick}
                                         className={cn(
                                           'block rounded-md px-2 py-1.5 text-xs transition-colors',
                                           isTertiaryActive(tertiary.path, child.tabKey)
@@ -298,9 +311,9 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({ collapsed }) => {
                               )}
                             </div>
                           ) : (
-                            // Simple secondary item
                             <NavLink
                               to={child.path}
+                              onClick={handleNavClick}
                               className={cn(
                                 'block rounded-md px-3 py-2 text-sm transition-colors',
                                 isSecondaryActive(child)
@@ -319,6 +332,7 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({ collapsed }) => {
               ) : (
                 <NavLink
                   to={item.path || '#'}
+                  onClick={handleNavClick}
                   className={({ isActive: active }) =>
                     cn(
                       'flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium transition-colors',
