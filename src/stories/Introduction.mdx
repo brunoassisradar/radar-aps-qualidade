@@ -13,76 +13,178 @@ Atomic Design é uma metodologia criada por Brad Frost que organiza componentes 
 | Nível | Descrição | Exemplos |
 |-------|-----------|----------|
 | **Tokens** | Valores de design fundamentais | Cores, tipografia, espaçamentos |
-| **Atoms** | Elementos básicos indivisíveis | Button, Input, Badge |
-| **Molecules** | Grupos de átomos funcionando juntos | FilterBar, PageHeader, InfoCard |
-| **Organisms** | Seções complexas de UI | AppSidebar, OverviewTable, Charts |
-| **Templates** | Layouts de página completos | AppLayout, DashboardTemplate |
+| **Atoms** | Elementos básicos indivisíveis | Button, Input, Badge, StatusBadge |
+| **Molecules** | Grupos de átomos funcionando juntos | FilterBar, PageHeader, InfoCard, FAQAccordion |
+| **Organisms** | Seções complexas de UI | AppSidebar, OverviewTable, IndicatorChart |
+| **Templates** | Layouts de página completos | AppLayout, DashboardTemplate, RelatorioTemplate |
+
+---
+
+## 📦 Como Usar a Biblioteca
+
+### Importação por Nível (Recomendado)
+
+```tsx
+// Átomos - Componentes básicos
+import { Button, Input, Badge, StatusBadge, Skeleton } from '@/components/atoms';
+
+// Moléculas - Componentes compostos
+import { InfoCard, FilterBar, PageHeader, FAQAccordion, PeriodSelector } from '@/components/molecules';
+
+// Organismos - Seções complexas
+import { AppHeader, AppSidebar, OverviewTable, IndicatorChart, ReportTable } from '@/components/organisms';
+
+// Templates - Layouts de página
+import { AppLayout, DashboardTemplate, VisaoGeralTemplate, RelatorioTemplate } from '@/components/templates';
+```
+
+### Importação Unificada
+
+```tsx
+// Tudo em um só import
+import { 
+  Button, 
+  InfoCard, 
+  AppHeader, 
+  AppLayout 
+} from '@/components';
+```
+
+### Design Tokens
+
+```tsx
+import { colors, typography, spacing, shadows } from '@/lib/design-tokens';
+
+// Exemplo de uso
+console.log(colors.status.otimo.hex);     // "#3C8DBC"
+console.log(typography.fontSize.base);     // "1rem"
+console.log(spacing.scale[4]);             // "1rem"
+```
+
+---
 
 ## 🎨 Design Tokens
 
 O sistema utiliza CSS Variables (HSL) para máxima flexibilidade:
 
 ### Cores Principais
-- `--primary`: Azul principal (#0064FF)
-- `--background`: Fundo da aplicação
-- `--foreground`: Texto principal
-- `--muted`: Elementos secundários
+| Token | Valor | Uso |
+|-------|-------|-----|
+| `--primary` | Azul (#0064FF) | Ações principais, links |
+| `--background` | Branco/Escuro | Fundo da aplicação |
+| `--foreground` | Preto/Branco | Texto principal |
+| `--muted` | Cinza | Elementos secundários |
+| `--accent` | Azul claro | Destaques sutis |
 
 ### Status de Indicadores
-- `--status-otimo`: Azul (#3C8DBC) - Meta alcançada
-- `--status-bom`: Verde (#00A65A) - Próximo da meta
-- `--status-suficiente`: Amarelo (#F0AD4E) - Precisa atenção
-- `--status-regular`: Vermelho (#DD4B39) - Ação necessária
+| Status | Cor | Significado |
+|--------|-----|-------------|
+| `--status-otimo` | Azul (#3C8DBC) | Meta alcançada com excelência |
+| `--status-bom` | Verde (#00A65A) | Meta alcançada |
+| `--status-suficiente` | Amarelo (#F0AD4E) | Próximo da meta |
+| `--status-regular` | Vermelho (#DD4B39) | Abaixo da meta |
+
+---
+
+## 🧱 Componentes Disponíveis
+
+### Atoms (7 componentes)
+- **Button** - Botão com 6 variantes (default, destructive, outline, secondary, ghost, link)
+- **Input** - Campo de entrada de texto
+- **Label** - Rótulo de formulário com variantes
+- **Badge** - Badge/tag pequena com variantes de cor
+- **StatusBadge** - Badge de status com cores semânticas (ótimo, bom, suficiente, regular)
+- **Skeleton** - Placeholder de carregamento animado
+- **Separator** - Linha divisória horizontal/vertical
+
+### Molecules (6 componentes)
+- **ClassificationCard** - Card de classificação com ícone e contador
+- **InfoCard** - Card informativo com links de navegação
+- **PeriodSelector** - Seletor de período com tabs
+- **FilterBar** - Barra de filtros com selects e progresso
+- **PageHeader** - Cabeçalho de página com breadcrumb e ações
+- **FAQAccordion** - Acordeão de perguntas frequentes
+
+### Organisms (6 componentes)
+- **AppHeader** - Cabeçalho da aplicação com logo e ações
+- **AppSidebar** - Menu lateral hierárquico
+- **OverviewTable** - Tabela de visão geral com expansão
+- **ReportTable** - Tabela de relatórios com status
+- **ResultadoMunicipio** - Card de resultado do município
+- **IndicatorChart** - Gráfico de indicadores empilhado
+
+### Templates (4 componentes)
+- **AppLayout** - Layout principal com sidebar colapsável
+- **DashboardTemplate** - Template de dashboard com cards
+- **VisaoGeralTemplate** - Template com tabs e filtros
+- **RelatorioTemplate** - Template de relatório com segmentos
+
+---
 
 ## 🛠 Tecnologias
 
 Esta biblioteca é construída com:
 
-- **React 18** - Framework UI
-- **TypeScript** - Tipagem estática
-- **Tailwind CSS** - Estilização utility-first
-- **Ant Design v4** - Componentes base complexos
-- **Radix UI** - Primitivas acessíveis
-- **CVA** - Class Variance Authority para variantes
+| Tecnologia | Versão | Propósito |
+|------------|--------|-----------|
+| React | 18.x | Framework UI |
+| TypeScript | 5.x | Tipagem estática |
+| Tailwind CSS | 3.x | Estilização utility-first |
+| Ant Design | 4.x | Componentes base complexos |
+| Radix UI | Latest | Primitivas acessíveis |
+| CVA | 0.7.x | Class Variance Authority |
+| Storybook | 8.x | Documentação e desenvolvimento |
 
-## 📦 Como Usar
-
-### Importando Átomos
-
-```tsx
-import { Button, Input, Badge, StatusBadge } from '@/components/atoms';
-
-// Uso
-<Button variant="default">Salvar</Button>
-<StatusBadge status="otimo" value="85%" />
-```
-
-### Importando Design Tokens
-
-```tsx
-import { colors, typography, spacing } from '@/lib/design-tokens';
-
-// Os tokens documentam os valores do CSS
-console.log(colors.status.otimo.hex); // "#3C8DBC"
-```
+---
 
 ## 🚀 Estrutura de Pastas
 
 ```
 src/
 ├── lib/
-│   └── design-tokens/     # Tokens de design
-│       ├── colors.ts
-│       ├── typography.ts
-│       ├── spacing.ts
-│       └── shadows.ts
+│   └── design-tokens/          # Tokens de design
+│       ├── colors.ts           # Paleta de cores
+│       ├── typography.ts       # Tipografia
+│       ├── spacing.ts          # Espaçamentos
+│       ├── shadows.ts          # Sombras e bordas
+│       └── index.ts            # Export unificado
 │
 ├── components/
-│   ├── atoms/             # Componentes básicos
-│   ├── molecules/         # Combinações de átomos
-│   ├── organisms/         # Seções complexas
-│   └── templates/         # Layouts de página
+│   ├── atoms/                  # Componentes básicos
+│   │   ├── Button/
+│   │   ├── Input/
+│   │   ├── Badge/
+│   │   ├── StatusBadge/
+│   │   └── index.ts
+│   │
+│   ├── molecules/              # Combinações de átomos
+│   │   ├── InfoCard/
+│   │   ├── FilterBar/
+│   │   ├── PageHeader/
+│   │   └── index.ts
+│   │
+│   ├── organisms/              # Seções complexas
+│   │   ├── AppHeader/
+│   │   ├── AppSidebar/
+│   │   ├── OverviewTable/
+│   │   └── index.ts
+│   │
+│   ├── templates/              # Layouts de página
+│   │   ├── AppLayout/
+│   │   ├── DashboardTemplate/
+│   │   └── index.ts
+│   │
+│   └── index.ts                # Export unificado
+│
+└── stories/
+    └── DesignTokens/           # Documentação visual
+        ├── Colors.mdx
+        ├── Typography.mdx
+        ├── Spacing.mdx
+        └── Shadows.mdx
 ```
+
+---
 
 ## 📚 Navegando pelo Storybook
 
@@ -90,15 +192,89 @@ Use a sidebar à esquerda para explorar:
 
 1. **Design Tokens** - Documentação visual de cores, tipografia e espaçamentos
 2. **Atoms** - Componentes fundamentais com todas as variantes
-3. **Molecules** - Componentes compostos
+3. **Molecules** - Componentes compostos reutilizáveis
 4. **Organisms** - Seções completas de UI
-5. **Templates** - Layouts de página
+5. **Templates** - Layouts de página prontos para uso
 
 Cada componente possui:
-- **Docs** - Documentação automática
+- **Docs** - Documentação automática com props
 - **Controls** - Playground interativo
-- **Stories** - Exemplos de uso
+- **Stories** - Exemplos de uso real
 
 ---
 
-Desenvolvido para o sistema de monitoramento da Atenção Primária à Saúde.
+## 💡 Exemplos de Uso
+
+### Criando uma Página de Dashboard
+
+```tsx
+import { AppLayout, DashboardTemplate } from '@/components/templates';
+import { Book, FileText, HelpCircle } from 'lucide-react';
+
+const cards = [
+  {
+    icon: Book,
+    title: 'Documentação',
+    description: 'Acesse a documentação completa',
+    links: [{ label: 'Ver docs', href: '/docs' }],
+  },
+  {
+    icon: FileText,
+    title: 'Relatórios',
+    description: 'Visualize seus relatórios',
+    links: [{ label: 'Abrir', href: '/reports' }],
+  },
+];
+
+const faqItems = [
+  { question: 'Como usar?', answer: 'É simples!' },
+];
+
+export default function MyDashboard() {
+  return (
+    <AppLayout>
+      <DashboardTemplate
+        breadcrumbItems={[{ label: 'Home' }]}
+        title="Meu Dashboard"
+        cards={cards}
+        faqItems={faqItems}
+      />
+    </AppLayout>
+  );
+}
+```
+
+### Criando uma Tabela de Visão Geral
+
+```tsx
+import { VisaoGeralTemplate } from '@/components/templates';
+import { OverviewTable } from '@/components/organisms';
+
+const tabs = [
+  {
+    key: 'qualidade',
+    label: 'Qualidade',
+    content: <OverviewTable />,
+  },
+  {
+    key: 'vinculo',
+    label: 'Vínculo',
+    content: <div>Conteúdo de vínculo</div>,
+  },
+];
+
+export default function VisaoGeral() {
+  return (
+    <VisaoGeralTemplate
+      breadcrumbItems={[{ label: 'Início', href: '/' }, { label: 'Visão Geral' }]}
+      title="Visão Geral"
+      tabs={tabs}
+      defaultActiveTab="qualidade"
+    />
+  );
+}
+```
+
+---
+
+Desenvolvido para o sistema de monitoramento da **Atenção Primária à Saúde**.
