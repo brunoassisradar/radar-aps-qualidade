@@ -1,20 +1,29 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { fn } from '@storybook/test';
+import { ConfigProvider } from 'antd';
 import { Search, Mail, Eye, EyeOff, Calendar } from 'lucide-react';
 import { Input } from './Input';
 import { Label } from '../Label';
 import { Button } from '../Button';
+import ptBR from '@/lib/antd-locale-pt-BR';
 
 const meta: Meta<typeof Input> = {
   title: 'Atoms/Input',
   component: Input,
+  decorators: [
+    (Story) => (
+      <ConfigProvider locale={ptBR}>
+        <Story />
+      </ConfigProvider>
+    ),
+  ],
   parameters: {
     layout: 'centered',
     docs: {
       description: {
         component: `
 O componente **Input** é usado para entrada de dados do usuário.
-Suporta todos os tipos de input HTML nativos e integra com o design system.
+Baseado no Ant Design v4 Input, suporta todos os tipos de input HTML.
 
 ### Uso básico
 \`\`\`tsx
@@ -22,6 +31,10 @@ import { Input } from '@/components/atoms/Input';
 
 <Input placeholder="Digite aqui..." />
 \`\`\`
+
+### Tipos especiais
+- \`type="password"\` → usa Input.Password
+- \`type="search"\` → usa Input.Search
         `,
       },
     },
@@ -73,7 +86,6 @@ export const Types: Story = {
       <Input type="email" placeholder="email@exemplo.com" />
       <Input type="password" placeholder="Senha" />
       <Input type="number" placeholder="123" />
-      <Input type="date" />
       <Input type="search" placeholder="Buscar..." />
     </div>
   ),
@@ -87,7 +99,7 @@ export const States: Story = {
       <Input placeholder="Normal" />
       <Input placeholder="Com valor" defaultValue="Texto digitado" />
       <Input placeholder="Desabilitado" disabled />
-      <Input placeholder="Somente leitura" readOnly defaultValue="Não editável" />
+      <Input placeholder="Somente leitura" readOnly value="Não editável" />
     </div>
   ),
 };
@@ -122,40 +134,24 @@ export const FormField: Story = {
   ),
 };
 
-// ===== WITH ICONS =====
+// ===== WITH PREFIX/SUFFIX =====
 
-export const WithIcon: Story = {
+export const WithPrefixSuffix: Story = {
   render: () => (
     <div className="flex flex-col gap-4 w-[300px]">
-      <div className="relative">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-        <Input className="pl-10" placeholder="Buscar..." />
-      </div>
-      <div className="relative">
-        <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-        <Input className="pl-10" type="email" placeholder="Email" />
-      </div>
-      <div className="relative">
-        <Input className="pr-10" type="password" placeholder="Senha" />
-        <Button
-          variant="ghost"
-          size="icon"
-          className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8"
-        >
-          <Eye className="h-4 w-4" />
-        </Button>
-      </div>
-    </div>
-  ),
-};
-
-// ===== FILE INPUT =====
-
-export const FileInput: Story = {
-  render: () => (
-    <div className="flex flex-col gap-2 w-[300px]">
-      <Label htmlFor="file">Documento</Label>
-      <Input id="file" type="file" />
+      <Input 
+        prefix={<Search className="h-4 w-4 text-gray-400" />}
+        placeholder="Buscar..." 
+      />
+      <Input 
+        prefix={<Mail className="h-4 w-4 text-gray-400" />}
+        type="email" 
+        placeholder="Email" 
+      />
+      <Input 
+        type="password"
+        placeholder="Senha" 
+      />
     </div>
   ),
 };

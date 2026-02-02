@@ -1,9 +1,18 @@
 import type { Meta, StoryObj } from '@storybook/react';
+import { ConfigProvider } from 'antd';
 import { Skeleton } from './Skeleton';
+import ptBR from '@/lib/antd-locale-pt-BR';
 
 const meta: Meta<typeof Skeleton> = {
   title: 'Atoms/Skeleton',
   component: Skeleton,
+  decorators: [
+    (Story) => (
+      <ConfigProvider locale={ptBR}>
+        <Story />
+      </ConfigProvider>
+    ),
+  ],
   parameters: {
     layout: 'centered',
     docs: {

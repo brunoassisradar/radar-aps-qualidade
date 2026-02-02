@@ -1,11 +1,40 @@
 import type { Meta, StoryObj } from '@storybook/react';
+import { ConfigProvider } from 'antd';
 import { FAQAccordion } from './FAQAccordion';
+import ptBR from '@/lib/antd-locale-pt-BR';
 
 const meta: Meta<typeof FAQAccordion> = {
   title: 'Molecules/FAQAccordion',
   component: FAQAccordion,
+  decorators: [
+    (Story) => (
+      <ConfigProvider locale={ptBR}>
+        <Story />
+      </ConfigProvider>
+    ),
+  ],
   parameters: {
     layout: 'padded',
+    docs: {
+      description: {
+        component: `
+O **FAQAccordion** é um accordion especializado para seções de perguntas frequentes.
+Baseado no Ant Design v4 Collapse, exibe perguntas e respostas em formato expansível.
+
+### Uso básico
+\`\`\`tsx
+import { FAQAccordion } from '@/components/molecules/FAQAccordion';
+
+<FAQAccordion 
+  items={[
+    { question: 'Pergunta 1', answer: 'Resposta 1' },
+    { question: 'Pergunta 2', answer: 'Resposta 2' },
+  ]} 
+/>
+\`\`\`
+        `,
+      },
+    },
   },
   tags: ['autodocs'],
   argTypes: {

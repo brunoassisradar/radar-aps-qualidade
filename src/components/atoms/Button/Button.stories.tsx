@@ -1,18 +1,27 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { fn } from '@storybook/test';
+import { ConfigProvider } from 'antd';
 import { Mail, ChevronRight, Plus, Trash2, Download } from 'lucide-react';
 import { Button } from './Button';
+import ptBR from '@/lib/antd-locale-pt-BR';
 
 const meta: Meta<typeof Button> = {
   title: 'Atoms/Button',
   component: Button,
+  decorators: [
+    (Story) => (
+      <ConfigProvider locale={ptBR}>
+        <Story />
+      </ConfigProvider>
+    ),
+  ],
   parameters: {
     layout: 'centered',
     docs: {
       description: {
         component: `
 O componente **Button** é o átomo mais fundamental para ações do usuário.
-Suporta múltiplas variantes visuais e tamanhos, além de integração com ícones.
+Baseado no Ant Design v4 Button, suporta múltiplas variantes visuais e tamanhos.
 
 ### Uso básico
 \`\`\`tsx
@@ -20,6 +29,14 @@ import { Button } from '@/components/atoms/Button';
 
 <Button variant="default">Clique aqui</Button>
 \`\`\`
+
+### Mapeamento de variantes
+- \`default\` → \`type="primary"\`
+- \`secondary\` → \`type="default"\`
+- \`outline\` → \`type="default"\`
+- \`destructive\` → \`type="primary" danger\`
+- \`ghost\` → \`type="text"\`
+- \`link\` → \`type="link"\`
         `,
       },
     },
@@ -48,10 +65,6 @@ import { Button } from '@/components/atoms/Button';
       control: 'boolean',
       description: 'Estado desabilitado',
     },
-    asChild: {
-      control: 'boolean',
-      description: 'Renderiza como filho (para uso com links)',
-    },
   },
   args: {
     onClick: fn(),
@@ -73,7 +86,7 @@ export const WithIcon: Story = {
   args: {
     children: (
       <>
-        <Mail />
+        <Mail className="h-4 w-4" />
         Enviar Email
       </>
     ),
@@ -85,7 +98,7 @@ export const IconRight: Story = {
     children: (
       <>
         Próximo
-        <ChevronRight />
+        <ChevronRight className="h-4 w-4" />
       </>
     ),
   },
@@ -94,7 +107,7 @@ export const IconRight: Story = {
 export const IconOnly: Story = {
   args: {
     size: 'icon',
-    children: <Plus />,
+    children: <Plus className="h-4 w-4" />,
   },
 };
 
@@ -124,11 +137,11 @@ export const Destructive: Story = {
   render: () => (
     <div className="flex gap-4">
       <Button variant="destructive">
-        <Trash2 />
+        <Trash2 className="h-4 w-4" />
         Excluir
       </Button>
       <Button variant="destructive" size="sm">
-        <Trash2 />
+        <Trash2 className="h-4 w-4" />
         Remover
       </Button>
     </div>
@@ -144,7 +157,7 @@ export const Sizes: Story = {
       <Button size="default">Default</Button>
       <Button size="lg">Large</Button>
       <Button size="icon">
-        <Plus />
+        <Plus className="h-4 w-4" />
       </Button>
     </div>
   ),
@@ -188,13 +201,13 @@ export const ToolbarButtons: Story = {
   render: () => (
     <div className="flex gap-1 rounded-lg border border-border p-1">
       <Button variant="ghost" size="icon">
-        <Download />
+        <Download className="h-4 w-4" />
       </Button>
       <Button variant="ghost" size="icon">
-        <Mail />
+        <Mail className="h-4 w-4" />
       </Button>
       <Button variant="ghost" size="icon">
-        <Trash2 />
+        <Trash2 className="h-4 w-4" />
       </Button>
     </div>
   ),

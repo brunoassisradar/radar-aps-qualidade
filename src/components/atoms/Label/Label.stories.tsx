@@ -1,18 +1,26 @@
 import type { Meta, StoryObj } from '@storybook/react';
+import { ConfigProvider, Checkbox } from 'antd';
 import { Label } from './Label';
 import { Input } from '../Input';
-import { Checkbox } from '@/components/ui/checkbox';
+import ptBR from '@/lib/antd-locale-pt-BR';
 
 const meta: Meta<typeof Label> = {
   title: 'Atoms/Label',
   component: Label,
+  decorators: [
+    (Story) => (
+      <ConfigProvider locale={ptBR}>
+        <Story />
+      </ConfigProvider>
+    ),
+  ],
   parameters: {
     layout: 'centered',
     docs: {
       description: {
         component: `
 O componente **Label** é usado para rotular campos de formulário.
-Melhora a acessibilidade conectando texto descritivo a inputs.
+É um elemento HTML nativo estilizado para manter consistência com o design system.
 
 ### Uso básico
 \`\`\`tsx
@@ -21,6 +29,9 @@ import { Label } from '@/components/atoms/Label';
 <Label htmlFor="email">Email</Label>
 <Input id="email" />
 \`\`\`
+
+### Nota
+Para formulários Ant Design, prefira usar \`Form.Item\` com a prop \`label\`.
         `,
       },
     },
@@ -62,9 +73,9 @@ export const RequiredField: Story = {
   render: () => (
     <div className="flex flex-col gap-2 w-[300px]">
       <Label htmlFor="required-email">
-        Email <span className="text-destructive">*</span>
+        Email <span className="text-red-500">*</span>
       </Label>
-      <Input id="required-email" type="email" placeholder="obrigatório" required />
+      <Input id="required-email" type="email" placeholder="obrigatório" />
     </div>
   ),
 };
@@ -114,13 +125,13 @@ export const FormExample: Story = {
     <div className="flex flex-col gap-4 w-[350px]">
       <div className="flex flex-col gap-1.5">
         <Label htmlFor="form-name">
-          Nome completo <span className="text-destructive">*</span>
+          Nome completo <span className="text-red-500">*</span>
         </Label>
         <Input id="form-name" />
       </div>
       <div className="flex flex-col gap-1.5">
         <Label htmlFor="form-email2">
-          Email <span className="text-destructive">*</span>
+          Email <span className="text-red-500">*</span>
         </Label>
         <Input id="form-email2" type="email" />
         <p className="text-xs text-muted-foreground">

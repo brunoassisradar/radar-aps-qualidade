@@ -1,4 +1,7 @@
 import type { Preview } from '@storybook/react';
+import React from 'react';
+import { ConfigProvider } from 'antd';
+import ptBR from '../src/lib/antd-locale-pt-BR';
 import '../src/index.css';
 import 'antd/dist/antd.css';
 
@@ -45,6 +48,13 @@ const preview: Preview = {
       },
     },
   },
+  decorators: [
+    (Story) => (
+      <ConfigProvider locale={ptBR}>
+        <Story />
+      </ConfigProvider>
+    ),
+  ],
   tags: ['autodocs'],
 };
 

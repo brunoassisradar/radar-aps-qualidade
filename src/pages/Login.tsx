@@ -1,31 +1,24 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
-import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Card, Input, Button, Alert, Form } from 'antd';
 import { Lock, User, AlertCircle, Eye, EyeOff } from 'lucide-react';
 
 const Login: React.FC = () => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async (values: { username: string; password: string }) => {
     setError('');
     setIsLoading(true);
 
     // Simular delay de autenticação
     await new Promise(resolve => setTimeout(resolve, 500));
 
-    const success = login(username.trim(), password);
+    const success = login(values.username.trim(), values.password);
     
     if (success) {
       navigate('/financiamento-aps', { replace: true });
@@ -39,74 +32,72 @@ const Login: React.FC = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/5 via-background to-primary/10 p-4">
       <Card className="w-full max-w-md shadow-lg">
-        <CardHeader className="space-y-1 text-center">
+        <div className="text-center mb-6">
           <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary">
-            <Lock className="h-8 w-8 text-primary-foreground" />
+            <Lock className="h-8 w-8 text-white" />
           </div>
-          <CardTitle className="text-2xl font-bold">Figma Teste</CardTitle>
-          <CardDescription>
+          <h1 className="text-2xl font-bold">Figma Teste</h1>
+          <p className="text-gray-500 mt-1">
             Digite suas credenciais para acessar o sistema
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            {error && (
-              <Alert variant="destructive">
-                <AlertCircle className="h-4 w-4" />
-                <AlertDescription>{error}</AlertDescription>
-              </Alert>
-            )}
-            
-            <div className="space-y-2">
-              <Label htmlFor="username">Usuário</Label>
-              <div className="relative">
-                <User className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                <Input
-                  id="username"
-                  type="text"
-                  placeholder="Digite seu usuário"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  className="pl-10"
-                  required
-                  autoComplete="username"
-                />
-              </div>
-            </div>
-            
-            <div className="space-y-2">
-              <Label htmlFor="password">Senha</Label>
-              <div className="relative">
-                <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                <Input
-                  id="password"
-                  type={showPassword ? 'text' : 'password'}
-                  placeholder="Digite sua senha"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="pl-10 pr-10"
-                  required
-                  autoComplete="current-password"
-                />
+          </p>
+        </div>
+
+        <Form onFinish={handleSubmit} layout="vertical">
+          {error && (
+            <Alert
+              type="error"
+              message={error}
+              icon={<AlertCircle className="h-4 w-4" />}
+              showIcon
+              className="mb-4"
+            />
+          )}
+          
+          <Form.Item
+            label="Usuário"
+            name="username"
+            rules={[{ required: true, message: 'Por favor, digite seu usuário' }]}
+          >
+            <Input
+              prefix={<User className="h-4 w-4 text-gray-400" />}
+              placeholder="Digite seu usuário"
+              autoComplete="username"
+            />
+          </Form.Item>
+          
+          <Form.Item
+            label="Senha"
+            name="password"
+            rules={[{ required: true, message: 'Por favor, digite sua senha' }]}
+          >
+            <Input
+              prefix={<Lock className="h-4 w-4 text-gray-400" />}
+              suffix={
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                  className="text-gray-400 hover:text-gray-600 transition-colors"
                 >
                   {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
-              </div>
-            </div>
-            
+              }
+              type={showPassword ? 'text' : 'password'}
+              placeholder="Digite sua senha"
+              autoComplete="current-password"
+            />
+          </Form.Item>
+          
+          <Form.Item>
             <Button 
-              type="submit" 
-              className="w-full" 
-              disabled={isLoading}
+              type="primary" 
+              htmlType="submit"
+              loading={isLoading}
+              block
             >
               {isLoading ? 'Entrando...' : 'Entrar'}
             </Button>
-          </form>
-        </CardContent>
+          </Form.Item>
+        </Form>
       </Card>
     </div>
   );

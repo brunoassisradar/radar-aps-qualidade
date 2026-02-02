@@ -1,47 +1,80 @@
 import * as React from "react";
-import { Slot } from "@radix-ui/react-slot";
-import { cva, type VariantProps } from "class-variance-authority";
+import { Button as AntButton } from "antd";
+import type { ButtonProps as AntButtonProps } from "antd";
 
-import { cn } from "@/lib/utils";
+type ButtonVariant = "default" | "destructive" | "outline" | "secondary" | "ghost" | "link";
+type ButtonSize = "default" | "sm" | "lg" | "icon";
 
-const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
-  {
-    variants: {
-      variant: {
-        default: "bg-primary text-primary-foreground hover:bg-primary/90",
-        destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90",
-        outline: "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
-        secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80",
-        ghost: "hover:bg-accent hover:text-accent-foreground",
-        link: "text-primary underline-offset-4 hover:underline",
-      },
-      size: {
-        default: "h-10 px-4 py-2",
-        sm: "h-9 rounded-md px-3",
-        lg: "h-11 rounded-md px-8",
-        icon: "h-10 w-10",
-      },
-    },
-    defaultVariants: {
-      variant: "default",
-      size: "default",
-    },
-  },
-);
-
-export interface ButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
-    VariantProps<typeof buttonVariants> {
+export interface ButtonProps extends Omit<AntButtonProps, "size" | "type"> {
+  variant?: ButtonVariant;
+  size?: ButtonSize;
   asChild?: boolean;
 }
 
+/**
+ * Mapeia variantes do design system para props do Ant Design Button
+ */
+function getAntButtonProps(
+  variant: ButtonVariant = "default",
+  size: ButtonSize = "default"
+): Partial<AntButtonProps> {
+  const sizeMap: Record<ButtonSize, AntButtonProps["size"]> = {
+    default: "middle",
+    sm: "small",
+    lg: "large",
+    icon: "middle",
+  };
+
+  const baseProps: Partial<AntButtonProps> = {
+    size: sizeMap[size],
+  };
+
+  switch (variant) {
+    case "default":
+      return { ...baseProps, type: "primary" };
+    case "secondary":
+      return { ...baseProps, type: "default" };
+    case "outline":
+      return { ...baseProps, type: "default", ghost: false };
+    case "destructive":
+      return { ...baseProps, type: "primary", danger: true };
+    case "ghost":
+      return { ...baseProps, type: "text" };
+    case "link":
+      return { ...baseProps, type: "link" };
+    default:
+      return { ...baseProps, type: "primary" };
+  }
+}
+
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, asChild = false, ...props }, ref) => {
-    const Comp = asChild ? Slot : "button";
-    return <Comp className={cn(buttonVariants({ variant, size, className }))} ref={ref} {...props} />;
-  },
+  ({ variant = "default", size = "default", asChild, className, children, style, ...props }, ref) => {
+    const antProps = getAntButtonProps(variant, size);
+    
+    // Classes adicionais para icon button e customização
+    const iconStyle: React.CSSProperties = size === "icon" 
+      ? { minWidth: 40, width: 40, height: 40, padding: 0 }
+      : {};
+
+    return (
+      <AntButton
+        {...antProps}
+        {...props}
+        className={className}
+        style={{ ...iconStyle, ...style }}
+        ref={ref as React.Ref<HTMLButtonElement>}
+      >
+        {children}
+      </AntButton>
+    );
+  }
 );
+
 Button.displayName = "Button";
+
+// Manter compatibilidade com buttonVariants para código legado
+const buttonVariants = (props: { variant?: ButtonVariant; size?: ButtonSize }) => {
+  return getAntButtonProps(props.variant, props.size);
+};
 
 export { Button, buttonVariants };

@@ -1,16 +1,25 @@
 import type { Meta, StoryObj } from '@storybook/react';
+import { ConfigProvider } from 'antd';
 import { StatusBadge } from './StatusBadge';
+import ptBR from '@/lib/antd-locale-pt-BR';
 
 const meta: Meta<typeof StatusBadge> = {
   title: 'Atoms/StatusBadge',
   component: StatusBadge,
+  decorators: [
+    (Story) => (
+      <ConfigProvider locale={ptBR}>
+        <Story />
+      </ConfigProvider>
+    ),
+  ],
   parameters: {
     layout: 'centered',
     docs: {
       description: {
         component: `
 O **StatusBadge** é um badge especializado para indicadores de qualidade da APS.
-Exibe status de classificação (Ótimo, Bom, Suficiente, Regular) com cores semânticas.
+Baseado no Ant Design v4 Tag, exibe status de classificação com cores semânticas.
 
 ### Uso básico
 \`\`\`tsx
