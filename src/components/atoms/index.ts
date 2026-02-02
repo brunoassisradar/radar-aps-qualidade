@@ -2,6 +2,7 @@
  * Atoms - Barrel Export
  * 
  * Exportação unificada de todos os componentes atômicos.
+ * Agora usando Ant Design v4 como base.
  * Importação: import { Button, Input, Badge } from '@/components/atoms';
  */
 

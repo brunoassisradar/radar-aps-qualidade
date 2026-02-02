@@ -1,4 +1,5 @@
 import React from 'react';
+import { Tag } from 'antd';
 import { cn } from '@/lib/utils';
 
 export type Status = 'otimo' | 'bom' | 'suficiente' | 'regular';
@@ -10,7 +11,7 @@ export interface StatusBadgeProps {
   className?: string;
 }
 
-const statusConfig = {
+const statusConfig: Record<Status, { label: string; className: string }> = {
   otimo: {
     label: 'Ótimo',
     className: 'status-badge-otimo',
@@ -38,15 +39,10 @@ export const StatusBadge: React.FC<StatusBadgeProps> = ({
   const config = statusConfig[status];
 
   return (
-    <span
-      className={cn(
-        'inline-flex items-center gap-1 rounded-md border px-2 py-0.5 text-xs font-medium',
-        config.className,
-        className
-      )}
-    >
+    <Tag className={cn(config.className, className)}>
       {showLabel && <span>{config.label}</span>}
+      {showLabel && value && ' '}
       {value && <span>{value}</span>}
-    </span>
+    </Tag>
   );
 };

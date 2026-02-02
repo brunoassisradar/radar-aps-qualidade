@@ -2,6 +2,7 @@
  * Radar APS - Component Library
  * 
  * Biblioteca completa de componentes seguindo Atomic Design.
+ * Agora 100% baseada no Ant Design v4.
  * 
  * @example
  * // Importação de átomos
@@ -21,7 +22,7 @@
  */
 
 // ============================================================================
-// ATOMS - Elementos básicos e indivisíveis
+// ATOMS - Elementos básicos e indivisíveis (Ant Design v4)
 // ============================================================================
 export {
   // Button

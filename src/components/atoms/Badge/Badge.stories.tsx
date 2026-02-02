@@ -1,16 +1,25 @@
 import type { Meta, StoryObj } from '@storybook/react';
+import { ConfigProvider } from 'antd';
 import { Badge } from './Badge';
+import ptBR from '@/lib/antd-locale-pt-BR';
 
 const meta: Meta<typeof Badge> = {
   title: 'Atoms/Badge',
   component: Badge,
+  decorators: [
+    (Story) => (
+      <ConfigProvider locale={ptBR}>
+        <Story />
+      </ConfigProvider>
+    ),
+  ],
   parameters: {
     layout: 'centered',
     docs: {
       description: {
         component: `
 O componente **Badge** é usado para exibir status, categorias ou contadores.
-Inclui variantes semânticas para indicadores de saúde (Ótimo, Bom, Suficiente, Regular).
+Baseado no Ant Design v4 Tag, inclui variantes semânticas para indicadores de saúde.
 
 ### Uso básico
 \`\`\`tsx

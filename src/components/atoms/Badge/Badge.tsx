@@ -1,36 +1,68 @@
 import * as React from "react";
-import { cva, type VariantProps } from "class-variance-authority";
-
+import { Tag } from "antd";
 import { cn } from "@/lib/utils";
 
-const badgeVariants = cva(
-  "inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
-  {
-    variants: {
-      variant: {
-        default: "border-transparent bg-primary text-primary-foreground hover:bg-primary/80",
-        secondary: "border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80",
-        destructive: "border-transparent bg-destructive text-destructive-foreground hover:bg-destructive/80",
-        outline: "text-foreground",
-        // Status variants
-        otimo: "status-badge-otimo",
-        bom: "status-badge-bom",
-        suficiente: "status-badge-suficiente",
-        regular: "status-badge-regular",
-      },
-    },
-    defaultVariants: {
-      variant: "default",
-    },
-  },
-);
+type BadgeVariant = 
+  | "default" 
+  | "secondary" 
+  | "destructive" 
+  | "outline" 
+  | "otimo" 
+  | "bom" 
+  | "suficiente" 
+  | "regular";
 
-export interface BadgeProps
-  extends React.HTMLAttributes<HTMLDivElement>,
-    VariantProps<typeof badgeVariants> {}
-
-function Badge({ className, variant, ...props }: BadgeProps) {
-  return <div className={cn(badgeVariants({ variant }), className)} {...props} />;
+export interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
+  variant?: BadgeVariant;
 }
+
+/**
+ * Mapeia variantes para cores do Ant Design Tag
+ */
+function getTagColor(variant: BadgeVariant = "default"): string | undefined {
+  const colorMap: Record<BadgeVariant, string | undefined> = {
+    default: "blue",
+    secondary: "default",
+    destructive: "error",
+    outline: undefined,
+    otimo: "blue",
+    bom: "success",
+    suficiente: "warning",
+    regular: "error",
+  };
+  return colorMap[variant];
+}
+
+function Badge({ className, variant = "default", children, ...props }: BadgeProps) {
+  const color = getTagColor(variant);
+  
+  // Para variantes de status, aplicar classes CSS customizadas
+  const statusClasses = {
+    otimo: "status-badge-otimo",
+    bom: "status-badge-bom",
+    suficiente: "status-badge-suficiente",
+    regular: "status-badge-regular",
+  };
+
+  const isStatusVariant = variant in statusClasses;
+  
+  return (
+    <Tag
+      color={isStatusVariant ? undefined : color}
+      className={cn(
+        isStatusVariant && statusClasses[variant as keyof typeof statusClasses],
+        className
+      )}
+      {...(props as React.ComponentProps<typeof Tag>)}
+    >
+      {children}
+    </Tag>
+  );
+}
+
+// Manter compatibilidade com badgeVariants para código legado
+const badgeVariants = (props: { variant?: BadgeVariant }) => {
+  return { color: getTagColor(props.variant) };
+};
 
 export { Badge, badgeVariants };

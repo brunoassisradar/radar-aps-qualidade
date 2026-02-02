@@ -1,16 +1,25 @@
 import type { Meta, StoryObj } from '@storybook/react';
+import { ConfigProvider } from 'antd';
 import { Separator } from './Separator';
+import ptBR from '@/lib/antd-locale-pt-BR';
 
 const meta: Meta<typeof Separator> = {
   title: 'Atoms/Separator',
   component: Separator,
+  decorators: [
+    (Story) => (
+      <ConfigProvider locale={ptBR}>
+        <Story />
+      </ConfigProvider>
+    ),
+  ],
   parameters: {
     layout: 'centered',
     docs: {
       description: {
         component: `
 O componente **Separator** é usado para dividir visualmente seções de conteúdo.
-Pode ser horizontal ou vertical.
+Baseado no Ant Design v4 Divider, pode ser horizontal ou vertical.
 
 ### Uso básico
 \`\`\`tsx
