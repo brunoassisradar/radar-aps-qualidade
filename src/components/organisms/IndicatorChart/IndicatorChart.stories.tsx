@@ -14,6 +14,15 @@ const meta: Meta<typeof IndicatorChart> = {
       options: ['c1', 'c2', 'c3', 'c4', 'c5', 'c6', 'c7'],
       description: 'Indicador selecionado (C1-C7)',
     },
+    showEmptyState: {
+      control: 'boolean',
+      description: 'Força exibição do estado vazio',
+    },
+    emptyStateReason: {
+      control: 'select',
+      options: ['no-data', 'no-period-data', 'processing', 'no-teams'],
+      description: 'Razão do estado vazio',
+    },
   },
 };
 
@@ -78,5 +87,37 @@ export const WithCustomData: Story = {
       { equipe: 'B', equipeName: 'Equipe Beta', tooltipText: 'UBS Norte', cumprioBoaPratica: 60, naoCumpriuBoaPratica: 40, cumprioECadastroOk: 70, cumprioComPendencia: 30 },
       { equipe: 'C', equipeName: 'Equipe Gamma', tooltipText: 'UBS Sul', cumprioBoaPratica: 45, naoCumpriuBoaPratica: 55, cumprioECadastroOk: 50, cumprioComPendencia: 50 },
     ],
+  },
+};
+
+export const EmptyState_NoData: Story = {
+  args: {
+    selectedIndicador: 'c3',
+    showEmptyState: true,
+    emptyStateReason: 'no-data',
+  },
+};
+
+export const EmptyState_NoPeriodData: Story = {
+  args: {
+    selectedIndicador: 'c3',
+    showEmptyState: true,
+    emptyStateReason: 'no-period-data',
+  },
+};
+
+export const EmptyState_Processing: Story = {
+  args: {
+    selectedIndicador: 'c3',
+    showEmptyState: true,
+    emptyStateReason: 'processing',
+  },
+};
+
+export const EmptyState_NoTeams: Story = {
+  args: {
+    selectedIndicador: 'c3',
+    showEmptyState: true,
+    emptyStateReason: 'no-teams',
   },
 };

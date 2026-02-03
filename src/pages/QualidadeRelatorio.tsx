@@ -72,6 +72,10 @@ const QualidadeRelatorio: React.FC = () => {
   const initialPeriodo = searchParams.get('periodo') || 'Consolidado';
   const initialDimensao = searchParams.get('dimensao') || 'cadastro';
   
+  // Parâmetro para simular empty state (para testes/desenvolvimento)
+  const simulateEmptyState = searchParams.get('emptyState') === 'true';
+  const emptyStateReason = (searchParams.get('emptyReason') as 'no-data' | 'no-period-data' | 'processing' | 'no-teams') || 'no-data';
+  
   const [activeTab, setActiveTab] = useState(initialTab);
   const [selectedPeriod, setSelectedPeriod] = useState(initialPeriodo);
   const [selectedIndicador, setSelectedIndicador] = useState(initialIndicador);
@@ -181,6 +185,8 @@ const QualidadeRelatorio: React.FC = () => {
               <IndicatorChart 
                 selectedIndicador={selectedIndicador}
                 kpiValues={{ primary: 50, secondary: 40 }}
+                showEmptyState={simulateEmptyState}
+                emptyStateReason={emptyStateReason}
               />
             </div>
           </div>
