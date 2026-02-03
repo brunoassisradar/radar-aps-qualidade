@@ -2,6 +2,7 @@ import React from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, LabelList, TooltipProps } from 'recharts';
 import { Info } from 'lucide-react';
 import { Tooltip } from 'antd';
+import { EmptyState, EmptyStateReason } from './EmptyState';
 
 interface IndicatorChartData {
   equipe: string;
@@ -27,6 +28,10 @@ interface IndicatorChartProps {
     primary?: number;
     secondary?: number;
   };
+  /** Força exibição do estado vazio (para simulação/testes) */
+  showEmptyState?: boolean;
+  /** Razão do estado vazio */
+  emptyStateReason?: EmptyStateReason;
 }
 
 const getKpiConfig = (indicador: string, values: { primary?: number; secondary?: number }): KpiConfig[] => {
@@ -378,9 +383,23 @@ export const IndicatorChart: React.FC<IndicatorChartProps> = ({
   data = defaultData,
   selectedIndicador = 'c3',
   kpiValues = { primary: 50, secondary: 40 },
+  showEmptyState = false,
+  emptyStateReason = 'no-data',
 }) => {
   const kpis = getKpiConfig(selectedIndicador, kpiValues);
   const normalizedData = normalizeData(data);
+
+  // Verificar se deve exibir empty state
+  const hasNoData = showEmptyState || data.length === 0;
+
+  if (hasNoData) {
+    return (
+      <EmptyState 
+        reason={emptyStateReason} 
+        className="min-h-[300px] flex items-center justify-center"
+      />
+    );
+  }
 
   // Render Bullet Chart for C1
   if (selectedIndicador === 'c1') {
