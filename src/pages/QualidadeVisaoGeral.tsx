@@ -34,32 +34,10 @@ const QualidadeVisaoGeral: React.FC = () => {
 
   const tabItems = [
     {
-      key: 'tab1',
-      label: 'Tab 1',
-      children: (
-        <div className="space-y-6 pt-4">
-          <div className="rounded-lg bg-card p-8 shadow-sm text-center">
-            <p className="text-muted-foreground">Conteúdo da Tab 1 (em desenvolvimento)</p>
-          </div>
-        </div>
-      ),
-    },
-    {
-      key: 'tab2',
-      label: 'Tab 2',
-      children: (
-        <div className="space-y-6 pt-4">
-          <div className="rounded-lg bg-card p-8 shadow-sm text-center">
-            <p className="text-muted-foreground">Conteúdo da Tab 2 (em desenvolvimento)</p>
-          </div>
-        </div>
-      ),
-    },
-    {
       key: 'vinculo',
       label: 'Vínculo e Acompanhamento',
       children: (
-        <div className="space-y-4 sm:space-y-6 pt-4">
+        <div className="space-y-6 pt-4">
           <FilterBar />
           <ResultadoMunicipio
             escoreCadastro={3}
@@ -84,10 +62,10 @@ const QualidadeVisaoGeral: React.FC = () => {
       key: 'qualidade',
       label: 'Qualidade eSF/eAP',
       children: (
-        <div className="space-y-4 sm:space-y-6 pt-4">
+        <div className="space-y-6 pt-4">
           <FilterBar />
 
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <ClassificationCard
               classification="otimo"
               count={0}
@@ -114,28 +92,6 @@ const QualidadeVisaoGeral: React.FC = () => {
         </div>
       ),
     },
-    {
-      key: 'tab5',
-      label: 'Tab 5',
-      children: (
-        <div className="space-y-6 pt-4">
-          <div className="rounded-lg bg-card p-8 shadow-sm text-center">
-            <p className="text-muted-foreground">Conteúdo da Tab 5 (em desenvolvimento)</p>
-          </div>
-        </div>
-      ),
-    },
-    {
-      key: 'tab6',
-      label: 'Tab 6',
-      children: (
-        <div className="space-y-6 pt-4">
-          <div className="rounded-lg bg-card p-8 shadow-sm text-center">
-            <p className="text-muted-foreground">Conteúdo da Tab 6 (em desenvolvimento)</p>
-          </div>
-        </div>
-      ),
-    },
   ];
 
   const breadcrumbLabel = activeTab === 'vinculo' ? 'Vínculo e Acompanhamento' : 'Qualidade eSF/eAP';
@@ -150,16 +106,14 @@ const QualidadeVisaoGeral: React.FC = () => {
       className="border-primary text-primary hover:bg-primary/5"
       onClick={() => navigate(individualizadoPath)}
     >
-      Busca ativa
+      Individualizado
     </Button>
   );
-
-  const pageTitle = activeTab === 'vinculo' ? 'Visão geral de Vínculo e Acompanhamento' : 'Visão geral de Qualidade eSF/eAP';
 
   return (
     <div>
       <PageHeader
-        title={pageTitle}
+        title="Visão geral do Financiamento APS"
         breadcrumbs={[
           { label: 'Financiamento APS', path: '/financiamento-aps' },
           { label: breadcrumbLabel },
@@ -170,15 +124,10 @@ const QualidadeVisaoGeral: React.FC = () => {
       <Tabs
         activeKey={activeTab}
         onChange={handleTabChange}
+        items={tabItems}
         size="large"
         className="financiamento-tabs"
-      >
-        {tabItems.map(item => (
-          <Tabs.TabPane key={item.key} tab={item.label}>
-            {item.children}
-          </Tabs.TabPane>
-        ))}
-      </Tabs>
+      />
     </div>
   );
 };

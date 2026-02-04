@@ -479,7 +479,7 @@ const QualidadeIndividualizado: React.FC = () => {
   const [expandedVinculoKeys, setExpandedVinculoKeys] = useState<string[]>([]);
   
   // Get initial tab from URL params
-  const initialTab = searchParams.get('tab') || 'vinculo';
+  const initialTab = searchParams.get('tab') || 'qualidade';
   const [activeTab, setActiveTab] = useState(initialTab);
 
   // Update state when URL params change
@@ -535,28 +535,6 @@ const QualidadeIndividualizado: React.FC = () => {
 
   const tabItems = [
     {
-      key: 'tab1',
-      label: 'Tab 1',
-      children: (
-        <div className="pt-4">
-          <div className="rounded-lg bg-card p-8 shadow-sm text-center">
-            <p className="text-muted-foreground">Conteúdo da Tab 1 (em desenvolvimento)</p>
-          </div>
-        </div>
-      ),
-    },
-    {
-      key: 'tab2',
-      label: 'Tab 2',
-      children: (
-        <div className="pt-4">
-          <div className="rounded-lg bg-card p-8 shadow-sm text-center">
-            <p className="text-muted-foreground">Conteúdo da Tab 2 (em desenvolvimento)</p>
-          </div>
-        </div>
-      ),
-    },
-    {
       key: 'vinculo',
       label: 'Vínculo e Acompanhamento',
       children: <div className="pt-4">{renderVinculoContent()}</div>,
@@ -565,28 +543,6 @@ const QualidadeIndividualizado: React.FC = () => {
       key: 'qualidade',
       label: 'Qualidade eSF/eAP',
       children: <div className="pt-4">{renderQualidadeContent()}</div>,
-    },
-    {
-      key: 'tab5',
-      label: 'Tab 5',
-      children: (
-        <div className="pt-4">
-          <div className="rounded-lg bg-card p-8 shadow-sm text-center">
-            <p className="text-muted-foreground">Conteúdo da Tab 5 (em desenvolvimento)</p>
-          </div>
-        </div>
-      ),
-    },
-    {
-      key: 'tab6',
-      label: 'Tab 6',
-      children: (
-        <div className="pt-4">
-          <div className="rounded-lg bg-card p-8 shadow-sm text-center">
-            <p className="text-muted-foreground">Conteúdo da Tab 6 (em desenvolvimento)</p>
-          </div>
-        </div>
-      ),
     },
   ];
 
@@ -598,32 +554,25 @@ const QualidadeIndividualizado: React.FC = () => {
     ? '/financiamento-aps/qualidade-esf-eap/relatorio?tab=vinculo'
     : '/financiamento-aps/qualidade-esf-eap/relatorio?tab=qualidade';
 
-  const pageTitle = activeTab === 'vinculo' ? 'Busca ativa de Vínculo e Acompanhamento' : 'Busca ativa de Qualidade eSF/eAP';
-
   return (
     <div>
       <PageHeader
-        title={pageTitle}
+        title="Individualizado do Financiamento APS"
         breadcrumbs={[
           { label: 'Financiamento APS', path: '/financiamento-aps' },
           { label: breadcrumbLabel, path: breadcrumbPath },
           { label: 'Relatório', path: relatorioPath },
-          { label: 'Busca ativa' },
+          { label: 'Individualizado' },
         ]}
       />
 
       <Tabs
         activeKey={activeTab}
         onChange={handleTabChange}
+        items={tabItems}
         size="large"
         className="financiamento-tabs"
-      >
-        {tabItems.map(item => (
-          <Tabs.TabPane key={item.key} tab={item.label}>
-            {item.children}
-          </Tabs.TabPane>
-        ))}
-      </Tabs>
+      />
     </div>
   );
 };

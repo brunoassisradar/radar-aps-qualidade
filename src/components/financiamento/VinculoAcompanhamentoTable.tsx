@@ -4,7 +4,6 @@ import type { ColumnsType } from 'antd/es/table';
 import { Download, ChevronDown, ChevronRight, ChevronRightIcon } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, LabelList } from 'recharts';
-import { useIsMobile } from '@/hooks/use-mobile';
 
 type Classification = 'otimo' | 'bom' | 'suficiente' | 'regular';
 
@@ -77,7 +76,7 @@ const ResultadoCell: React.FC<{ nota: number; classification: Classification }> 
   return (
     <div className="flex items-center gap-2">
       <span className={`w-2 h-2 rounded-full ${statusColors[classification]}`} />
-      <span className="text-xs sm:text-sm">{statusLabels[classification]} | {nota}</span>
+      <span className="text-sm">{statusLabels[classification]} | {nota}</span>
     </div>
   );
 };
@@ -110,6 +109,65 @@ const sampleData: VinculoData[] = [
   { key: '10', equipeSaude: 'Equipe 010 - ESF', unidade: 'Uaps Cdfam Gilmario Teixeira', ine: '0001012345', cnes: '0407836', notaFinal: 6.5, classificacaoFinal: 'suficiente', ...createDimensoes() },
 ];
 
+const columns: ColumnsType<VinculoData> = [
+  {
+    title: 'Equipe de Saúde',
+    dataIndex: 'equipeSaude',
+    key: 'equipeSaude',
+    width: '22%',
+    render: (text: string) => <span className="font-medium">{text}</span>,
+    sorter: (a, b) => a.equipeSaude.localeCompare(b.equipeSaude),
+  },
+  {
+    title: 'Unidade',
+    dataIndex: 'unidade',
+    key: 'unidade',
+    width: '22%',
+    sorter: (a, b) => a.unidade.localeCompare(b.unidade),
+  },
+  {
+    title: 'INE',
+    dataIndex: 'ine',
+    key: 'ine',
+    width: '12%',
+    sorter: (a, b) => a.ine.localeCompare(b.ine),
+  },
+  {
+    title: 'CNES',
+    dataIndex: 'cnes',
+    key: 'cnes',
+    width: '10%',
+    sorter: (a, b) => a.cnes.localeCompare(b.cnes),
+  },
+  {
+    title: 'Nota Final',
+    dataIndex: 'notaFinal',
+    key: 'notaFinal',
+    width: '16%',
+    filters: statusFilters,
+    onFilter: (value, record) => record.classificacaoFinal === value,
+    sorter: (a, b) => a.notaFinal - b.notaFinal,
+    render: (nota: number, record: VinculoData) => (
+      <ResultadoCell nota={nota} classification={record.classificacaoFinal} />
+    ),
+  },
+  {
+    title: 'Ação',
+    key: 'acao',
+    width: '18%',
+    render: (_: unknown, record: VinculoData) => (
+      <div className="flex gap-2">
+        <Link to={`/financiamento-aps/qualidade-esf-eap/relatorio?tab=vinculo&equipe=${record.key}`}>
+          <Button type="default" size="small">Relatório</Button>
+        </Link>
+        <Link to={`/financiamento-aps/qualidade-esf-eap/individualizado?tab=vinculo&equipe=${record.key}`}>
+          <Button type="default" size="small">Individualizado</Button>
+        </Link>
+      </div>
+    ),
+  },
+];
+
 // Cadastro stacked bar chart component
 const CadastroBarChart: React.FC<{ data: CadastroBarData; month: string; equipeKey: string }> = ({ data, month, equipeKey }) => {
   const navigate = useNavigate();
@@ -128,7 +186,7 @@ const CadastroBarChart: React.FC<{ data: CadastroBarData; month: string; equipeK
       className="flex items-center gap-2 w-full cursor-pointer hover:opacity-80 transition-opacity" 
       onClick={handleClick}
     >
-      <div className="flex-1 h-6 sm:h-7 min-w-0">
+      <div className="flex-1 h-7 min-w-0">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart
             layout="vertical"
@@ -137,14 +195,14 @@ const CadastroBarChart: React.FC<{ data: CadastroBarData; month: string; equipeK
           >
             <XAxis type="number" domain={[0, total]} hide />
             <YAxis type="category" dataKey="name" hide />
-            <Bar dataKey="cadastroCompleto" stackId="a" fill="#3B82F6" radius={[4, 0, 0, 4]} barSize={18}>
-              <LabelList dataKey="cadastroCompleto" position="center" fill="#fff" fontSize={9} fontWeight={600} />
+            <Bar dataKey="cadastroCompleto" stackId="a" fill="#3B82F6" radius={[4, 0, 0, 4]} barSize={20}>
+              <LabelList dataKey="cadastroCompleto" position="center" fill="#fff" fontSize={10} fontWeight={600} />
             </Bar>
-            <Bar dataKey="cadastroIndividual" stackId="a" fill="#22C55E" barSize={18}>
-              <LabelList dataKey="cadastroIndividual" position="center" fill="#fff" fontSize={9} fontWeight={600} />
+            <Bar dataKey="cadastroIndividual" stackId="a" fill="#22C55E" barSize={20}>
+              <LabelList dataKey="cadastroIndividual" position="center" fill="#fff" fontSize={10} fontWeight={600} />
             </Bar>
-            <Bar dataKey="semCadastro" stackId="a" fill="#EF4444" radius={[0, 4, 4, 0]} barSize={18}>
-              <LabelList dataKey="semCadastro" position="center" fill="#fff" fontSize={9} fontWeight={600} />
+            <Bar dataKey="semCadastro" stackId="a" fill="#EF4444" radius={[0, 4, 4, 0]} barSize={20}>
+              <LabelList dataKey="semCadastro" position="center" fill="#fff" fontSize={10} fontWeight={600} />
             </Bar>
           </BarChart>
         </ResponsiveContainer>
@@ -171,7 +229,7 @@ const AcompanhamentoBarChart: React.FC<{ data: AcompanhamentoBarData; month: str
       className="flex items-center gap-2 w-full cursor-pointer hover:opacity-80 transition-opacity" 
       onClick={handleClick}
     >
-      <div className="flex-1 h-6 sm:h-7 min-w-0">
+      <div className="flex-1 h-7 min-w-0">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart
             layout="vertical"
@@ -180,10 +238,10 @@ const AcompanhamentoBarChart: React.FC<{ data: AcompanhamentoBarData; month: str
           >
             <XAxis type="number" domain={[0, data.total]} hide />
             <YAxis type="category" dataKey="name" hide />
-            <Bar dataKey="acompanhadas" stackId="a" fill="#3B82F6" radius={[4, 0, 0, 4]} barSize={18}>
-              <LabelList dataKey="acompanhadas" position="center" fill="#fff" fontSize={9} fontWeight={600} />
+            <Bar dataKey="acompanhadas" stackId="a" fill="#3B82F6" radius={[4, 0, 0, 4]} barSize={20}>
+              <LabelList dataKey="acompanhadas" position="center" fill="#fff" fontSize={10} fontWeight={600} />
             </Bar>
-            <Bar dataKey="restante" stackId="a" fill="#D1D5DB" radius={[0, 4, 4, 0]} barSize={18} />
+            <Bar dataKey="restante" stackId="a" fill="#D1D5DB" radius={[0, 4, 4, 0]} barSize={20} />
           </BarChart>
         </ResponsiveContainer>
       </div>
@@ -192,105 +250,11 @@ const AcompanhamentoBarChart: React.FC<{ data: AcompanhamentoBarData; month: str
   );
 };
 
-// Mobile list item component for each team - shows ALL information
-const MobileTeamListItem: React.FC<{ record: VinculoData }> = ({ record }) => {
-  const cadastroLegend = [
-    { label: 'Completo', color: '#3B82F6' },
-    { label: 'Individual', color: '#22C55E' },
-    { label: 'Sem cadastro', color: '#EF4444' },
-  ];
-
-  return (
-    <div className="bg-card rounded-lg border border-border overflow-hidden">
-      {/* Header with team info and classification */}
-      <div className="p-4 border-b border-border">
-        <div className="flex items-start justify-between gap-3 mb-3">
-          <div className="flex-1 min-w-0">
-            <h3 className="font-semibold text-sm text-foreground">{record.equipeSaude}</h3>
-            <p className="text-xs text-muted-foreground mt-0.5">{record.unidade}</p>
-          </div>
-          <div className="shrink-0">
-            <ResultadoCell nota={record.notaFinal} classification={record.classificacaoFinal} />
-          </div>
-        </div>
-        
-        {/* Metadata row */}
-        <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs">
-          <div className="flex items-center gap-1.5">
-            <span className="text-muted-foreground">INE:</span>
-            <span className="font-medium text-foreground">{record.ine}</span>
-          </div>
-          <div className="flex items-center gap-1.5">
-            <span className="text-muted-foreground">CNES:</span>
-            <span className="font-medium text-foreground">{record.cnes}</span>
-          </div>
-        </div>
-      </div>
-      
-      {/* Dimensão Cadastro - Always visible */}
-      <div className="p-4 border-b border-border bg-muted/30">
-        <div className="flex items-center justify-between mb-3">
-          <span className="text-xs font-semibold text-foreground">Dimensão Cadastro</span>
-          <div className="flex gap-2">
-            {cadastroLegend.map((item) => (
-              <div key={item.label} className="flex items-center gap-1">
-                <span className="w-2 h-2 rounded-sm" style={{ backgroundColor: item.color }} />
-                <span className="text-[10px] text-muted-foreground">{item.label}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-        <div className="space-y-2">
-          {Object.entries(record.cadastro).map(([month, data]) => (
-            <div key={month} className="flex items-center gap-3">
-              <span className="text-xs text-muted-foreground w-16 shrink-0">{monthToLabel[month]}</span>
-              <div className="flex-1">
-                <CadastroBarChart data={data} month={month} equipeKey={record.key} />
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-      
-      {/* Dimensão Acompanhamento - Always visible */}
-      <div className="p-4 border-b border-border">
-        <div className="flex items-center justify-between mb-3">
-          <span className="text-xs font-semibold text-foreground">Dimensão Acompanhamento</span>
-          <div className="flex items-center gap-1">
-            <span className="w-2 h-2 rounded-sm bg-[#3B82F6]" />
-            <span className="text-[10px] text-muted-foreground">Acompanhadas</span>
-          </div>
-        </div>
-        <div className="space-y-2">
-          {Object.entries(record.acompanhamento).map(([month, data]) => (
-            <div key={month} className="flex items-center gap-3">
-              <span className="text-xs text-muted-foreground w-16 shrink-0">{monthToLabel[month]}</span>
-              <div className="flex-1">
-                <AcompanhamentoBarChart data={data} month={month} equipeKey={record.key} />
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-      
-      {/* Actions */}
-      <div className="p-3 flex gap-2 bg-muted/20">
-        <Link to={`/financiamento-aps/qualidade-esf-eap/relatorio?tab=vinculo&equipe=${record.key}`} className="flex-1">
-          <Button type="primary" size="small" block>Ver Relatório</Button>
-        </Link>
-        <Link to={`/financiamento-aps/qualidade-esf-eap/individualizado?tab=vinculo&equipe=${record.key}`} className="flex-1">
-          <Button type="default" size="small" block>Individual</Button>
-        </Link>
-      </div>
-    </div>
-  );
-};
-
 const ExpandedRow: React.FC<{ record: VinculoData }> = ({ record }) => {
   const cadastroLegend = [
-    { label: 'Cadastro completo', color: '#3B82F6' },
-    { label: 'Cadastro individual', color: '#22C55E' },
-    { label: 'Sem cadastro', color: '#EF4444' },
+    { label: 'Pessoas com cadastro completo e atualizado', color: '#3B82F6' },
+    { label: 'Pessoas com somente cadastro individual atualizado', color: '#22C55E' },
+    { label: 'Pessoas sem cadastro individual atualizado', color: '#EF4444' },
   ];
 
   const acompanhamentoLegend = [
@@ -301,25 +265,29 @@ const ExpandedRow: React.FC<{ record: VinculoData }> = ({ record }) => {
     <div className="bg-muted/20 border-t border-border space-y-4 py-4">
       {/* Dimensão Cadastro */}
       <div>
+        {/* Header com título e legenda */}
         <div className="flex items-center gap-3 mb-2 px-4 py-2 bg-muted rounded-t-md border border-border flex-wrap">
-          <span className="text-sm font-semibold text-foreground">Dimensão Cadastro</span>
-          <div className="flex flex-wrap gap-2">
+          <span className="text-base font-semibold text-foreground">Dimensão Cadastro</span>
+          <div className="flex flex-wrap gap-3">
             {cadastroLegend.map((item) => (
               <div key={item.label} className="flex items-center gap-1.5">
-                <span className="w-2.5 h-2.5 rounded-sm" style={{ backgroundColor: item.color }} />
-                <span className="text-[10px] text-muted-foreground">{item.label}</span>
+                <span className="w-3 h-3 rounded-sm" style={{ backgroundColor: item.color }} />
+                <span className="text-xs text-muted-foreground">{item.label}</span>
               </div>
             ))}
           </div>
         </div>
+        {/* Tabela de meses */}
         <div className="overflow-x-auto border border-t-0 border-border rounded-b-md">
-          <div className="indicator-grid min-w-[600px]">
+          <div className="indicator-grid min-w-[800px]">
+            {/* Header row */}
             <div className="indicator-grid-header">
-              <div className="indicator-grid-cell font-medium text-muted-foreground text-sm">Janeiro</div>
-              <div className="indicator-grid-cell font-medium text-muted-foreground text-sm">Fevereiro</div>
-              <div className="indicator-grid-cell font-medium text-muted-foreground text-sm">Março</div>
-              <div className="indicator-grid-cell font-medium text-muted-foreground text-sm">Abril</div>
+              <div className="indicator-grid-cell font-medium text-muted-foreground">Janeiro</div>
+              <div className="indicator-grid-cell font-medium text-muted-foreground">Fevereiro</div>
+              <div className="indicator-grid-cell font-medium text-muted-foreground">Março</div>
+              <div className="indicator-grid-cell font-medium text-muted-foreground">Abril</div>
             </div>
+            {/* Data row com gráficos */}
             <div className="indicator-grid-row-4cols bg-card">
               <div className="indicator-grid-cell">
                 <CadastroBarChart data={record.cadastro.janeiro} month="janeiro" equipeKey={record.key} />
@@ -340,25 +308,29 @@ const ExpandedRow: React.FC<{ record: VinculoData }> = ({ record }) => {
 
       {/* Dimensão Acompanhamento */}
       <div>
+        {/* Header com título e legenda */}
         <div className="flex items-center gap-3 mb-2 px-4 py-2 bg-muted rounded-t-md border border-border flex-wrap">
-          <span className="text-sm font-semibold text-foreground">Dimensão Acompanhamento</span>
-          <div className="flex flex-wrap gap-2">
+          <span className="text-base font-semibold text-foreground">Dimensão Acompanhamento</span>
+          <div className="flex flex-wrap gap-3">
             {acompanhamentoLegend.map((item) => (
               <div key={item.label} className="flex items-center gap-1.5">
-                <span className="w-2.5 h-2.5 rounded-sm" style={{ backgroundColor: item.color }} />
-                <span className="text-[10px] text-muted-foreground">{item.label}</span>
+                <span className="w-3 h-3 rounded-sm" style={{ backgroundColor: item.color }} />
+                <span className="text-xs text-muted-foreground">{item.label}</span>
               </div>
             ))}
           </div>
         </div>
+        {/* Tabela de meses */}
         <div className="overflow-x-auto border border-t-0 border-border rounded-b-md">
-          <div className="indicator-grid min-w-[600px]">
+          <div className="indicator-grid min-w-[800px]">
+            {/* Header row */}
             <div className="indicator-grid-header">
-              <div className="indicator-grid-cell font-medium text-muted-foreground text-sm">Janeiro</div>
-              <div className="indicator-grid-cell font-medium text-muted-foreground text-sm">Fevereiro</div>
-              <div className="indicator-grid-cell font-medium text-muted-foreground text-sm">Março</div>
-              <div className="indicator-grid-cell font-medium text-muted-foreground text-sm">Abril</div>
+              <div className="indicator-grid-cell font-medium text-muted-foreground">Janeiro</div>
+              <div className="indicator-grid-cell font-medium text-muted-foreground">Fevereiro</div>
+              <div className="indicator-grid-cell font-medium text-muted-foreground">Março</div>
+              <div className="indicator-grid-cell font-medium text-muted-foreground">Abril</div>
             </div>
+            {/* Data row com gráficos */}
             <div className="indicator-grid-row-4cols bg-card">
               <div className="indicator-grid-cell">
                 <AcompanhamentoBarChart data={record.acompanhamento.janeiro} month="janeiro" equipeKey={record.key} />
@@ -381,124 +353,36 @@ const ExpandedRow: React.FC<{ record: VinculoData }> = ({ record }) => {
 };
 
 export const VinculoAcompanhamentoTable: React.FC = () => {
-  const isMobile = useIsMobile();
-  
-  const columns: ColumnsType<VinculoData> = [
-    {
-      title: 'Equipe de Saúde',
-      dataIndex: 'equipeSaude',
-      key: 'equipeSaude',
-      width: '22%',
-      render: (text: string) => <span className="font-medium text-sm">{text}</span>,
-      sorter: (a, b) => a.equipeSaude.localeCompare(b.equipeSaude),
-    },
-    {
-      title: 'Unidade',
-      dataIndex: 'unidade',
-      key: 'unidade',
-      width: '22%',
-      className: 'hidden lg:table-cell',
-      sorter: (a, b) => a.unidade.localeCompare(b.unidade),
-    },
-    {
-      title: 'INE',
-      dataIndex: 'ine',
-      key: 'ine',
-      width: '12%',
-      className: 'hidden xl:table-cell',
-      sorter: (a, b) => a.ine.localeCompare(b.ine),
-    },
-    {
-      title: 'CNES',
-      dataIndex: 'cnes',
-      key: 'cnes',
-      width: '10%',
-      className: 'hidden xl:table-cell',
-      sorter: (a, b) => a.cnes.localeCompare(b.cnes),
-    },
-    {
-      title: 'Nota Final',
-      dataIndex: 'notaFinal',
-      key: 'notaFinal',
-      width: '16%',
-      filters: statusFilters,
-      onFilter: (value, record) => record.classificacaoFinal === value,
-      sorter: (a, b) => a.notaFinal - b.notaFinal,
-      render: (nota: number, record: VinculoData) => (
-        <ResultadoCell nota={nota} classification={record.classificacaoFinal} />
-      ),
-    },
-    {
-      title: 'Ação',
-      key: 'acao',
-      width: '18%',
-      render: (_: unknown, record: VinculoData) => (
-        <div className="flex gap-2">
-          <Link to={`/financiamento-aps/qualidade-esf-eap/relatorio?tab=vinculo&equipe=${record.key}`}>
-            <Button type="default" size="small">Relatório</Button>
-          </Link>
-          <Link to={`/financiamento-aps/qualidade-esf-eap/individualizado?tab=vinculo&equipe=${record.key}`} className="hidden sm:block">
-            <Button type="default" size="small">Individual</Button>
-          </Link>
-        </div>
-      ),
-    },
-  ];
-
-  // Mobile view with cards
-  if (isMobile) {
-    return (
-      <div className="space-y-3">
-        <div className="flex items-center justify-between">
-          <span className="text-xs sm:text-sm text-muted-foreground">
-            Total de equipes: <strong className="text-foreground">{sampleData.length}</strong>
-          </span>
-          <Button icon={<Download className="h-4 w-4" />} size="small">Exportar</Button>
-        </div>
-        <div className="space-y-3">
-          {sampleData.map((record) => (
-            <MobileTeamListItem key={record.key} record={record} />
-          ))}
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div className="rounded-lg bg-card p-3 sm:p-4 shadow-sm">
+    <div className="rounded-lg bg-card p-4 shadow-sm">
       <div className="flex items-center justify-between mb-4">
-        <span className="text-xs sm:text-sm text-muted-foreground">
+        <span className="text-sm text-muted-foreground">
           Total de equipes: <strong className="text-foreground">{sampleData.length}</strong>
         </span>
         <Button icon={<Download className="h-4 w-4" />}>Exportar equipes</Button>
       </div>
-      <div className="overflow-x-auto">
-        <Table
-          columns={columns}
-          dataSource={sampleData}
-          expandable={{
-            expandedRowRender: (record) => <ExpandedRow record={record} />,
-            defaultExpandedRowKeys: [sampleData[0]?.key],
-            expandIcon: ({ expanded, onExpand, record }) => (
-              <span 
-                className="inline-flex cursor-pointer text-muted-foreground hover:text-foreground transition-colors"
-                onClick={(e) => onExpand(record, e as React.MouseEvent<HTMLElement>)}
-              >
-                {expanded ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
-              </span>
-            ),
-          }}
-          pagination={{
-            showSizeChanger: true,
-            showTotal: (total, range) => `${range[0]}-${range[1]} de ${total}`,
-            pageSizeOptions: ['10', '20', '50'],
-            defaultPageSize: 10,
-            size: 'small',
-          }}
-          size="small"
-          scroll={{ x: 800 }}
-        />
-      </div>
+      <Table
+        columns={columns}
+        dataSource={sampleData}
+        expandable={{
+          expandedRowRender: (record) => <ExpandedRow record={record} />,
+          expandIcon: ({ expanded, onExpand, record }) => (
+            <span 
+              className="inline-flex cursor-pointer text-muted-foreground hover:text-foreground transition-colors"
+              onClick={(e) => onExpand(record, e as React.MouseEvent<HTMLElement>)}
+            >
+              {expanded ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
+            </span>
+          ),
+        }}
+        pagination={{
+          showSizeChanger: true,
+          showTotal: (total, range) => `${range[0]}-${range[1]} de ${total} equipes`,
+          pageSizeOptions: ['10', '20', '50'],
+          defaultPageSize: 10,
+        }}
+        size="middle"
+      />
     </div>
   );
 };

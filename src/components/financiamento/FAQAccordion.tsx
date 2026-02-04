@@ -1,7 +1,10 @@
 import React from 'react';
-import { Collapse } from 'antd';
-
-const { Panel } = Collapse;
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion';
 
 interface FAQItem {
   question: string;
@@ -16,21 +19,18 @@ export const FAQAccordion: React.FC<FAQAccordionProps> = ({ items }) => {
   return (
     <div className="rounded-lg bg-card p-5 shadow-sm">
       <h3 className="text-lg font-semibold mb-4">Perguntas frequentes</h3>
-      <Collapse 
-        accordion 
-        bordered={false}
-        className="faq-accordion"
-        expandIconPosition="end"
-      >
+      <Accordion type="single" collapsible className="w-full">
         {items.map((item, index) => (
-          <Panel 
-            header={<span className="text-sm">{item.question}</span>} 
-            key={index}
-          >
-            <p className="text-sm text-muted-foreground">{item.answer}</p>
-          </Panel>
+          <AccordionItem key={index} value={`item-${index}`}>
+            <AccordionTrigger className="text-sm text-left">
+              {item.question}
+            </AccordionTrigger>
+            <AccordionContent className="text-sm text-muted-foreground">
+              {item.answer}
+            </AccordionContent>
+          </AccordionItem>
         ))}
-      </Collapse>
+      </Accordion>
     </div>
   );
 };

@@ -45,7 +45,7 @@ const FinanciamentoAPS: React.FC = () => {
           links={[
             { label: 'Visão geral', path: '/financiamento-aps/qualidade-esf-eap?tab=vinculo' },
             { label: 'Relatório', path: '/financiamento-aps/qualidade-esf-eap/relatorio?tab=vinculo' },
-            { label: 'Busca ativa', path: '/financiamento-aps/qualidade-esf-eap/individualizado?tab=vinculo' },
+            { label: 'Individualizado', path: '/financiamento-aps/qualidade-esf-eap/individualizado?tab=vinculo' },
           ]}
         />
         <InfoCard
@@ -55,7 +55,7 @@ const FinanciamentoAPS: React.FC = () => {
           links={[
             { label: 'Visão geral', path: '/financiamento-aps/qualidade-esf-eap?tab=qualidade' },
             { label: 'Relatório', path: '/financiamento-aps/qualidade-esf-eap/relatorio?tab=qualidade' },
-            { label: 'Busca ativa', path: '/financiamento-aps/qualidade-esf-eap/individualizado?tab=qualidade' },
+            { label: 'Individualizado', path: '/financiamento-aps/qualidade-esf-eap/individualizado?tab=qualidade' },
           ]}
         />
         <InfoCard
