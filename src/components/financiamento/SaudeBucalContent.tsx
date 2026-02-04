@@ -5,6 +5,7 @@ import { Download, ChevronDown, ChevronRight, Smile, HeartPulse, Scissors, Activ
 import { Button } from 'antd';
 import { cn } from '@/lib/utils';
 import { FilterBar } from './FilterBar';
+import { ClassificationCard } from './ClassificationCard';
 import { useIsMobile } from '@/hooks/use-mobile';
 
 const periods = ['Consolidado', 'Janeiro', 'Fevereiro', 'Março', 'Abril'];
@@ -100,49 +101,6 @@ const classificationCounts = {
   regular: sampleTableData.filter(t => t.classificacao === 'regular').length,
 };
 
-// Classification Card Component
-interface ClassificationCardProps {
-  classification: Classification;
-  count: number;
-  description: string;
-}
-
-const classificationConfig = {
-  otimo: {
-    label: 'Ótimo',
-    borderColor: 'border-l-[#3C8DBC]',
-    textColor: 'text-[#3C8DBC]',
-  },
-  bom: {
-    label: 'Bom',
-    borderColor: 'border-l-[#00A65A]',
-    textColor: 'text-[#00A65A]',
-  },
-  suficiente: {
-    label: 'Suficiente',
-    borderColor: 'border-l-[#F0AD4E]',
-    textColor: 'text-[#F0AD4E]',
-  },
-  regular: {
-    label: 'Regular',
-    borderColor: 'border-l-[#DD4B39]',
-    textColor: 'text-[#DD4B39]',
-  },
-};
-
-const ClassificationCard: React.FC<ClassificationCardProps> = ({ classification, count, description }) => {
-  const config = classificationConfig[classification];
-  
-  return (
-    <div className={cn('rounded-lg p-3 sm:p-4 shadow-sm bg-card border-l-4', config.borderColor)}>
-      <p className="text-xs sm:text-sm text-muted-foreground">{config.label}</p>
-      <p className="text-lg sm:text-xl font-semibold text-foreground">
-        {count} <span className="text-sm font-normal">Equipes</span>
-      </p>
-      <p className="text-[10px] sm:text-xs text-muted-foreground mt-1">{description}</p>
-    </div>
-  );
-};
 
 // Cards de indicadores agregados
 const IndicadoresAgregadosCards: React.FC = () => {
