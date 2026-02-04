@@ -5,7 +5,6 @@ import { Download, ChevronDown, ChevronRight, Smile, HeartPulse, Scissors, Activ
 import { Button } from 'antd';
 import { cn } from '@/lib/utils';
 import { FilterBar } from './FilterBar';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, Legend, PieChart, Pie, Cell } from 'recharts';
 import { useIsMobile } from '@/hooks/use-mobile';
 
 const periods = ['Consolidado', 'Janeiro', 'Fevereiro', 'Março', 'Abril'];
@@ -49,23 +48,11 @@ const indicadores = [
   }
 ];
 
-// Dados do gráfico de barras - Procedimentos por eSB
-const procedimentosData = [
-  { equipe: 'eSB 1', procedimentos: 245, meta: 200 },
-  { equipe: 'eSB 2', procedimentos: 189, meta: 200 },
-  { equipe: 'eSB 3', procedimentos: 312, meta: 200 },
-  { equipe: 'eSB 4', procedimentos: 167, meta: 200 },
-  { equipe: 'eSB 5', procedimentos: 278, meta: 200 },
-  { equipe: 'eSB 6', procedimentos: 234, meta: 200 },
-  { equipe: 'eSB 7', procedimentos: 156, meta: 200 },
-  { equipe: 'eSB 8', procedimentos: 298, meta: 200 },
-];
-
-// Dados do gráfico de pizza - Cobertura de primeira consulta
-const coberturaData = [
-  { name: 'Com primeira consulta', value: 68, color: '#0064FF' },
-  { name: 'Sem primeira consulta', value: 32, color: '#C4C4CC' },
-];
+// Dados agregados para os indicadores
+const indicadoresAgregados = {
+  tratamentoConcluido: 1879, // Total de pessoas com tratamento odontológico concluído
+  primeiraConsulta: 2456,    // Total de pessoas com primeira consulta odontológica programada
+};
 
 // Dados da tabela
 type Classification = 'otimo' | 'bom' | 'suficiente' | 'regular';
@@ -157,97 +144,48 @@ const ClassificationCard: React.FC<ClassificationCardProps> = ({ classification,
   );
 };
 
-// Procedimentos Chart Component
-const ProcedimentosChart: React.FC = () => {
+// Cards de indicadores agregados
+const IndicadoresAgregadosCards: React.FC = () => {
   return (
-    <div className="rounded-lg bg-card shadow-sm overflow-hidden">
-      <div className="px-4 sm:px-6 py-3 sm:py-4 border-b border-border">
-        <h3 className="text-sm sm:text-base font-semibold text-foreground">
-          Procedimentos Odontológicos Individuais Preventivos por eSB
-        </h3>
-        <p className="text-xs text-muted-foreground mt-1">
-          Quantitativo de procedimentos registrados na APS
-        </p>
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      {/* Card Tratamento Concluído */}
+      <div className="rounded-xl border border-primary/20 bg-gradient-to-br from-primary/10 to-primary/5 p-4 sm:p-6">
+        <div className="flex items-start gap-3">
+          <div className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-primary text-primary-foreground">
+            <HeartPulse className="w-5 h-5 sm:w-6 sm:h-6" />
+          </div>
+          <div className="flex-1">
+            <p className="text-xs sm:text-sm font-medium text-muted-foreground">
+              Tratamento Odontológico Concluído
+            </p>
+            <p className="text-2xl sm:text-3xl font-bold text-foreground mt-1">
+              {indicadoresAgregados.tratamentoConcluido.toLocaleString('pt-BR')}
+            </p>
+            <p className="text-xs text-muted-foreground mt-2">
+              Quantitativo de pessoas com tratamento odontológico concluído por eSB na APS
+            </p>
+          </div>
+        </div>
       </div>
-      <div className="p-4">
-        <ResponsiveContainer width="100%" height={300}>
-          <BarChart data={procedimentosData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke="hsl(220, 13%, 91%)" />
-            <XAxis 
-              dataKey="equipe" 
-              tick={{ fontSize: 12, fill: 'hsl(220, 9%, 46%)' }}
-              axisLine={{ stroke: 'hsl(220, 13%, 91%)' }}
-            />
-            <YAxis 
-              tick={{ fontSize: 12, fill: 'hsl(220, 9%, 46%)' }}
-              axisLine={{ stroke: 'hsl(220, 13%, 91%)' }}
-            />
-            <RechartsTooltip 
-              contentStyle={{ 
-                backgroundColor: 'hsl(var(--card))', 
-                border: '1px solid hsl(var(--border))',
-                borderRadius: '8px',
-              }}
-            />
-            <Legend />
-            <Bar 
-              dataKey="procedimentos" 
-              fill="#0064FF" 
-              name="Procedimentos realizados"
-              radius={[4, 4, 0, 0]}
-            />
-            <Bar 
-              dataKey="meta" 
-              fill="#C4C4CC" 
-              name="Meta"
-              radius={[4, 4, 0, 0]}
-            />
-          </BarChart>
-        </ResponsiveContainer>
-      </div>
-    </div>
-  );
-};
 
-// Cobertura Chart Component
-const CoberturaChart: React.FC = () => {
-  return (
-    <div className="rounded-lg bg-card shadow-sm overflow-hidden">
-      <div className="px-4 sm:px-6 py-3 sm:py-4 border-b border-border">
-        <h3 className="text-sm sm:text-base font-semibold text-foreground">
-          Cobertura de Primeira Consulta Odontológica
-        </h3>
-        <p className="text-xs text-muted-foreground mt-1">
-          Percentual de pessoas com primeira consulta programada por eSB
-        </p>
-      </div>
-      <div className="p-4">
-        <ResponsiveContainer width="100%" height={250}>
-          <PieChart>
-            <Pie
-              data={coberturaData}
-              cx="50%"
-              cy="50%"
-              innerRadius={60}
-              outerRadius={100}
-              paddingAngle={2}
-              dataKey="value"
-              label={({ name, value }) => `${value}%`}
-            >
-              {coberturaData.map((entry, index) => (
-                <Cell key={`cell-${index}`} fill={entry.color} />
-              ))}
-            </Pie>
-            <RechartsTooltip 
-              contentStyle={{ 
-                backgroundColor: 'hsl(var(--card))', 
-                border: '1px solid hsl(var(--border))',
-                borderRadius: '8px',
-              }}
-            />
-            <Legend />
-          </PieChart>
-        </ResponsiveContainer>
+      {/* Card Primeira Consulta */}
+      <div className="rounded-xl border border-primary/20 bg-gradient-to-br from-accent to-accent/50 p-4 sm:p-6">
+        <div className="flex items-start gap-3">
+          <div className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-primary text-primary-foreground">
+            <Smile className="w-5 h-5 sm:w-6 sm:h-6" />
+          </div>
+          <div className="flex-1">
+            <p className="text-xs sm:text-sm font-medium text-muted-foreground">
+              Primeira Consulta Programada
+            </p>
+            <p className="text-2xl sm:text-3xl font-bold text-foreground mt-1">
+              {indicadoresAgregados.primeiraConsulta.toLocaleString('pt-BR')}
+            </p>
+            <p className="text-xs text-muted-foreground mt-2">
+              Quantitativo de pessoas com primeira consulta odontológica programada na APS
+            </p>
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -491,11 +429,8 @@ export const SaudeBucalContent: React.FC<SaudeBucalContentProps> = ({
             </div>
           </div>
 
-          {/* Gráficos */}
-          <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 sm:gap-6">
-            <ProcedimentosChart />
-            <CoberturaChart />
-          </div>
+          {/* Cards de indicadores agregados */}
+          <IndicadoresAgregadosCards />
 
           {/* Cards de classificação */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-4">
