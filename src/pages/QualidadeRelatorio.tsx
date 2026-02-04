@@ -323,7 +323,7 @@ const QualidadeRelatorio: React.FC = () => {
     },
     {
       key: 'saude-bucal',
-      label: 'Saúde Bucal',
+      label: 'Qualidade eSB',
       children: <div className="pt-4"><SaudeBucalContent /></div>,
     },
     {
