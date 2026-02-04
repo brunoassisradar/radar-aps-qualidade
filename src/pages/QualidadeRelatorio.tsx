@@ -7,6 +7,7 @@ import { IndicatorChart } from '@/components/financiamento/IndicatorChart';
 import { ReportTable } from '@/components/financiamento/ReportTable';
 import { CadastroResumo } from '@/components/financiamento/CadastroResumo';
 import { AcompanhamentoResumo } from '@/components/financiamento/AcompanhamentoResumo';
+import { SaudeBucalContent } from '@/components/financiamento/SaudeBucalContent';
 import { cn } from '@/lib/utils';
 import { Users, Baby, Heart, Activity, Stethoscope, UserCheck, Flower2, ClipboardList, UserSearch } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -321,15 +322,9 @@ const QualidadeRelatorio: React.FC = () => {
       children: <div className="pt-4">{renderQualidadeContent()}</div>,
     },
     {
-      key: 'tab5',
-      label: 'Tab 5',
-      children: (
-        <div className="pt-4">
-          <div className="rounded-lg bg-card p-8 shadow-sm text-center">
-            <p className="text-muted-foreground">Conteúdo da Tab 5 (em desenvolvimento)</p>
-          </div>
-        </div>
-      ),
+      key: 'saude-bucal',
+      label: 'Saúde Bucal',
+      children: <div className="pt-4"><SaudeBucalContent /></div>,
     },
     {
       key: 'tab6',
