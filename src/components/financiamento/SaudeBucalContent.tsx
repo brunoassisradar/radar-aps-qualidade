@@ -102,52 +102,6 @@ const classificationCounts = {
 };
 
 
-// Cards de indicadores agregados
-const IndicadoresAgregadosCards: React.FC = () => {
-  return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-      {/* Card Tratamento Concluído */}
-      <div className="rounded-xl border border-primary/20 bg-gradient-to-br from-primary/10 to-primary/5 p-4 sm:p-6">
-        <div className="flex items-start gap-3">
-          <div className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-primary text-primary-foreground">
-            <HeartPulse className="w-5 h-5 sm:w-6 sm:h-6" />
-          </div>
-          <div className="flex-1">
-            <p className="text-xs sm:text-sm font-medium text-muted-foreground">
-              Tratamento Odontológico Concluído
-            </p>
-            <p className="text-2xl sm:text-3xl font-bold text-foreground mt-1">
-              {indicadoresAgregados.tratamentoConcluido.toLocaleString('pt-BR')}
-            </p>
-            <p className="text-xs text-muted-foreground mt-2">
-              Quantitativo de pessoas com tratamento odontológico concluído por eSB na APS
-            </p>
-          </div>
-        </div>
-      </div>
-
-      {/* Card Primeira Consulta */}
-      <div className="rounded-xl border border-primary/20 bg-gradient-to-br from-accent to-accent/50 p-4 sm:p-6">
-        <div className="flex items-start gap-3">
-          <div className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-primary text-primary-foreground">
-            <Smile className="w-5 h-5 sm:w-6 sm:h-6" />
-          </div>
-          <div className="flex-1">
-            <p className="text-xs sm:text-sm font-medium text-muted-foreground">
-              Primeira Consulta Programada
-            </p>
-            <p className="text-2xl sm:text-3xl font-bold text-foreground mt-1">
-              {indicadoresAgregados.primeiraConsulta.toLocaleString('pt-BR')}
-            </p>
-            <p className="text-xs text-muted-foreground mt-2">
-              Quantitativo de pessoas com primeira consulta odontológica programada na APS
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
 
 // Table Component
 const SaudeBucalTable: React.FC = () => {
@@ -366,7 +320,7 @@ export const SaudeBucalContent: React.FC<SaudeBucalContentProps> = ({
 
         {/* Conteúdo principal */}
         <div className="flex-1 min-w-0 space-y-4 sm:space-y-6">
-          {/* Card do indicador selecionado */}
+          {/* Card do indicador selecionado com variáveis */}
           <div className="rounded-lg bg-card shadow-sm overflow-hidden">
             <div className="px-4 sm:px-6 py-3 sm:py-4 border-b border-border bg-gradient-to-r from-primary/5 to-transparent">
               <div className="flex items-center gap-3">
@@ -385,10 +339,51 @@ export const SaudeBucalContent: React.FC<SaudeBucalContentProps> = ({
                 </div>
               </div>
             </div>
-          </div>
+            <div className="p-4 sm:p-6">
+              {/* Cards de variáveis agregadas */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {/* Card Tratamento Concluído */}
+                <div className="rounded-xl border border-primary/20 bg-gradient-to-br from-primary/10 to-primary/5 p-4">
+                  <div className="flex items-start gap-3">
+                    <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-primary text-primary-foreground shrink-0">
+                      <HeartPulse className="w-5 h-5" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs font-medium text-muted-foreground">
+                        Tratamento Odontológico Concluído
+                      </p>
+                      <p className="text-xl sm:text-2xl font-bold text-foreground mt-1">
+                        {indicadoresAgregados.tratamentoConcluido.toLocaleString('pt-BR')}
+                      </p>
+                      <p className="text-[10px] sm:text-xs text-muted-foreground mt-1">
+                        Quantitativo de pessoas com tratamento concluído por eSB na APS
+                      </p>
+                    </div>
+                  </div>
+                </div>
 
-          {/* Cards de indicadores agregados */}
-          <IndicadoresAgregadosCards />
+                {/* Card Primeira Consulta */}
+                <div className="rounded-xl border border-primary/20 bg-gradient-to-br from-accent to-accent/50 p-4">
+                  <div className="flex items-start gap-3">
+                    <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-primary text-primary-foreground shrink-0">
+                      <Smile className="w-5 h-5" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs font-medium text-muted-foreground">
+                        Primeira Consulta Programada
+                      </p>
+                      <p className="text-xl sm:text-2xl font-bold text-foreground mt-1">
+                        {indicadoresAgregados.primeiraConsulta.toLocaleString('pt-BR')}
+                      </p>
+                      <p className="text-[10px] sm:text-xs text-muted-foreground mt-1">
+                        Quantitativo de pessoas com primeira consulta programada na APS
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
 
           {/* Cards de classificação */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-4">
