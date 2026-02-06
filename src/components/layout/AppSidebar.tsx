@@ -71,7 +71,17 @@ const menuItems: MenuItem[] = [
           { label: 'Individualizado', path: '/financiamento-aps/qualidade-esf-eap/individualizado?tab=qualidade' },
         ]
       },
-      { label: 'Qualidade eSB', path: '#', hasActiveState: true },
+      { 
+        label: 'Qualidade eSB', 
+        path: '/financiamento-aps/qualidade-esf-eap?tab=qualidade-esb',
+        hasActiveState: true,
+        tabKey: 'qualidade-esb',
+        children: [
+          { label: 'Visão geral', path: '/financiamento-aps/qualidade-esf-eap?tab=qualidade-esb' },
+          { label: 'Relatório', path: '/financiamento-aps/qualidade-esf-eap/relatorio?tab=qualidade-esb' },
+          { label: 'Individualizado', path: '/financiamento-aps/qualidade-esf-eap/individualizado?tab=qualidade-esb' },
+        ]
+      },
       { label: 'Qualidade eMulti', path: '#', hasActiveState: true },
     ],
   },
