@@ -105,7 +105,7 @@ const QualidadeVisaoGeral: React.FC = () => {
             <ClassificationCard classification="suficiente" count={68} description="Suficiente: > 10 e ≤ 30" />
             <ClassificationCard classification="regular" count={304} description="Regular: ≤ 10 ou > 70" />
           </div>
-          <OverviewTable data={sampleDataEsb} />
+          <OverviewTable data={sampleDataEsb} variant="qualidade-esb" />
         </div>
       ),
     },
