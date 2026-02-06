@@ -297,7 +297,7 @@ const QualidadeRelatorio: React.FC = () => {
 
           <div className="rounded-lg bg-card shadow-sm overflow-hidden">
             <div className="p-4">
-              <ReportTable selectedPeriod={esbPeriod} />
+              <ReportTable selectedPeriod={esbPeriod} variant="qualidade-esb" />
             </div>
           </div>
         </div>
