@@ -10,6 +10,7 @@ import { AcompanhamentoResumo } from '@/components/financiamento/AcompanhamentoR
 import { cn } from '@/lib/utils';
 import { Users, Baby, Heart, Activity, Stethoscope, UserCheck, Flower2, ClipboardList, UserSearch, Smile, CheckCircle2, Scissors, Sparkles, HandHeart } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { EsbIndicadorContent } from '@/components/financiamento/EsbIndicadorContent';
 
 const periods = ['Consolidado', 'Janeiro', 'Fevereiro', 'Março', 'Abril'];
 
@@ -290,7 +291,7 @@ const QualidadeRelatorio: React.FC = () => {
               </div>
             </div>
             <div className="p-6">
-              {/* Conteúdo será implementado posteriormente */}
+              <EsbIndicadorContent indicador={selectedIndicadorEsb} />
             </div>
           </div>
 
