@@ -113,7 +113,7 @@ const QualidadeVisaoGeral: React.FC = () => {
   return (
     <div>
       <PageHeader
-        title="Visão geral do Financiamento APS"
+        title={activeTab === 'vinculo' ? 'Visão geral de Vínculo e Acompanhamento' : 'Visão geral de Qualidade eSF/eAP'}
         breadcrumbs={[
           { label: 'Financiamento APS', path: '/financiamento-aps' },
           { label: breadcrumbLabel },
