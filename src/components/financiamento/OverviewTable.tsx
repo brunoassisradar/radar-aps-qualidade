@@ -392,7 +392,7 @@ const getColumns = (onHelpClick: () => void, variant: TableVariant = 'qualidade'
           <Button type="default" size="small">Ver relatório</Button>
         </Link>
         <Link to={`/financiamento-aps/qualidade-esf-eap/individualizado?tab=${variant}&equipe=${record.key}`}>
-          <Button type="default" size="small">{variant === 'qualidade-esb' ? 'Equipes vinculadas' : 'Individualizado'}</Button>
+          <Button type="default" size="small">{variant === 'qualidade-esb' ? 'Vinculações' : 'Individualizado'}</Button>
         </Link>
       </div>
     ),
