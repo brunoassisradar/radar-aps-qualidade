@@ -8,10 +8,30 @@ import { ReportTable } from '@/components/financiamento/ReportTable';
 import { CadastroResumo } from '@/components/financiamento/CadastroResumo';
 import { AcompanhamentoResumo } from '@/components/financiamento/AcompanhamentoResumo';
 import { cn } from '@/lib/utils';
-import { Users, Baby, Heart, Activity, Stethoscope, UserCheck, Flower2, ClipboardList, UserSearch } from 'lucide-react';
+import { Users, Baby, Heart, Activity, Stethoscope, UserCheck, Flower2, ClipboardList, UserSearch, Smile, CheckCircle2, Scissors, Sparkles, HandHeart } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 const periods = ['Consolidado', 'Janeiro', 'Fevereiro', 'Março', 'Abril'];
+
+const validTabs = ['vinculo', 'qualidade', 'qualidade-esb'];
+
+const tabTitles: Record<string, string> = {
+  vinculo: 'Relatório de Vínculo e Acompanhamento',
+  qualidade: 'Relatório de Qualidade eSF/eAP',
+  'qualidade-esb': 'Relatório de Qualidade eSB',
+};
+
+const tabBreadcrumbLabels: Record<string, string> = {
+  vinculo: 'Vínculo e Acompanhamento',
+  qualidade: 'Qualidade eSF/eAP',
+  'qualidade-esb': 'Qualidade eSB',
+};
+
+const tabBreadcrumbPaths: Record<string, string> = {
+  vinculo: '/financiamento-aps/qualidade-esf-eap?tab=vinculo',
+  qualidade: '/financiamento-aps/qualidade-esf-eap?tab=qualidade',
+  'qualidade-esb': '/financiamento-aps/qualidade-esf-eap?tab=qualidade-esb',
+};
 
 const indicadores = [{
   value: 'c1',
@@ -50,6 +70,38 @@ const indicadores = [{
   icon: Flower2
 }];
 
+const indicadoresEsb = [{
+  value: 'b1',
+  label: 'Primeira consulta',
+  shortLabel: 'B1',
+  icon: Stethoscope
+}, {
+  value: 'b2',
+  label: 'Tratamento concluído',
+  shortLabel: 'B2',
+  icon: CheckCircle2
+}, {
+  value: 'b3',
+  label: 'Taxa de exodontias',
+  shortLabel: 'B3',
+  icon: Scissors
+}, {
+  value: 'b4',
+  label: 'Procedimentos odontológicos',
+  shortLabel: 'B4',
+  icon: ClipboardList
+}, {
+  value: 'b5',
+  label: 'Escovação supervisionada',
+  shortLabel: 'B5',
+  icon: Sparkles
+}, {
+  value: 'b6',
+  label: 'Tratamento restaurador',
+  shortLabel: 'B6',
+  icon: HandHeart
+}];
+
 const dimensoes = [{
   value: 'cadastro',
   label: 'Cadastro',
@@ -62,38 +114,47 @@ const dimensoes = [{
   icon: UserSearch
 }];
 
+const allIndicadores = [...indicadores, ...indicadoresEsb];
+
 const QualidadeRelatorio: React.FC = () => {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   
-  // Get initial values from URL params
   const initialTab = searchParams.get('tab') || 'vinculo';
   const initialIndicador = searchParams.get('indicador') || 'c1';
+  const initialIndicadorEsb = searchParams.get('indicador') || 'b1';
   const initialPeriodo = searchParams.get('periodo') || 'Consolidado';
   const initialDimensao = searchParams.get('dimensao') || 'cadastro';
   
   const [activeTab, setActiveTab] = useState(initialTab);
   const [selectedPeriod, setSelectedPeriod] = useState(initialPeriodo);
   const [selectedIndicador, setSelectedIndicador] = useState(initialIndicador);
+  const [selectedIndicadorEsb, setSelectedIndicadorEsb] = useState(initialIndicadorEsb);
   const [selectedDimensao, setSelectedDimensao] = useState(initialDimensao);
   const [vinculoPeriod, setVinculoPeriod] = useState(initialPeriodo);
+  const [esbPeriod, setEsbPeriod] = useState(initialPeriodo);
   
-  // Update state when URL params change
   useEffect(() => {
     const tabParam = searchParams.get('tab');
     const indicadorParam = searchParams.get('indicador');
     const periodoParam = searchParams.get('periodo');
     const dimensaoParam = searchParams.get('dimensao');
     
-    if (tabParam && ['vinculo', 'qualidade'].includes(tabParam)) {
+    if (tabParam && validTabs.includes(tabParam)) {
       setActiveTab(tabParam);
     }
-    if (indicadorParam && indicadores.some(i => i.value === indicadorParam)) {
-      setSelectedIndicador(indicadorParam);
+    if (indicadorParam) {
+      if (indicadores.some(i => i.value === indicadorParam)) {
+        setSelectedIndicador(indicadorParam);
+      }
+      if (indicadoresEsb.some(i => i.value === indicadorParam)) {
+        setSelectedIndicadorEsb(indicadorParam);
+      }
     }
     if (periodoParam && periods.includes(periodoParam)) {
       setSelectedPeriod(periodoParam);
       setVinculoPeriod(periodoParam);
+      setEsbPeriod(periodoParam);
     }
     if (dimensaoParam && dimensoes.some(d => d.value === dimensaoParam)) {
       setSelectedDimensao(dimensaoParam);
@@ -101,63 +162,66 @@ const QualidadeRelatorio: React.FC = () => {
   }, [searchParams]);
 
   const selectedIndicadorData = indicadores.find(i => i.value === selectedIndicador);
+  const selectedIndicadorEsbData = indicadoresEsb.find(i => i.value === selectedIndicadorEsb);
   const selectedDimensaoData = dimensoes.find(d => d.value === selectedDimensao);
+
+  const renderIndicatorSidebar = (
+    items: typeof indicadores,
+    selected: string,
+    onSelect: (value: string) => void,
+    title: string
+  ) => (
+    <nav className="shrink-0 lg:w-64">
+      <div className="rounded-lg bg-card shadow-sm p-2">
+        <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider px-3 py-2">
+          {title}
+        </p>
+        <div className="space-y-1">
+          {items.map(ind => {
+            const isSelected = selected === ind.value;
+            return (
+              <button 
+                key={ind.value} 
+                onClick={() => onSelect(ind.value)} 
+                className={cn(
+                  "w-full flex items-center gap-3 px-3 py-2.5 rounded-md text-left transition-all duration-150",
+                  "hover:bg-muted/50",
+                  isSelected 
+                    ? "bg-primary/8 border-l-[3px] border-primary shadow-sm" 
+                    : "text-muted-foreground hover:text-foreground border-l-[3px] border-transparent"
+                )}
+              >
+                <span className={cn(
+                  "flex items-center justify-center w-8 h-8 rounded-md text-sm font-semibold shrink-0 transition-colors",
+                  isSelected ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"
+                )}>
+                  {ind.shortLabel}
+                </span>
+                <div className="min-w-0 flex-1">
+                  <p className={cn("text-sm font-medium truncate", isSelected ? "text-foreground" : "")}>
+                    {ind.label}
+                  </p>
+                </div>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+    </nav>
+  );
 
   const renderQualidadeContent = () => (
     <div className="space-y-6">
-      {/* Filtros colapsados em um card clean */}
       <FilterBar periods={periods} selectedPeriod={selectedPeriod} onPeriodChange={setSelectedPeriod} />
 
-      {/* Seletor de período - visual melhorado */}
       <div className="rounded-lg bg-card p-1 shadow-sm">
         <Segmented block value={selectedPeriod} onChange={value => setSelectedPeriod(value as string)} options={periods} className="!bg-transparent" />
       </div>
 
-      {/* Layout principal com navegação de indicadores */}
       <div className="flex flex-col lg:flex-row gap-6">
-        {/* Sidebar de indicadores - redesenhada */}
-        <nav className="shrink-0 lg:w-64">
-          <div className="rounded-lg bg-card shadow-sm p-2">
-            <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider px-3 py-2">
-              Indicadores
-            </p>
-            <div className="space-y-1">
-              {indicadores.map(ind => {
-                const Icon = ind.icon;
-                const isSelected = selectedIndicador === ind.value;
-                return (
-                  <button 
-                    key={ind.value} 
-                    onClick={() => setSelectedIndicador(ind.value)} 
-                    className={cn(
-                      "w-full flex items-center gap-3 px-3 py-2.5 rounded-md text-left transition-all duration-150",
-                      "hover:bg-muted/50",
-                      isSelected 
-                        ? "bg-primary/8 border-l-[3px] border-primary shadow-sm" 
-                        : "text-muted-foreground hover:text-foreground border-l-[3px] border-transparent"
-                    )}
-                  >
-                    <span className={cn(
-                      "flex items-center justify-center w-8 h-8 rounded-md text-sm font-semibold shrink-0 transition-colors",
-                      isSelected ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"
-                    )}>
-                      {ind.shortLabel}
-                    </span>
-                    <div className="min-w-0 flex-1">
-                      <p className={cn("text-sm font-medium truncate", isSelected ? "text-foreground" : "")}>
-                        {ind.label}
-                      </p>
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        </nav>
+        {renderIndicatorSidebar(indicadores, selectedIndicador, setSelectedIndicador, 'Indicadores')}
 
-        {/* Conteúdo principal */}
         <div className="flex-1 min-w-0 space-y-6">
-          {/* Card de Boas Práticas */}
           <div className="rounded-lg bg-card shadow-sm overflow-hidden">
             <div className="px-6 py-4 border-b border-border bg-gradient-to-r from-primary/5 to-transparent">
               <div className="flex items-center gap-3">
@@ -194,19 +258,61 @@ const QualidadeRelatorio: React.FC = () => {
     </div>
   );
 
+  const renderQualidadeEsbContent = () => (
+    <div className="space-y-6">
+      <FilterBar periods={periods} selectedPeriod={esbPeriod} onPeriodChange={setEsbPeriod} />
+
+      <div className="rounded-lg bg-card p-1 shadow-sm">
+        <Segmented block value={esbPeriod} onChange={value => setEsbPeriod(value as string)} options={periods} className="!bg-transparent" />
+      </div>
+
+      <div className="flex flex-col lg:flex-row gap-6">
+        {renderIndicatorSidebar(indicadoresEsb, selectedIndicadorEsb, setSelectedIndicadorEsb, 'Indicadores')}
+
+        <div className="flex-1 min-w-0 space-y-6">
+          {/* Card de conteúdo - estrutura base */}
+          <div className="rounded-lg bg-card shadow-sm overflow-hidden">
+            <div className="px-6 py-4 border-b border-border bg-gradient-to-r from-primary/5 to-transparent">
+              <div className="flex items-center gap-3">
+                {selectedIndicadorEsbData && (
+                  <span className="flex items-center justify-center w-10 h-10 rounded-lg bg-primary text-primary-foreground">
+                    <selectedIndicadorEsbData.icon className="w-5 h-5" />
+                  </span>
+                )}
+                <div>
+                  <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                    Indicador
+                  </p>
+                  <h2 className="text-lg font-semibold text-foreground">
+                    {selectedIndicadorEsbData?.label}
+                  </h2>
+                </div>
+              </div>
+            </div>
+            <div className="p-6">
+              {/* Conteúdo será implementado posteriormente */}
+            </div>
+          </div>
+
+          <div className="rounded-lg bg-card shadow-sm overflow-hidden">
+            <div className="p-4">
+              <ReportTable selectedPeriod={esbPeriod} />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
   const renderVinculoContent = () => (
     <div className="space-y-6">
-      {/* Filtros */}
       <FilterBar periods={periods} selectedPeriod={vinculoPeriod} onPeriodChange={setVinculoPeriod} />
 
-      {/* Seletor de período */}
       <div className="rounded-lg bg-card p-1 shadow-sm">
         <Segmented block value={vinculoPeriod} onChange={value => setVinculoPeriod(value as string)} options={periods} className="!bg-transparent" />
       </div>
 
-      {/* Layout principal com navegação de dimensões */}
       <div className="flex flex-col lg:flex-row gap-6">
-        {/* Sidebar de dimensões */}
         <nav className="shrink-0 lg:w-64">
           <div className="rounded-lg bg-card shadow-sm p-2">
             <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider px-3 py-2">
@@ -214,7 +320,6 @@ const QualidadeRelatorio: React.FC = () => {
             </p>
             <div className="space-y-1">
               {dimensoes.map(dim => {
-                const Icon = dim.icon;
                 const isSelected = selectedDimensao === dim.value;
                 return (
                   <button 
@@ -246,7 +351,6 @@ const QualidadeRelatorio: React.FC = () => {
           </div>
         </nav>
 
-        {/* Conteúdo principal - placeholder */}
         <div className="flex-1 min-w-0 space-y-6">
           <div className="rounded-lg bg-card shadow-sm overflow-hidden">
             <div className="px-6 py-4 border-b border-border bg-gradient-to-r from-primary/5 to-transparent">
@@ -290,13 +394,15 @@ const QualidadeRelatorio: React.FC = () => {
       label: 'Qualidade eSF/eAP',
       children: <div className="pt-4">{renderQualidadeContent()}</div>,
     },
+    {
+      key: 'qualidade-esb',
+      label: 'Qualidade eSB',
+      children: <div className="pt-4">{renderQualidadeEsbContent()}</div>,
+    },
   ];
 
-  const breadcrumbLabel = activeTab === 'vinculo' ? 'Vínculo e Acompanhamento' : 'Qualidade eSF/eAP';
-  const breadcrumbPath = activeTab === 'vinculo' 
-    ? '/financiamento-aps/qualidade-esf-eap?tab=vinculo' 
-    : '/financiamento-aps/qualidade-esf-eap?tab=qualidade';
-  
+  const breadcrumbLabel = tabBreadcrumbLabels[activeTab] || 'Qualidade eSF/eAP';
+  const breadcrumbPath = tabBreadcrumbPaths[activeTab] || '/financiamento-aps/qualidade-esf-eap?tab=qualidade';
   const individualizadoPath = `/financiamento-aps/qualidade-esf-eap/individualizado?tab=${activeTab}`;
 
   const headerActions = (
@@ -313,7 +419,7 @@ const QualidadeRelatorio: React.FC = () => {
   return (
     <div>
       <PageHeader 
-        title={activeTab === 'vinculo' ? 'Relatório de Vínculo e Acompanhamento' : 'Relatório de Qualidade eSF/eAP'} 
+        title={tabTitles[activeTab] || 'Relatório'} 
         breadcrumbs={[
           { label: 'Financiamento APS', path: '/financiamento-aps' },
           { label: breadcrumbLabel, path: breadcrumbPath },
@@ -326,7 +432,6 @@ const QualidadeRelatorio: React.FC = () => {
         activeKey={activeTab}
         onChange={(key) => {
           setActiveTab(key);
-          // Update URL to reflect tab change
           const newParams = new URLSearchParams(searchParams);
           newParams.set('tab', key);
           setSearchParams(newParams, { replace: true });

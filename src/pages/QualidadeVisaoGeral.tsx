@@ -11,16 +11,29 @@ import { ComparativoCadastro } from '@/components/financiamento/ComparativoCadas
 import { CriteriosVinculacao } from '@/components/financiamento/CriteriosVinculacao';
 import { Button } from '@/components/ui/button';
 
+const validTabs = ['vinculo', 'qualidade', 'qualidade-esb'];
+
+const tabTitles: Record<string, string> = {
+  vinculo: 'Visão geral de Vínculo e Acompanhamento',
+  qualidade: 'Visão geral de Qualidade eSF/eAP',
+  'qualidade-esb': 'Visão geral de Qualidade eSB',
+};
+
+const tabBreadcrumbLabels: Record<string, string> = {
+  vinculo: 'Vínculo e Acompanhamento',
+  qualidade: 'Qualidade eSF/eAP',
+  'qualidade-esb': 'Qualidade eSB',
+};
+
 const QualidadeVisaoGeral: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   const initialTab = searchParams.get('tab') || 'vinculo';
   const [activeTab, setActiveTab] = useState(initialTab);
 
-  // Sync state with URL changes
   useEffect(() => {
     const tabParam = searchParams.get('tab');
-    if (tabParam && ['vinculo', 'qualidade'].includes(tabParam)) {
+    if (tabParam && validTabs.includes(tabParam)) {
       setActiveTab(tabParam);
     }
   }, [searchParams]);
@@ -31,6 +44,18 @@ const QualidadeVisaoGeral: React.FC = () => {
     newParams.set('tab', key);
     setSearchParams(newParams, { replace: true });
   };
+
+  const renderQualidadeCards = () => (
+    <>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <ClassificationCard classification="otimo" count={0} description="Ótimo: > 50 e ≤ 70" />
+        <ClassificationCard classification="bom" count={36} description="Bom: > 30 e ≤ 50" />
+        <ClassificationCard classification="suficiente" count={68} description="Suficiente: > 10 e ≤ 30" />
+        <ClassificationCard classification="regular" count={304} description="Regular: ≤ 10 ou > 70" />
+      </div>
+      <OverviewTable />
+    </>
+  );
 
   const tabItems = [
     {
@@ -64,39 +89,23 @@ const QualidadeVisaoGeral: React.FC = () => {
       children: (
         <div className="space-y-6 pt-4">
           <FilterBar />
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <ClassificationCard
-              classification="otimo"
-              count={0}
-              description="Ótimo: > 50 e ≤ 70"
-            />
-            <ClassificationCard
-              classification="bom"
-              count={36}
-              description="Bom: > 30 e ≤ 50"
-            />
-            <ClassificationCard
-              classification="suficiente"
-              count={68}
-              description="Suficiente: > 10 e ≤ 30"
-            />
-            <ClassificationCard
-              classification="regular"
-              count={304}
-              description="Regular: ≤ 10 ou > 70"
-            />
-          </div>
-
-          <OverviewTable />
+          {renderQualidadeCards()}
+        </div>
+      ),
+    },
+    {
+      key: 'qualidade-esb',
+      label: 'Qualidade eSB',
+      children: (
+        <div className="space-y-6 pt-4">
+          <FilterBar />
+          {renderQualidadeCards()}
         </div>
       ),
     },
   ];
 
-  const breadcrumbLabel = activeTab === 'vinculo' ? 'Vínculo e Acompanhamento' : 'Qualidade eSF/eAP';
-  
-  const relatorioPath = `/financiamento-aps/qualidade-esf-eap/relatorio?tab=${activeTab}`;
+  const breadcrumbLabel = tabBreadcrumbLabels[activeTab] || 'Qualidade eSF/eAP';
   const individualizadoPath = `/financiamento-aps/qualidade-esf-eap/individualizado?tab=${activeTab}`;
 
   const headerActions = (
@@ -113,7 +122,7 @@ const QualidadeVisaoGeral: React.FC = () => {
   return (
     <div>
       <PageHeader
-        title={activeTab === 'vinculo' ? 'Visão geral de Vínculo e Acompanhamento' : 'Visão geral de Qualidade eSF/eAP'}
+        title={tabTitles[activeTab] || 'Visão geral'}
         breadcrumbs={[
           { label: 'Financiamento APS', path: '/financiamento-aps' },
           { label: breadcrumbLabel },
