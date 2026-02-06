@@ -21,6 +21,7 @@ interface ReportTableProps {
   totalEquipes?: number;
   selectedPeriod?: string;
   onViewIndividual?: (key: string) => void;
+  variant?: 'qualidade' | 'qualidade-esb';
 }
 
 const classificationStatus: Record<Classification, 'success' | 'warning' | 'error' | 'processing'> = {
@@ -55,8 +56,10 @@ export const ReportTable: React.FC<ReportTableProps> = ({
   totalEquipes = 398,
   selectedPeriod = 'Consolidado',
   onViewIndividual,
+  variant = 'qualidade',
 }) => {
   const isConsolidado = selectedPeriod === 'Consolidado';
+  const isEsb = variant === 'qualidade-esb';
   const columns: ColumnsType<ReportData> = [
     {
       title: 'Equipe de saúde',
@@ -95,11 +98,11 @@ export const ReportTable: React.FC<ReportTableProps> = ({
         <Badge status={classificationStatus[classification]} text={classificationLabels[classification]} />
       ),
     },
-    {
+    ...(!isEsb ? [{
       title: 'Fichas desatualizadas',
-      dataIndex: 'fichasDesatualizadas',
+      dataIndex: 'fichasDesatualizadas' as const,
       key: 'fichasDesatualizadas',
-      render: (count: number, record) => (
+      render: (count: number, record: ReportData) => (
         <div 
           className="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity"
           onClick={() => onViewIndividual?.(record.key)}
@@ -111,7 +114,7 @@ export const ReportTable: React.FC<ReportTableProps> = ({
           <ChevronRightIcon className="h-3 w-3 text-muted-foreground" />
         </div>
       ),
-    },
+    }] : []),
   ];
 
   return (
