@@ -101,6 +101,63 @@ const sampleIndicators: IndicatorData[] = [
   },
 ];
 
+const sampleIndicatorsEsb: IndicatorData[] = [
+  {
+    id: 'b1',
+    name: 'B1 - Primeira consulta',
+    janeiro: { status: 'regular', value: 'X%' },
+    fevereiro: { status: 'suficiente', value: 'X%' },
+    marco: { status: 'bom', value: 'X%' },
+    abril: { status: 'otimo', value: 'X%' },
+    consolidado: { status: 'otimo', value: 'X%' },
+  },
+  {
+    id: 'b2',
+    name: 'B2 - Tratamento concluído',
+    janeiro: { status: 'regular', value: 'X%' },
+    fevereiro: { status: 'suficiente', value: 'X%' },
+    marco: { status: 'bom', value: 'X%' },
+    abril: { status: 'otimo', value: 'X%' },
+    consolidado: { status: 'otimo', value: 'X%' },
+  },
+  {
+    id: 'b3',
+    name: 'B3 - Taxa de exodontias',
+    janeiro: { status: 'regular', value: 'X%' },
+    fevereiro: { status: 'suficiente', value: 'X%' },
+    marco: { status: 'bom', value: 'X%' },
+    abril: { status: 'otimo', value: 'X%' },
+    consolidado: { status: 'otimo', value: 'X%' },
+  },
+  {
+    id: 'b4',
+    name: 'B4 - Procedimentos odontológicos',
+    janeiro: { status: 'regular', value: 'X%' },
+    fevereiro: { status: 'suficiente', value: 'X%' },
+    marco: { status: 'bom', value: 'X%' },
+    abril: { status: 'otimo', value: 'X%' },
+    consolidado: { status: 'otimo', value: 'X%' },
+  },
+  {
+    id: 'b5',
+    name: 'B5 - Escovação supervisionada',
+    janeiro: { status: 'regular', value: 'X%' },
+    fevereiro: { status: 'suficiente', value: 'X%' },
+    marco: { status: 'bom', value: 'X%' },
+    abril: { status: 'otimo', value: 'X%' },
+    consolidado: { status: 'otimo', value: 'X%' },
+  },
+  {
+    id: 'b6',
+    name: 'B6 - Tratamento restaurador',
+    janeiro: { status: 'regular', value: 'X%' },
+    fevereiro: { status: 'suficiente', value: 'X%' },
+    marco: { status: 'bom', value: 'X%' },
+    abril: { status: 'otimo', value: 'X%' },
+    consolidado: { status: 'otimo', value: 'X%' },
+  },
+];
+
 const sampleData: TeamData[] = [
   {
     key: '1',
@@ -144,6 +201,49 @@ const sampleData: TeamData[] = [
   },
 ];
 
+export const sampleDataEsb: TeamData[] = [
+  {
+    key: '1',
+    equipe: 'ESB Vila Nova',
+    unidade: 'UBS Centro',
+    tipoEquipe: 'eSB',
+    consolidado: { status: 'otimo', value: 'X%' },
+    indicadores: sampleIndicatorsEsb,
+  },
+  {
+    key: '2',
+    equipe: 'ESB Jardim América',
+    unidade: 'UBS Norte',
+    tipoEquipe: 'eSB',
+    consolidado: { status: 'otimo', value: 'X%' },
+    indicadores: sampleIndicatorsEsb,
+  },
+  {
+    key: '3',
+    equipe: 'ESB Centro',
+    unidade: 'UBS Sul',
+    tipoEquipe: 'eSB',
+    consolidado: { status: 'bom', value: 'X%' },
+    indicadores: sampleIndicatorsEsb,
+  },
+  {
+    key: '4',
+    equipe: 'ESB Parque Industrial',
+    unidade: 'UBS Centro',
+    tipoEquipe: 'eSB',
+    consolidado: { status: 'suficiente', value: 'X%' },
+    indicadores: sampleIndicatorsEsb,
+  },
+  {
+    key: '5',
+    equipe: 'ESB Bela Vista',
+    unidade: 'UBS Norte',
+    tipoEquipe: 'eSB',
+    consolidado: { status: 'otimo', value: 'X%' },
+    indicadores: sampleIndicatorsEsb,
+  },
+];
+
 const statusColors: Record<Classification, string> = {
   otimo: 'bg-[#3C8DBC]',
   bom: 'bg-[#00A65A]',
@@ -182,6 +282,12 @@ const indicatorToParam: Record<string, string> = {
   c5: 'c5',
   c6: 'c6',
   c7: 'c7',
+  b1: 'b1',
+  b2: 'b2',
+  b3: 'b3',
+  b4: 'b4',
+  b5: 'b5',
+  b6: 'b6',
 };
 
 const StatusCell: React.FC<StatusCellProps> = ({ data, showLink = true, indicador, month, equipeKey }) => {
@@ -198,8 +304,10 @@ const StatusCell: React.FC<StatusCellProps> = ({ data, showLink = true, indicado
   );
 
   if (showLink && indicador && month) {
+    const isEsb = indicador.startsWith('b');
+    const tabParam = isEsb ? 'qualidade-esb' : 'qualidade';
     const params = new URLSearchParams({
-      tab: 'qualidade',
+      tab: tabParam,
       indicador: indicatorToParam[indicador] || indicador,
       periodo: monthToParam[month] || month,
     });
