@@ -30,9 +30,12 @@ interface TeamData {
   indicadores: IndicatorData[];
 }
 
+type TableVariant = 'qualidade' | 'qualidade-esb';
+
 interface OverviewTableProps {
   data?: TeamData[];
   totalEquipes?: number;
+  variant?: TableVariant;
 }
 
 const sampleIndicators: IndicatorData[] = [
@@ -338,7 +341,7 @@ const statusFilters = [
   { text: 'Regular', value: 'regular' },
 ];
 
-const getColumns = (onHelpClick: () => void): ColumnsType<TeamData> => [
+const getColumns = (onHelpClick: () => void, variant: TableVariant = 'qualidade'): ColumnsType<TeamData> => [
   {
     title: 'Equipe de saúde',
     dataIndex: 'equipe',
@@ -385,10 +388,10 @@ const getColumns = (onHelpClick: () => void): ColumnsType<TeamData> => [
     width: '20%',
     render: (_: unknown, record: TeamData) => (
       <div className="flex gap-2">
-        <Link to={`/financiamento-aps/qualidade-esf-eap/relatorio?tab=qualidade&equipe=${record.key}`}>
+        <Link to={`/financiamento-aps/qualidade-esf-eap/relatorio?tab=${variant}&equipe=${record.key}`}>
           <Button type="default" size="small">Ver relatório</Button>
         </Link>
-        <Link to={`/financiamento-aps/qualidade-esf-eap/individualizado?equipe=${record.key}`}>
+        <Link to={`/financiamento-aps/qualidade-esf-eap/individualizado?tab=${variant}&equipe=${record.key}`}>
           <Button type="default" size="small">Individualizado</Button>
         </Link>
       </div>
@@ -454,9 +457,10 @@ const ExpandedRow: React.FC<{ record: TeamData }> = ({ record }) => {
 export const OverviewTable: React.FC<OverviewTableProps> = ({
   data = sampleData,
   totalEquipes = 398,
+  variant = 'qualidade',
 }) => {
   const [isHelpModalOpen, setIsHelpModalOpen] = useState(false);
-  const columns = getColumns(() => setIsHelpModalOpen(true));
+  const columns = getColumns(() => setIsHelpModalOpen(true), variant);
 
   return (
     <div className="rounded-lg bg-card p-4 shadow-sm">
