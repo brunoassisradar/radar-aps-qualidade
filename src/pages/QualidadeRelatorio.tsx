@@ -313,7 +313,7 @@ const QualidadeRelatorio: React.FC = () => {
   return (
     <div>
       <PageHeader 
-        title="Relatório do Financiamento APS" 
+        title={activeTab === 'vinculo' ? 'Relatório de Vínculo e Acompanhamento' : 'Relatório de Qualidade eSF/eAP'} 
         breadcrumbs={[
           { label: 'Financiamento APS', path: '/financiamento-aps' },
           { label: breadcrumbLabel, path: breadcrumbPath },
